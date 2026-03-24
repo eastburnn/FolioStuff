@@ -1,0 +1,36 @@
+import type { Metadata } from "next";
+import { PieChart } from "lucide-react";
+import PortfolioVisualizer from "@/components/widgets/PortfolioVisualizer";
+
+export const metadata: Metadata = {
+  title: "Portfolio Visualizer — Folio",
+  description:
+    "Build a shareable portfolio chart. Input your tickers and allocations, then download a beautiful PNG card for Twitter.",
+};
+
+export default function PortfolioVisualizerPage() {
+  return (
+    <div className="pt-20">
+      {/* Page header */}
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-10 pb-2">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-9 h-9 rounded-xl bg-accent-purple/[0.15] border border-accent-purple/30 flex items-center justify-center">
+            <PieChart size={16} className="text-accent-purple" />
+          </div>
+          <span className="text-xs text-accent-purple uppercase tracking-widest font-semibold">
+            Visualize
+          </span>
+        </div>
+        <h1 className="text-3xl font-bold text-ink-primary tracking-tight">
+          Portfolio Visualizer
+        </h1>
+        <p className="text-ink-secondary mt-2 max-w-xl">
+          Add your tickers and percentage allocations to generate a clean, shareable donut chart.
+          Hit download for a retina-ready PNG — perfect for Twitter/X.
+        </p>
+      </div>
+
+      <PortfolioVisualizer />
+    </div>
+  );
+}

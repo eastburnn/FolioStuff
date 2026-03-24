@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-bg-base text-ink-primary antialiased;
+    font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0C0F1A;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.18);
+  }
+
+  /* Remove number input arrows */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  /* Remove color input default styling */
+  input[type="color"] {
+    -webkit-appearance: none;
+    border: none;
+    cursor: pointer;
+  }
+  input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+  input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: 6px;
+  }
+}
+
+@layer utilities {
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  .hero-glow {
+    background:
+      radial-gradient(ellipse at 15% 50%, rgba(139, 92, 246, 0.07) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 20%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 55% 85%, rgba(0, 200, 150, 0.05) 0%, transparent 50%);
+  }
+
+  .input-base {
+    @apply w-full bg-bg-card border border-white/[0.08] rounded-xl px-4 py-3
+           text-ink-primary placeholder-ink-muted
+           focus:outline-none focus:border-white/20
+           transition-colors duration-200;
+  }
+
+  .btn-ghost {
+    @apply flex items-center gap-2 px-4 py-2 rounded-xl
+           border border-white/[0.08] text-ink-secondary
+           hover:text-ink-primary hover:border-white/20
+           text-sm transition-all duration-200;
+  }
+
+  .stat-card {
+    @apply bg-bg-card rounded-xl p-4 border border-white/[0.06];
+  }
+}
