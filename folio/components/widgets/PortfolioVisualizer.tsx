@@ -9,7 +9,7 @@ import {
   Tooltip,
   TooltipProps,
 } from "recharts";
-import { Plus, Trash2, Download, RefreshCw, Loader2 } from "lucide-react";
+import { Plus, Trash2, Download, RefreshCw, Loader2, Share2 } from "lucide-react";
 
 const PALETTE = [
   "#8B5CF6", "#3B82F6", "#00C896", "#FFB830", "#FF4B5C",
@@ -86,22 +86,48 @@ export default function PortfolioVisualizer() {
     );
   };
 
+  const slug = portfolioName.toLowerCase().replace(/\s+/g, "-");
+  const filename = `${slug}-${new Date().toISOString().slice(0, 10)}.png`;
+
+  const generateBlob = async (): Promise<Blob> => {
+    const { toBlob } = await import("html-to-image");
+    return toBlob(shareCardRef.current!, { pixelRatio: 2 }) as Promise<Blob>;
+  };
+
   const handleDownload = async () => {
     if (!shareCardRef.current || chartData.length === 0) return;
     setCapturing(true);
     try {
-      const { default: html2canvas } = await import("html2canvas");
-      const canvas = await html2canvas(shareCardRef.current, {
-        backgroundColor: "#0C0F1A",
-        scale: 2,
-        useCORS: true,
-        logging: false,
-      });
+      const blob = await generateBlob();
       const link = document.createElement("a");
-      const slug = portfolioName.toLowerCase().replace(/\s+/g, "-");
-      link.download = `${slug}-${new Date().toISOString().slice(0, 10)}.png`;
-      link.href = canvas.toDataURL("image/png");
+      link.download = filename;
+      link.href = URL.createObjectURL(blob);
       link.click();
+      URL.revokeObjectURL(link.href);
+    } finally {
+      setCapturing(false);
+    }
+  };
+
+  const handleShare = async () => {
+    if (!shareCardRef.current || chartData.length === 0) return;
+    setCapturing(true);
+    try {
+      const blob = await generateBlob();
+      const file = new File([blob], filename, { type: "image/png" });
+      if (navigator.canShare?.({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file], title: portfolioName });
+        } catch (err) {
+          if (err instanceof Error && err.name !== "AbortError") throw err;
+        }
+      } else {
+        const link = document.createElement("a");
+        link.download = filename;
+        link.href = URL.createObjectURL(blob);
+        link.click();
+        URL.revokeObjectURL(link.href);
+      }
     } finally {
       setCapturing(false);
     }
@@ -217,24 +243,16 @@ export default function PortfolioVisualizer() {
           {/* Shareable card — this is what gets screenshotted */}
           <div
             ref={shareCardRef}
-            className="rounded-2xl border border-white/[0.07] overflow-hidden"
-            style={{ background: "#0C0F1A", fontFamily: "system-ui, sans-serif" }}
+            style={{ background: "#0C0F1A", fontFamily: "system-ui, sans-serif", borderRadius: 16, border: "1px solid rgba(255,255,255,0.07)", overflow: "hidden" }}
           >
-            <div className="p-6">
+            <div style={{ padding: 24 }}>
               {/* Card header */}
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-[10px] font-bold tracking-[0.2em] text-ink-muted uppercase">
-                  FOLIO
-                </span>
-                <span className="text-[10px] text-ink-muted">
-                  {new Date().toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
+              <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 4 }}>
+                <span style={{ fontSize: 10, color: "#6B7280" }}>
+                  {new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                 </span>
               </div>
-              <h2 className="text-xl font-bold text-ink-primary mb-4 leading-tight">
+              <h2 style={{ fontSize: 20, fontWeight: 700, color: "#F0F2F5", margin: "0 0 16px", lineHeight: 1.2 }}>
                 {portfolioName || "My Portfolio"}
               </h2>
 
@@ -266,17 +284,14 @@ export default function PortfolioVisualizer() {
                   </div>
 
                   {/* Legend */}
-                  <div className="grid grid-cols-2 gap-y-2 gap-x-4 mt-4">
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 16px", marginTop: 16 }}>
                     {chartData.map((h) => (
-                      <div key={h.id} className="flex items-center gap-2 min-w-0">
-                        <div
-                          style={{ background: h.color }}
-                          className="w-2 h-2 rounded-full shrink-0"
-                        />
-                        <span className="text-xs font-bold font-mono text-ink-primary truncate">
+                      <div key={h.id} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <div style={{ width: 8, height: 8, borderRadius: "50%", background: h.color, flexShrink: 0 }} />
+                        <span style={{ fontSize: 12, fontWeight: 700, color: "#F0F2F5", whiteSpace: "nowrap" }}>
                           {h.ticker}
                         </span>
-                        <span className="text-xs text-ink-secondary ml-auto shrink-0">
+                        <span style={{ fontSize: 12, color: "#9CA3AF", marginLeft: "auto", flexShrink: 0 }}>
                           {h.pct.toFixed(1)}%
                         </span>
                       </div>
@@ -284,43 +299,44 @@ export default function PortfolioVisualizer() {
                   </div>
                 </>
               ) : (
-                <div className="h-[220px] flex items-center justify-center text-ink-muted text-sm">
+                <div style={{ height: 220, display: "flex", alignItems: "center", justifyContent: "center", color: "#6B7280", fontSize: 14 }}>
                   Add holdings to see your chart
                 </div>
               )}
             </div>
 
             {/* Card footer branding */}
-            <div className="border-t border-white/[0.05] px-6 py-2.5 flex items-center justify-between">
-              <span className="text-[9px] text-ink-muted tracking-widest uppercase">
-                folio.market
+            <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span style={{ fontSize: 9, color: "#6B7280", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                foliostuff.com
               </span>
-              <span className="text-[9px] text-ink-muted">
+              <span style={{ fontSize: 9, color: "#6B7280" }}>
                 {chartData.length} holdings
               </span>
             </div>
           </div>
 
-          {/* Download button */}
-          <button
-            onClick={handleDownload}
-            disabled={capturing || chartData.length === 0}
-            className="mt-3 w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-accent-purple/[0.15] border border-accent-purple/30 text-accent-purple hover:bg-accent-purple/25 hover:border-accent-purple/50 transition-all duration-200 text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            {capturing ? (
-              <>
-                <Loader2 size={14} className="animate-spin" />
-                Capturing...
-              </>
-            ) : (
-              <>
-                <Download size={14} />
-                Download Share Card
-              </>
-            )}
-          </button>
+          {/* Share / Download buttons */}
+          <div className="mt-3 flex gap-2">
+            <button
+              onClick={handleShare}
+              disabled={capturing || chartData.length === 0}
+              className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-accent-purple/[0.15] border border-accent-purple/30 text-accent-purple hover:bg-accent-purple/25 hover:border-accent-purple/50 transition-all duration-200 text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              {capturing ? <Loader2 size={14} className="animate-spin" /> : <Share2 size={14} />}
+              {capturing ? "Capturing..." : "Share"}
+            </button>
+            <button
+              onClick={handleDownload}
+              disabled={capturing || chartData.length === 0}
+              className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-white/[0.05] border border-white/[0.08] text-ink-secondary hover:text-ink-primary hover:border-white/20 transition-all duration-200 text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <Download size={14} />
+              Download
+            </button>
+          </div>
           <p className="text-xs text-ink-muted text-center mt-2">
-            Saves as a 2× PNG — optimized for Twitter/X
+            2× PNG — optimized for Twitter/X
           </p>
         </div>
       </div>
