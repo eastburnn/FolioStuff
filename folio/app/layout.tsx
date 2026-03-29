@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Folio — Market Tools for Traders",
+  title: "FolioStuff - Stock Market Tools",
   description:
     "Portfolio visualizer, cost basis calculator, position sizer, and more. Built for active traders and investors.",
   openGraph: {

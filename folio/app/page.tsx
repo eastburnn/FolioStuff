@@ -79,8 +79,8 @@ export default function Home() {
       <section className="pt-36 pb-20 px-4 sm:px-6 text-center">
         <HeroWordmark />
 
-        <p className="text-base sm:text-lg text-ink-secondary max-w-md mx-auto leading-relaxed">
-          Free stock market tools for traders and investors — no sign-up, just click and open a new tab.
+        <p className="text-base sm:text-lg text-ink-secondary max-w-lg mx-auto leading-relaxed">
+          Tools for traders, investors, and stock market enthusiasts.
         </p>
       </section>
 
