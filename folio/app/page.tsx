@@ -62,6 +62,7 @@ const EXTERNAL_TOOLS = [
     name: "How Many Trading Days",
     description: "See how many trading days are left this year",
     accent: "#8B5CF6",
+    logo: "/howmanytradingdays.png",
   },
   {
     href: "https://www.marketwatch.com",
@@ -111,10 +112,13 @@ export default function Home() {
                 className="group flex items-start gap-3.5 p-4 rounded-xl border border-white/[0.06] bg-bg-card/60 hover:border-white/[0.12] hover:bg-bg-card transition-all duration-200"
               >
                 <div
-                  style={{ background: `${tool.accent}18`, borderColor: `${tool.accent}28` }}
-                  className="w-8 h-8 rounded-lg border flex items-center justify-center shrink-0 mt-0.5"
+                  style={tool.logo ? undefined : { background: `${tool.accent}18`, borderColor: `${tool.accent}28` }}
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 overflow-hidden${tool.logo ? "" : " border"}`}
                 >
-                  <ExternalLink size={13} style={{ color: tool.accent }} />
+                  {tool.logo
+                    ? <img src={tool.logo} alt={tool.name} className="w-full h-full object-cover" />
+                    : <ExternalLink size={13} style={{ color: tool.accent }} />
+                  }
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-ink-primary group-hover:text-white transition-colors">
@@ -130,12 +134,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-white/[0.05] py-6 px-4 text-center">
-        <p className="text-xs text-ink-muted">
-          Not financial advice. Just a tab you had open. ✌️
-        </p>
-      </footer>
     </div>
   );
 }

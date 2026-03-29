@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { TrendingUp } from "lucide-react";
 
 const NAV_LINKS = [
   { href: "/portfolio-visualizer", label: "Portfolio" },
@@ -20,11 +19,11 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-7 h-7 rounded-lg bg-accent-purple/20 border border-accent-purple/30 flex items-center justify-center group-hover:bg-accent-purple/30 transition-colors">
-            <TrendingUp size={14} className="text-accent-purple" />
-          </div>
-          <span className="font-bold text-base tracking-tight text-ink-primary">
-            FOLIO
+          <img src="/favicon.png" alt="Foliostuff" className="w-7 h-7 rounded-lg" />
+          <span
+            className="font-black tracking-tight text-base transition-all duration-300 group-hover:-translate-y-0.5 group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+          >
+            <span style={{ color: "#8B5CF6" }}>folio</span><span style={{ color: "#EEF2FF" }}>stuff</span>
           </span>
         </Link>
 

@@ -14,6 +14,13 @@ export const metadata: Metadata = {
   title: "Folio — Market Tools for Traders",
   description:
     "Portfolio visualizer, cost basis calculator, position sizer, and more. Built for active traders and investors.",
+  openGraph: {
+    images: ["/foliostuff-thumbnail.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/foliostuff-thumbnail.png"],
+  },
 };
 
 export default function RootLayout({
@@ -37,6 +44,22 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col">
         <Navbar />
         <main className="flex-1">{children}</main>
+        <footer className="border-t border-white/[0.05] py-6 px-4">
+          <div className="max-w-6xl mx-auto flex flex-col items-center gap-2">
+            <p className="text-[11px] text-ink-muted text-center">
+              For informational purposes only. Nothing on this site constitutes financial advice.
+            </p>
+            <div className="flex items-center gap-1.5 text-xs text-ink-muted">
+              <span>Made by</span>
+              <a href="https://www.itschrisray.com" target="_blank" rel="noopener noreferrer" className="text-ink-secondary hover:text-ink-primary transition-colors">itschrisray.com</a>
+              <span>·</span>
+              <a href="https://x.com/itschrisray" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-ink-secondary hover:text-ink-primary transition-colors">
+                <img src="/twitter.png" alt="X" className="w-3 h-3 opacity-60" />
+                @itschrisray
+              </a>
+            </div>
+          </div>
+        </footer>
       </body>
     </html>
   );
