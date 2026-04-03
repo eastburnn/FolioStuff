@@ -9,7 +9,7 @@ import {
   Tooltip,
   TooltipProps,
 } from "recharts";
-import { Plus, Trash2, Download, RefreshCw, Loader2, Share2 } from "lucide-react";
+import { Plus, Trash2, Download, Loader2, Share2 } from "lucide-react";
 
 const PALETTE = [
   "#8B5CF6", "#3B82F6", "#00C896", "#FFB830", "#FF4B5C",
@@ -248,20 +248,14 @@ export default function PortfolioVisualizer() {
               >
                 <Plus size={13} /> Add cash position
               </button>
-              <button
-                onClick={normalize}
-                disabled={total === 0}
-                className="btn-ghost disabled:opacity-30"
-                title="Normalize to 100%"
-              >
-                <RefreshCw size={13} /> Normalize
-              </button>
             </div>
           </div>
         </div>
 
         {/* ── Right: Share card + download ── */}
         <div>
+          {/* Border wrapper — visible on page but not captured */}
+          <div className="border border-white/[0.12]">
           {/* Shareable card — this is what gets screenshotted */}
           <div
             ref={shareCardRef}
@@ -336,6 +330,7 @@ export default function PortfolioVisualizer() {
                 {chartData.length} holdings
               </span>
             </div>
+          </div>
           </div>
 
           {/* Share / Download buttons */}
