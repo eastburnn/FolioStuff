@@ -66,6 +66,17 @@ export default function PortfolioVisualizer() {
     ]);
   };
 
+  const hasCash = holdings.some((h) => h.ticker === "Cash");
+
+  const addCashPosition = () => {
+    if (hasCash) return;
+    const remainder = Math.max(0, 100 - total);
+    setHoldings((prev) => [
+      ...prev,
+      { id: uid(), ticker: "Cash", allocation: remainder.toFixed(1), color: "#6B7280" },
+    ]);
+  };
+
   const removeHolding = (id: string) => {
     if (holdings.length > 1) setHoldings((prev) => prev.filter((h) => h.id !== id));
   };
@@ -190,11 +201,14 @@ export default function PortfolioVisualizer() {
                   <input
                     value={h.ticker}
                     onChange={(e) =>
-                      update(h.id, "ticker", e.target.value.toUpperCase().replace(/[^A-Z.]/g, ""))
+                      h.ticker === "Cash"
+                        ? undefined
+                        : update(h.id, "ticker", e.target.value.toUpperCase().replace(/[^A-Z.]/g, ""))
                     }
+                    readOnly={h.ticker === "Cash"}
                     placeholder="TICKER"
                     maxLength={10}
-                    className="w-28 bg-bg-card border border-white/[0.08] rounded-xl px-3 py-2.5 text-ink-primary placeholder-ink-muted font-mono text-sm focus:outline-none focus:border-white/20 transition-colors uppercase"
+                    className={`w-28 bg-bg-card border border-white/[0.08] rounded-xl px-3 py-2.5 text-ink-primary placeholder-ink-muted font-mono text-sm focus:outline-none focus:border-white/20 transition-colors ${h.ticker === "Cash" ? "opacity-50 cursor-not-allowed" : "uppercase"}`}
                   />
                   {/* Allocation */}
                   <input
@@ -222,9 +236,17 @@ export default function PortfolioVisualizer() {
             </div>
 
             {/* Actions */}
-            <div className="flex gap-2 mt-3">
+            <div className="flex flex-wrap gap-2 mt-3">
               <button onClick={addHolding} className="btn-ghost">
                 <Plus size={13} /> Add holding
+              </button>
+              <button
+                onClick={addCashPosition}
+                disabled={hasCash}
+                className="btn-ghost disabled:opacity-30 disabled:cursor-not-allowed"
+                title={hasCash ? "Cash position already added" : "Add remaining allocation as cash"}
+              >
+                <Plus size={13} /> Add cash position
               </button>
               <button
                 onClick={normalize}
@@ -243,7 +265,7 @@ export default function PortfolioVisualizer() {
           {/* Shareable card — this is what gets screenshotted */}
           <div
             ref={shareCardRef}
-            style={{ background: "#0C0F1A", fontFamily: "system-ui, sans-serif", borderRadius: 16, border: "1px solid rgba(255,255,255,0.07)", overflow: "hidden" }}
+            style={{ background: "#0C0F1A", fontFamily: "system-ui, sans-serif", borderRadius: 0, border: "none", overflow: "hidden" }}
           >
             <div style={{ padding: 24 }}>
               {/* Card header */}
