@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import TickerBar from "@/components/TickerBar";
 import Script from "next/script";
 
 const inter = Inter({
@@ -50,6 +51,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen flex flex-col">
         <Navbar />
+        <TickerBar />
         <main className="flex-1">{children}</main>
         <footer className="border-t border-white/[0.05] py-6 px-4">
           <div className="max-w-6xl mx-auto flex flex-col items-center gap-2">

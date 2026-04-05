@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function CostBasisPage() {
   return (
-    <div className="pt-20">
+    <div className="pt-24">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-10 pb-2">
         <Breadcrumb items={[{ label: "Cost Basis Calculator", href: "/cost-basis" }]} />
         <div className="flex items-center gap-3 mb-3">

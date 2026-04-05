@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 const NAV_LINKS = [
   { href: "/", label: "Tools" },
+  { href: "/ticker-bar", label: "Ticker Bar" },
   { href: "/about", label: "About" },
 ];
 
@@ -29,7 +30,7 @@ export default function Navbar() {
         {/* Nav links */}
         <nav className="hidden sm:flex items-center gap-1">
           {NAV_LINKS.map((link) => {
-            const active = link.href === "/" ? pathname === "/" || pathname.startsWith("/portfolio") || pathname.startsWith("/cost-basis") || pathname.startsWith("/position-sizer") : pathname === link.href;
+            const active = link.href === "/" ? pathname === "/" || pathname.startsWith("/portfolio") || pathname.startsWith("/cost-basis") || pathname.startsWith("/position-sizer") : pathname.startsWith(link.href);
             return (
               <Link
                 key={link.href}
@@ -49,7 +50,7 @@ export default function Navbar() {
         {/* Mobile menu */}
         <nav className="flex sm:hidden items-center gap-1">
           {NAV_LINKS.map((link) => {
-            const active = link.href === "/" ? pathname === "/" || pathname.startsWith("/portfolio") || pathname.startsWith("/cost-basis") || pathname.startsWith("/position-sizer") : pathname === link.href;
+            const active = link.href === "/" ? pathname === "/" || pathname.startsWith("/portfolio") || pathname.startsWith("/cost-basis") || pathname.startsWith("/position-sizer") : pathname.startsWith(link.href);
             return (
               <Link
                 key={link.href}

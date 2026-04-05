@@ -35,7 +35,7 @@ const TOOLS = [
 
 export default function AboutPage() {
   return (
-    <div className="pt-20 grid-bg min-h-screen">
+    <div className="pt-24 grid-bg min-h-screen">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-10 pb-24">
         <Breadcrumb items={[{ label: "About", href: "/about" }]} />
 
