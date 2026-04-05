@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PieChart } from "lucide-react";
 import PortfolioVisualizer from "@/components/widgets/PortfolioVisualizer";
+import Breadcrumb from "@/components/Breadcrumb";
 
 export const metadata: Metadata = {
   title: "Portfolio Visualizer — Folio",
@@ -13,6 +14,7 @@ export default function PortfolioVisualizerPage() {
     <div className="pt-20">
       {/* Page header */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-10 pb-2">
+        <Breadcrumb items={[{ label: "Portfolio Visualizer", href: "/portfolio-visualizer" }]} />
         <div className="flex items-center gap-3 mb-3">
           <div className="w-9 h-9 rounded-xl bg-accent-purple/[0.15] border border-accent-purple/30 flex items-center justify-center">
             <PieChart size={16} className="text-accent-purple" />

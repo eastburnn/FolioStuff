@@ -34,28 +34,32 @@ const WIDGETS = [
 
 const EXTERNAL_TOOLS = [
   {
-    href: "https://www.tradingview.com",
+    href: "https://www.tradingview.com/?aff_id=165315",
     name: "TradingView",
     description: "Advanced charting, real-time data, and trade ideas",
     accent: "#2962FF",
-  },
-  {
-    href: "https://finviz.com",
-    name: "Finviz",
-    description: "Stock screener, heat maps, and market news",
-    accent: "#00C896",
+    logo: "/tradingview.png",
   },
   {
     href: "https://fiscal.ai/?via=welcome",
     name: "FiscalAI",
     description: "AI-powered financial research and earnings analysis",
     accent: "#FF6B6B",
+    logo: "/fiscalai.png",
   },
   {
-    href: "https://fred.stlouisfed.org",
-    name: "FRED",
-    description: "Federal Reserve macroeconomic data and charts",
-    accent: "#FFB830",
+    href: "https://finviz.com",
+    name: "Finviz",
+    description: "Stock screener, heat maps, and market news",
+    accent: "#00C896",
+    logo: "/finviz.png",
+  },
+  {
+    href: "https://edition.cnn.com/markets/fear-and-greed",
+    name: "Fear & Greed Index",
+    description: "CNN's market sentiment indicator — from extreme fear to greed",
+    accent: "#FF6B6B",
+    logo: "/fearandgreed.png",
   },
   {
     href: "https://www.howmanytradingdays.com",

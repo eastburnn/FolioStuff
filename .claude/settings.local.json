@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm view:*)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(''''publisher:'''', d.get\\(''''_npmUser'''',{}\\).get\\(''''name'''',''''?''''\\)\\); print\\(''''homepage:'''', d.get\\(''''homepage'''',''''?''''\\)\\); print\\(''''repo:'''', d.get\\(''''repository'''',{}\\).get\\(''''url'''',''''?''''\\) if isinstance\\(d.get\\(''''repository''''\\),dict\\) else d.get\\(''''repository'''',''''?''''\\)\\)\")",
+      "Bash(rm -rf /Users/chrisray/Desktop/Projects/FolioStuff/folio)",
+      "Bash(mkdir -p /Users/chrisray/Desktop/Projects/FolioStuff/folio/app/portfolio-visualizer /Users/chrisray/Desktop/Projects/FolioStuff/folio/app/cost-basis /Users/chrisray/Desktop/Projects/FolioStuff/folio/app/position-sizer /Users/chrisray/Desktop/Projects/FolioStuff/folio/components/widgets)",
+      "Bash(npm install:*)",
+      "Bash(npm audit:*)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); vulns=d.get\\(''''vulnerabilities'''',{}\\); [print\\(k, v.get\\(''''severity''''\\), v.get\\(''''via''''\\)\\) for k,v in vulns.items\\(\\)]\")",
+      "Bash(npx next:*)",
+      "Bash(npx tsc:*)",
+      "Bash(gh auth:*)",
+      "Bash(git init:*)",
+      "Bash(git remote:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(npm uninstall:*)"
+    ]
+  }
+}

@@ -4,9 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV_LINKS = [
-  { href: "/portfolio-visualizer", label: "Portfolio" },
-  { href: "/cost-basis", label: "Cost Basis" },
-  { href: "/position-sizer", label: "Position Sizer" },
+  { href: "/", label: "Tools" },
+  { href: "/about", label: "About" },
 ];
 
 export default function Navbar() {
@@ -30,7 +29,7 @@ export default function Navbar() {
         {/* Nav links */}
         <nav className="hidden sm:flex items-center gap-1">
           {NAV_LINKS.map((link) => {
-            const active = pathname === link.href;
+            const active = link.href === "/" ? pathname === "/" || pathname.startsWith("/portfolio") || pathname.startsWith("/cost-basis") || pathname.startsWith("/position-sizer") : pathname === link.href;
             return (
               <Link
                 key={link.href}
@@ -47,10 +46,10 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* Mobile menu — minimal chip list */}
+        {/* Mobile menu */}
         <nav className="flex sm:hidden items-center gap-1">
           {NAV_LINKS.map((link) => {
-            const active = pathname === link.href;
+            const active = link.href === "/" ? pathname === "/" || pathname.startsWith("/portfolio") || pathname.startsWith("/cost-basis") || pathname.startsWith("/position-sizer") : pathname === link.href;
             return (
               <Link
                 key={link.href}
@@ -59,7 +58,7 @@ export default function Navbar() {
                   active ? "bg-white/[0.08] text-ink-primary" : "text-ink-muted hover:text-ink-secondary"
                 }`}
               >
-                {link.label.split(" ")[0]}
+                {link.label}
               </Link>
             );
           })}

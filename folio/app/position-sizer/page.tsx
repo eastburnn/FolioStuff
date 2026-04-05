@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Target } from "lucide-react";
 import PositionSizer from "@/components/widgets/PositionSizer";
+import Breadcrumb from "@/components/Breadcrumb";
 
 export const metadata: Metadata = {
   title: "Position Sizer — Folio",
@@ -12,6 +13,7 @@ export default function PositionSizerPage() {
   return (
     <div className="pt-20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-10 pb-2">
+        <Breadcrumb items={[{ label: "Position Sizer", href: "/position-sizer" }]} />
         <div className="flex items-center gap-3 mb-3">
           <div className="w-9 h-9 rounded-xl bg-accent-gold/[0.15] border border-accent-gold/30 flex items-center justify-center">
             <Target size={16} className="text-accent-gold" />

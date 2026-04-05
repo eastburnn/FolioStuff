@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Calculator } from "lucide-react";
 import CostBasisCalculator from "@/components/widgets/CostBasisCalculator";
+import Breadcrumb from "@/components/Breadcrumb";
 
 export const metadata: Metadata = {
   title: "Cost Basis Calculator — Folio",
@@ -12,6 +13,7 @@ export default function CostBasisPage() {
   return (
     <div className="pt-20">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-10 pb-2">
+        <Breadcrumb items={[{ label: "Cost Basis Calculator", href: "/cost-basis" }]} />
         <div className="flex items-center gap-3 mb-3">
           <div className="w-9 h-9 rounded-xl bg-accent-green/[0.15] border border-accent-green/30 flex items-center justify-center">
             <Calculator size={16} className="text-accent-green" />
