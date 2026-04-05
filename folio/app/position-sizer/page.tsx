@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Target } from "lucide-react";
 import PositionSizer from "@/components/widgets/PositionSizer";
 import Breadcrumb from "@/components/Breadcrumb";
+import OtherTools from "@/components/OtherTools";
 
 export const metadata: Metadata = {
   title: "Position Sizer — Folio",
@@ -33,6 +34,7 @@ export default function PositionSizerPage() {
       </div>
 
       <PositionSizer />
+      <OtherTools current="/position-sizer" />
     </div>
   );
 }

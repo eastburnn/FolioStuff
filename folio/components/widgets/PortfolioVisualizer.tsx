@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   PieChart,
   Pie,
@@ -48,7 +48,12 @@ export default function PortfolioVisualizer() {
   ]);
   const [portfolioName, setPortfolioName] = useState("My Portfolio");
   const [capturing, setCapturing] = useState(false);
+  const [dateStr, setDateStr] = useState("");
   const shareCardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setDateStr(new Date().toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }));
+  }, []);
 
   const parsed = holdings.map((h) => ({
     ...h,
@@ -168,10 +173,15 @@ export default function PortfolioVisualizer() {
 
           {/* Holdings */}
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="text-xs text-ink-muted uppercase tracking-widest">
+            <div className="flex items-center gap-2 mb-2">
+              {/* Mirror color swatch width */}
+              <div className="w-8 shrink-0" />
+              {/* Label sits over the ticker column */}
+              <label className="w-28 shrink-0 text-xs text-ink-muted uppercase tracking-widest">
                 Holdings
               </label>
+              {/* Spacer for allocation input */}
+              <div className="flex-1" />
               <span
                 className={`text-xs font-mono font-semibold transition-colors ${
                   totalOk
@@ -184,6 +194,9 @@ export default function PortfolioVisualizer() {
                 {total.toFixed(1)}%{" "}
                 {totalOk ? "✓" : totalOver ? "↑ over" : "↓ under"}
               </span>
+              {/* Mirror % sign and trash button to keep total flush with input right edge */}
+              <span className="text-sm shrink-0 invisible select-none">%</span>
+              <div className="p-1 shrink-0 w-[22px]" />
             </div>
 
             <div className="space-y-2">
@@ -265,7 +278,7 @@ export default function PortfolioVisualizer() {
               {/* Card header */}
               <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 4 }}>
                 <span style={{ fontSize: 10, color: "#6B7280" }}>
-                  {new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                  {dateStr}
                 </span>
               </div>
               <h2 style={{ fontSize: 20, fontWeight: 700, color: "#F0F2F5", margin: "0 0 16px", lineHeight: 1.2 }}>
@@ -353,7 +366,7 @@ export default function PortfolioVisualizer() {
             </button>
           </div>
           <p className="text-xs text-ink-muted text-center mt-2">
-            2× PNG — optimized for Twitter/X
+            PNG — optimized for sharing
           </p>
         </div>
       </div>

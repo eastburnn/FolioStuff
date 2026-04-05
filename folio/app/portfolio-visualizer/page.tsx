@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PieChart } from "lucide-react";
 import PortfolioVisualizer from "@/components/widgets/PortfolioVisualizer";
 import Breadcrumb from "@/components/Breadcrumb";
+import OtherTools from "@/components/OtherTools";
 
 export const metadata: Metadata = {
   title: "Portfolio Visualizer — Folio",
@@ -33,6 +34,7 @@ export default function PortfolioVisualizerPage() {
       </div>
 
       <PortfolioVisualizer />
+      <OtherTools current="/portfolio-visualizer" />
     </div>
   );
 }
