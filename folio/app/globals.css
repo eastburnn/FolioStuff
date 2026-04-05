@@ -72,11 +72,19 @@
   flex-shrink: 0;
 }
 
+.ticker-open {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #3B82F6;
+  white-space: nowrap;
+}
+
 .ticker-closed {
   font-size: 0.6rem;
-  text-transform: uppercase;
+  font-weight: 700;
   letter-spacing: 0.08em;
-  color: #3D5066;
+  color: #FF4B5C;
   white-space: nowrap;
 }
 

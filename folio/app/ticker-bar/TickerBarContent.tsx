@@ -78,10 +78,24 @@ export default function TickerBarContent() {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [selected, setSelected] = useState<Suggestion[]>([]);
   const [submitting, setSubmitting] = useState(false);
-  const [voteResult, setVoteResult] = useState<{ ok: boolean; message: string } | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+  const [remaining, setRemaining] = useState<number>(10);
+  const [votedToday, setVotedToday] = useState<Set<string>>(new Set());
   const [showSuggestions, setShowSuggestions] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Load how many votes this IP has remaining today + which tickers already voted
+  useEffect(() => {
+    fetch("/api/tickers/vote")
+      .then((r) => r.json())
+      .then((d) => {
+        setRemaining(d.remaining ?? 10);
+        setVotedToday(new Set(d.tickers ?? []));
+      })
+      .catch(() => {});
+  }, []);
 
   // ── Fetch stats ──────────────────────────────────────────────────────────
   const fetchStats = useCallback(async () => {
@@ -111,8 +125,9 @@ export default function TickerBarContent() {
   }, [query]);
 
   function addTicker(s: Suggestion) {
-    if (selected.length >= 10) return;
+    if (selected.length >= remaining) return;
     if (selected.find((x) => x.symbol === s.symbol)) return;
+    if (votedToday.has(s.symbol)) return;
     setSelected((prev) => [...prev, s]);
     setQuery("");
     setSuggestions([]);
@@ -126,7 +141,8 @@ export default function TickerBarContent() {
   async function handleSubmit() {
     if (selected.length === 0) return;
     setSubmitting(true);
-    setVoteResult(null);
+    setErrorMsg(null);
+    setSuccessMsg(null);
     try {
       const res = await fetch("/api/tickers/vote", {
         method: "POST",
@@ -135,13 +151,13 @@ export default function TickerBarContent() {
       });
       const data = await res.json();
       if (res.ok) {
-        setVoteResult({ ok: true, message: `Voted for: ${selected.map((s) => s.symbol).join(", ")}` });
+        setRemaining(data.remaining);
+        setVotedToday((prev) => new Set([...prev, ...data.tickers]));
         setSelected([]);
+        setSuccessMsg(`Voted for: ${data.tickers.join(", ")}`);
         fetchStats();
-      } else if (data.error === "already_voted") {
-        setVoteResult({ ok: false, message: data.message });
       } else {
-        setVoteResult({ ok: false, message: data.error ?? "Something went wrong." });
+        setErrorMsg(data.error ?? "Something went wrong.");
       }
     } finally {
       setSubmitting(false);
@@ -224,14 +240,32 @@ export default function TickerBarContent() {
 
       {/* ── Vote form ── */}
       <section className="mb-14">
-        <SectionLabel>Cast your vote</SectionLabel>
+        <SectionLabel>
+          Cast your vote
+          {remaining < 10 && remaining > 0 && (
+            <span className="ml-2 normal-case tracking-normal text-accent-green font-normal">
+              — {remaining} slot{remaining === 1 ? "" : "s"} remaining today
+            </span>
+          )}
+        </SectionLabel>
 
-        {voteResult ? (
-          <div className={`rounded-xl border p-5 text-sm ${voteResult.ok ? "border-accent-green/30 bg-accent-green/[0.06] text-accent-green" : "border-accent-red/30 bg-accent-red/[0.06] text-accent-red"}`}>
-            {voteResult.message}
-            {voteResult.ok && (
-              <p className="text-ink-muted mt-1 text-xs">Come back tomorrow to vote again.</p>
-            )}
+        {/* Success toast */}
+        {successMsg && (
+          <div className="mb-4 px-4 py-3 rounded-xl border border-accent-green/30 bg-accent-green/[0.06] text-sm text-accent-green">
+            {successMsg}
+          </div>
+        )}
+
+        {/* Error toast */}
+        {errorMsg && (
+          <div className="mb-4 px-4 py-3 rounded-xl border border-accent-red/30 bg-accent-red/[0.06] text-sm text-accent-red">
+            {errorMsg}
+          </div>
+        )}
+
+        {remaining === 0 ? (
+          <div className="px-4 py-3 rounded-xl border border-white/[0.06] bg-bg-card text-sm text-ink-muted">
+            You&apos;ve used all 10 votes for today. Come back tomorrow at midnight ET.
           </div>
         ) : (
           <div className="rounded-2xl border border-white/[0.06] bg-bg-card p-6 space-y-5">
@@ -246,7 +280,7 @@ export default function TickerBarContent() {
                     </button>
                   </span>
                 ))}
-                <span className="text-xs text-ink-muted self-center">{selected.length}/10</span>
+                <span className="text-xs text-ink-muted self-center">{selected.length}/{remaining}</span>
               </div>
             )}
 
@@ -258,24 +292,34 @@ export default function TickerBarContent() {
                 onChange={(e) => { setQuery(e.target.value.toUpperCase()); setShowSuggestions(true); }}
                 onFocus={() => setShowSuggestions(true)}
                 onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
-                placeholder={selected.length >= 10 ? "Max 10 tickers reached" : "Search ticker or company name…"}
-                disabled={selected.length >= 10}
+                placeholder={selected.length >= remaining ? `Max ${remaining} ticker${remaining === 1 ? "" : "s"} reached` : "Search ticker or company name…"}
+                disabled={selected.length >= remaining}
                 className="input-base font-mono text-sm disabled:opacity-40 disabled:cursor-not-allowed"
               />
               {showSuggestions && suggestions.length > 0 && (
                 <ul className="absolute z-50 top-full left-0 right-0 mt-1 rounded-xl border border-white/[0.08] bg-bg-surface shadow-xl overflow-hidden">
-                  {suggestions.map((s) => (
-                    <li key={s.symbol}>
-                      <button
-                        onMouseDown={() => addTicker(s)}
-                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-white/[0.04] transition-colors text-left"
-                      >
-                        <span className="font-mono font-semibold text-ink-primary w-16 shrink-0">{s.symbol}</span>
-                        <span className="text-ink-muted truncate">{s.company_name}</span>
-                        <Plus size={12} className="text-ink-muted ml-auto shrink-0" />
-                      </button>
-                    </li>
-                  ))}
+                  {suggestions.map((s) => {
+                    const alreadyVoted = votedToday.has(s.symbol);
+                    const alreadySelected = !!selected.find((x) => x.symbol === s.symbol);
+                    const disabled = alreadyVoted || alreadySelected;
+                    return (
+                      <li key={s.symbol}>
+                        <button
+                          onMouseDown={() => !disabled && addTicker(s)}
+                          disabled={disabled}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-white/[0.04] disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-left"
+                        >
+                          <span className="font-mono font-semibold text-ink-primary w-16 shrink-0">{s.symbol}</span>
+                          <span className="text-ink-muted truncate">{s.company_name}</span>
+                          {alreadyVoted
+                            ? <span className="text-xs text-ink-muted ml-auto shrink-0">Already voted</span>
+                            : alreadySelected
+                            ? <span className="text-xs text-ink-muted ml-auto shrink-0">Added</span>
+                            : <Plus size={12} className="text-ink-muted ml-auto shrink-0" />}
+                        </button>
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
             </div>

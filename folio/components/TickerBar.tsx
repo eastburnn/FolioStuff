@@ -39,7 +39,9 @@ export default function TickerBar() {
         </div>
       </div>
       <div className="ticker-bar-meta">
-        {!marketOpen && <span className="ticker-closed">Market Closed</span>}
+        <span className={marketOpen ? "ticker-open" : "ticker-closed"}>
+          {marketOpen ? "OPEN" : "CLOSED"}
+        </span>
         {holdover && <span className="ticker-holdover">Yesterday&apos;s Top 30</span>}
       </div>
     </div>
