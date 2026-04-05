@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
-import { Plus, X, TrendingUp, BarChart2, Star, Info } from "lucide-react";
+import { Plus, X, TrendingUp, BarChart2, Star, Info, ChevronDown } from "lucide-react";
 import { useTickerPrices, SPEED_OPTIONS, SpeedLabel } from "@/context/TickerPricesContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -69,6 +69,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 
 export default function TickerBarContent() {
   const { prices: livePrices, speed, setSpeed } = useTickerPrices();
+  const [infoOpen, setInfoOpen] = useState(false);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loadingStats, setLoadingStats] = useState(true);
 
@@ -164,20 +165,33 @@ export default function TickerBarContent() {
           </div>
           <h1 className="text-2xl font-bold text-ink-primary tracking-tight">Ticker Bar</h1>
         </div>
-        <div className="rounded-2xl border border-white/[0.06] bg-bg-card p-6 grid sm:grid-cols-3 gap-6 text-sm text-ink-secondary leading-relaxed">
-          <div>
-            <p className="text-ink-primary font-semibold mb-1">What is it?</p>
-            <p>The scrolling bar at the top of every page shows live prices for the 30 most-voted tickers of the day, updated in real time via WebSocket.</p>
+        <button
+          onClick={() => setInfoOpen((o) => !o)}
+          className={`w-full flex items-center justify-between px-5 py-4 border border-white/[0.06] bg-bg-card transition-colors duration-200 ${infoOpen ? "rounded-t-2xl border-b-0" : "rounded-2xl hover:border-white/[0.12]"}`}
+        >
+          <span className="text-sm font-medium text-ink-secondary">What is it and how does it work?</span>
+          <ChevronDown
+            size={18}
+            className="text-ink-muted transition-transform duration-300"
+            style={{ transform: infoOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+          />
+        </button>
+        {infoOpen && (
+          <div className="rounded-2xl border border-white/[0.06] border-t-0 rounded-t-none bg-bg-card px-6 pb-6 pt-5 grid sm:grid-cols-3 gap-6 text-sm text-ink-secondary leading-relaxed">
+            <div>
+              <p className="text-ink-primary font-semibold mb-1">What is it?</p>
+              <p>The scrolling bar at the top of every page shows live prices for the 30 most-voted tickers of the day, updated in real time via WebSocket.</p>
+            </div>
+            <div>
+              <p className="text-ink-primary font-semibold mb-1">How does voting work?</p>
+              <p>Anyone can submit up to 10 tickers once per day. The top 30 by total votes drive the bar. Votes reset at midnight ET.</p>
+            </div>
+            <div>
+              <p className="text-ink-primary font-semibold mb-1">What about after midnight?</p>
+              <p>Until new votes push tickers into the top 30, the bar shows the previous day&apos;s top 30 as a holdover — clearly labeled.</p>
+            </div>
           </div>
-          <div>
-            <p className="text-ink-primary font-semibold mb-1">How does voting work?</p>
-            <p>Anyone can submit up to 10 tickers once per day. The top 30 by total votes drive the bar. Votes reset at midnight ET.</p>
-          </div>
-          <div>
-            <p className="text-ink-primary font-semibold mb-1">What about after midnight?</p>
-            <p>Until new votes push tickers into the top 30, the bar shows the previous day&apos;s top 30 as a holdover — clearly labeled.</p>
-          </div>
-        </div>
+        )}
       </section>
 
       {/* ── Scroll speed ── */}

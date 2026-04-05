@@ -61,17 +61,6 @@ export function useTickerPrices() {
   return useContext(TickerPricesContext);
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function isMarketOpen(): boolean {
-  const et = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
-  const d = new Date(et);
-  const day = d.getDay();
-  if (day === 0 || day === 6) return false;
-  const mins = d.getHours() * 60 + d.getMinutes();
-  return mins >= 9 * 60 + 30 && mins < 16 * 60;
-}
-
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function TickerPricesProvider({ children }: { children: React.ReactNode }) {
@@ -99,10 +88,21 @@ export function TickerPricesProvider({ children }: { children: React.ReactNode }
   const prevCloseRef = useRef<Record<string, number>>({});
   const wsRef = useRef<WebSocket | null>(null);
 
-  // Market open check
+  // Market open check — polls Finnhub's real status (handles holidays + early closes)
   useEffect(() => {
-    setMarketOpen(isMarketOpen());
-    const t = setInterval(() => setMarketOpen(isMarketOpen()), 60_000);
+    async function checkMarket() {
+      try {
+        const res = await fetch("/api/tickers/market-status");
+        if (res.ok) {
+          const data = await res.json();
+          setMarketOpen(data.isOpen);
+        }
+      } catch {
+        // leave current state unchanged on error
+      }
+    }
+    checkMarket();
+    const t = setInterval(checkMarket, 60_000);
     return () => clearInterval(t);
   }, []);
 
