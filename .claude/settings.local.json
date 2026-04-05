@@ -16,7 +16,10 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git push:*)",
-      "Bash(npm uninstall:*)"
+      "Bash(npm uninstall:*)",
+      "Bash(identify /Users/chrisray/Desktop/Projects/FolioStuff/folio/app/favicon.ico)",
+      "Bash(sips -g pixelWidth -g pixelHeight /Users/chrisray/Desktop/Projects/FolioStuff/folio/app/favicon.ico)",
+      "Bash(sips -g pixelWidth -g pixelHeight /Users/chrisray/Desktop/Projects/FolioStuff/folio/public/favicon.png)"
     ]
   }
 }
