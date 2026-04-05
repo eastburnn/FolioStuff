@@ -7,31 +7,23 @@ function todayET(): string {
 
 export async function GET() {
   const today = todayET();
+  const now = Date.now();
+  const thirtyMinAgo = new Date(now - 30 * 60 * 1000).toISOString();
+  const sixtyMinAgo = new Date(now - 60 * 60 * 1000).toISOString();
 
-  // Run all queries concurrently
-  const [leaderboardRes, trendingRes, consistentRes, holdoverRes] = await Promise.all([
-    // Leaderboard: active_tickers joined with today's counts and symbol names
-    supabase
-      .from("active_tickers")
-      .select("symbol, rank, is_holdover, ticker_counts(count), symbols(company_name)")
-      .order("rank", { ascending: true }),
-
-    // Trending: raw votes in last 30 min vs previous 30 min
-    // We pull recent ticker_votes and compute client-side
+  const [votesRes, symbolsRes, holdoverRes] = await Promise.all([
+    // All of today's votes (we'll compute everything from this)
     supabase
       .from("ticker_votes")
       .select("tickers, submitted_at")
-      .eq("vote_date", today)
-      .gte("submitted_at", new Date(Date.now() - 60 * 60 * 1000).toISOString()),
+      .eq("vote_date", today),
 
-    // Most consistent: symbols with the most days having any votes
+    // Symbol name lookup
     supabase
-      .from("ticker_counts")
-      .select("symbol, vote_date, symbols(company_name)")
-      .gt("count", 0)
-      .order("vote_date", { ascending: false }),
+      .from("symbols")
+      .select("symbol, company_name"),
 
-    // Is today a holdover day?
+    // Holdover status
     supabase
       .from("active_tickers")
       .select("is_holdover")
@@ -39,37 +31,40 @@ export async function GET() {
       .maybeSingle(),
   ]);
 
-  // --- Leaderboard ---
-  const leaderboard = (leaderboardRes.data ?? []).map((row) => {
-    const countRow = Array.isArray(row.ticker_counts)
-      ? row.ticker_counts[0]
-      : row.ticker_counts;
-    const symRow = Array.isArray(row.symbols) ? row.symbols[0] : row.symbols;
-    return {
-      rank: row.rank,
-      symbol: row.symbol,
-      company_name: (symRow as { company_name?: string } | null)?.company_name ?? "",
-      count: (countRow as { count?: number } | null)?.count ?? 0,
-    };
-  });
+  // Build a symbol → company_name map
+  const nameMap: Record<string, string> = {};
+  for (const row of symbolsRes.data ?? []) {
+    nameMap[row.symbol] = row.company_name ?? "";
+  }
 
-  // --- Trending ---
-  const now = Date.now();
-  const thirtyMinAgo = now - 30 * 60 * 1000;
-  const sixtyMinAgo = now - 60 * 60 * 1000;
-
+  // Aggregate all votes for today
+  const totalCounts: Record<string, number> = {};
   const recentCounts: Record<string, number> = {};
   const prevCounts: Record<string, number> = {};
 
-  for (const row of trendingRes.data ?? []) {
-    const ts = new Date(row.submitted_at as string).getTime();
-    const bucket = ts >= thirtyMinAgo ? recentCounts : ts >= sixtyMinAgo ? prevCounts : null;
-    if (!bucket) continue;
+  for (const row of votesRes.data ?? []) {
+    const ts = row.submitted_at as string;
+    const isRecent = ts >= thirtyMinAgo;
+    const isPrev = ts >= sixtyMinAgo && ts < thirtyMinAgo;
+
     for (const sym of row.tickers as string[]) {
-      bucket[sym] = (bucket[sym] ?? 0) + 1;
+      totalCounts[sym] = (totalCounts[sym] ?? 0) + 1;
+      if (isRecent) recentCounts[sym] = (recentCounts[sym] ?? 0) + 1;
+      if (isPrev)   prevCounts[sym]   = (prevCounts[sym] ?? 0) + 1;
     }
   }
 
+  // Leaderboard — ALL tickers with at least 1 vote today, ranked by count
+  const leaderboard = Object.entries(totalCounts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([symbol, count], i) => ({
+      rank: i + 1,
+      symbol,
+      company_name: nameMap[symbol] ?? "",
+      count,
+    }));
+
+  // Trending — gained the most votes in last 30 min vs prior 30 min
   const trending = Object.entries(recentCounts)
     .map(([symbol, recent]) => ({
       symbol,
@@ -81,23 +76,22 @@ export async function GET() {
     .sort((a, b) => b.gained - a.gained)
     .slice(0, 10);
 
-  // --- Most Consistent ---
-  const daysBySymbol: Record<string, { days: Set<string>; company_name: string }> = {};
-  for (const row of consistentRes.data ?? []) {
-    if (!daysBySymbol[row.symbol]) {
-      const symRow = Array.isArray(row.symbols) ? row.symbols[0] : row.symbols;
-      daysBySymbol[row.symbol] = {
-        days: new Set(),
-        company_name: (symRow as { company_name?: string } | null)?.company_name ?? "",
-      };
-    }
-    daysBySymbol[row.symbol].days.add(row.vote_date as string);
+  // Most consistent — symbols with votes on the most distinct days (historical)
+  const { data: historicalData } = await supabase
+    .from("ticker_counts")
+    .select("symbol, vote_date")
+    .gt("count", 0);
+
+  const daysBySymbol: Record<string, Set<string>> = {};
+  for (const row of historicalData ?? []) {
+    if (!daysBySymbol[row.symbol]) daysBySymbol[row.symbol] = new Set();
+    daysBySymbol[row.symbol].add(row.vote_date as string);
   }
 
   const consistent = Object.entries(daysBySymbol)
-    .map(([symbol, { days, company_name }]) => ({
+    .map(([symbol, days]) => ({
       symbol,
-      company_name,
+      company_name: nameMap[symbol] ?? "",
       days_active: days.size,
     }))
     .sort((a, b) => b.days_active - a.days_active)
@@ -111,6 +105,6 @@ export async function GET() {
       isHoldover: holdoverRes.data?.is_holdover ?? false,
       today,
     },
-    { headers: { "Cache-Control": "public, max-age=60, stale-while-revalidate=120" } }
+    { headers: { "Cache-Control": "public, max-age=30, stale-while-revalidate=60" } }
   );
 }

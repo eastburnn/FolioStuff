@@ -8,19 +8,38 @@ export async function GET(req: NextRequest) {
     return NextResponse.json([]);
   }
 
-  // Match on symbol prefix first, then company name contains
-  const { data, error } = await supabase
-    .from("symbols")
-    .select("symbol, company_name")
-    .or(`symbol.ilike.${q}%,company_name.ilike.%${q}%`)
-    .order("symbol", { ascending: true })
-    .limit(10);
+  // Run two queries in parallel:
+  // 1. Symbol prefix match — highest priority (ONDS → ONDS, ONDAS, etc.)
+  // 2. Company name contains match — fallback
+  const [symbolRes, nameRes] = await Promise.all([
+    supabase
+      .from("symbols")
+      .select("symbol, company_name")
+      .ilike("symbol", `${q}%`)
+      .order("symbol", { ascending: true })
+      .limit(10),
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    supabase
+      .from("symbols")
+      .select("symbol, company_name")
+      .ilike("company_name", `%${q}%`)
+      .order("symbol", { ascending: true })
+      .limit(10),
+  ]);
+
+  // Merge: symbol matches first, then company name matches, no duplicates
+  const seen = new Set<string>();
+  const results: { symbol: string; company_name: string }[] = [];
+
+  for (const row of [...(symbolRes.data ?? []), ...(nameRes.data ?? [])]) {
+    if (!seen.has(row.symbol)) {
+      seen.add(row.symbol);
+      results.push(row);
+    }
+    if (results.length >= 10) break;
   }
 
-  return NextResponse.json(data ?? [], {
+  return NextResponse.json(results, {
     headers: { "Cache-Control": "public, max-age=30" },
   });
 }
