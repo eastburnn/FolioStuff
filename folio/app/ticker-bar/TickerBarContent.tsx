@@ -11,6 +11,7 @@ import {
   Cell,
 } from "recharts";
 import { Plus, X, TrendingUp, BarChart2, Star, Info } from "lucide-react";
+import { useTickerPrices, SPEED_OPTIONS, SpeedLabel } from "@/context/TickerPricesContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -18,6 +19,8 @@ interface LeaderboardRow {
   rank: number;
   symbol: string;
   company_name: string;
+  price: number | null;
+  changePercent: number | null;
   count: number;
 }
 
@@ -65,6 +68,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function TickerBarContent() {
+  const { prices: livePrices, speed, setSpeed } = useTickerPrices();
   const [stats, setStats] = useState<Stats | null>(null);
   const [loadingStats, setLoadingStats] = useState(true);
 
@@ -176,6 +180,27 @@ export default function TickerBarContent() {
         </div>
       </section>
 
+      {/* ── Scroll speed ── */}
+      <section className="mb-14">
+        <SectionLabel>Ticker bar speed</SectionLabel>
+        <div className="flex items-center gap-2">
+          {SPEED_OPTIONS.map((opt) => (
+            <button
+              key={opt.label}
+              onClick={() => setSpeed(opt.label as SpeedLabel)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all duration-200 ${
+                speed === opt.label
+                  ? "bg-accent-purple/[0.15] border-accent-purple/40 text-accent-purple"
+                  : "border-white/[0.08] text-ink-secondary hover:text-ink-primary hover:border-white/20"
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+        <p className="text-xs text-ink-muted mt-2">Your preference is saved automatically.</p>
+      </section>
+
       {/* ── Holdover notice ── */}
       {stats?.isHoldover && (
         <div className="mb-8 px-4 py-3 rounded-xl border border-accent-gold/30 bg-accent-gold/[0.06] text-sm text-accent-gold">
@@ -270,6 +295,7 @@ export default function TickerBarContent() {
                   <th className="text-left px-5 py-3 w-10">#</th>
                   <th className="text-left px-5 py-3">Ticker</th>
                   <th className="text-left px-5 py-3 hidden sm:table-cell">Company</th>
+                  <th className="text-right px-5 py-3 hidden sm:table-cell">Price</th>
                   <th className="text-right px-5 py-3">Votes</th>
                 </tr>
               </thead>
@@ -279,6 +305,27 @@ export default function TickerBarContent() {
                     <td className="px-5 py-3 text-ink-muted font-mono">{row.rank}</td>
                     <td className="px-5 py-3 font-mono font-semibold text-ink-primary">{row.symbol}</td>
                     <td className="px-5 py-3 text-ink-secondary hidden sm:table-cell truncate max-w-[200px]">{row.company_name}</td>
+                    <td className="px-5 py-3 text-right font-mono hidden sm:table-cell">
+                      {(() => {
+                        const live = livePrices[row.symbol];
+                        const price = live?.price ?? row.price;
+                        const pct = live?.changePercent ?? row.changePercent;
+                        if (price == null) return <span className="text-ink-muted">—</span>;
+                        const up = (pct ?? 0) >= 0;
+                        return (
+                          <span className="flex items-center justify-end gap-2">
+                            <span className="text-ink-secondary">
+                              ${price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            </span>
+                            {pct != null && (
+                              <span className={up ? "text-accent-green" : "text-accent-red"}>
+                                {up ? "▲" : "▼"}{Math.abs(pct).toFixed(2)}%
+                              </span>
+                            )}
+                          </span>
+                        );
+                      })()}
+                    </td>
                     <td className="px-5 py-3 text-right font-mono text-accent-purple">{row.count}</td>
                   </tr>
                 ))}
