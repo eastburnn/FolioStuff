@@ -69,10 +69,11 @@ const EXTERNAL_TOOLS = [
     logo: "/howmanytradingdays.png",
   },
   {
-    href: "https://www.marketwatch.com",
-    name: "MarketWatch",
-    description: "Breaking market news, data, and analysis",
-    accent: "#3B82F6",
+    href: "https://finance.yahoo.com/research-hub/screener/",
+    name: "Yahoo Finance Screener",
+    description: "Filter stocks by fundamentals, valuation, and performance",
+    accent: "#6001D2",
+    logo: "/yahoofinance.png",
   },
 ];
 
