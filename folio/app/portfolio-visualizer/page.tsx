@@ -4,10 +4,22 @@ import PortfolioVisualizer from "@/components/widgets/PortfolioVisualizer";
 import Breadcrumb from "@/components/Breadcrumb";
 import OtherTools from "@/components/OtherTools";
 
+const BASE_URL = "https://foliostuff.com";
+
 export const metadata: Metadata = {
-  title: "Portfolio Visualizer — Folio",
+  title: "Portfolio Visualizer | FolioStuff",
   description:
     "Build a shareable portfolio chart. Input your tickers and allocations, then download a beautiful PNG card for Twitter.",
+  alternates: { canonical: `${BASE_URL}/portfolio-visualizer` },
+  openGraph: {
+    title: "Portfolio Visualizer | FolioStuff",
+    description:
+      "Build a shareable portfolio chart. Input your tickers and allocations, then download a beautiful PNG card for Twitter.",
+    url: `${BASE_URL}/portfolio-visualizer`,
+    siteName: "FolioStuff",
+    type: "website",
+    images: [{ url: "/foliostuff-thumbnail.png", width: 1200, height: 630 }],
+  },
 };
 
 export default function PortfolioVisualizerPage() {
@@ -29,7 +41,7 @@ export default function PortfolioVisualizerPage() {
         </h1>
         <p className="text-ink-secondary mt-2 max-w-xl">
           Add your tickers and percentage allocations to generate a clean, shareable donut chart.
-          Hit download for a retina-ready PNG — perfect for Twitter/X.
+          Hit download for a retina-ready PNG, perfect for Twitter/X.
         </p>
       </div>
 

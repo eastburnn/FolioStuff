@@ -2,10 +2,22 @@ import type { Metadata } from "next";
 import Breadcrumb from "@/components/Breadcrumb";
 import TickerBarContent from "./TickerBarContent";
 
+const BASE_URL = "https://foliostuff.com";
+
 export const metadata: Metadata = {
-  title: "Ticker Bar — FolioStuff",
+  title: "Ticker Bar | FolioStuff",
   description:
     "Vote for the stocks you want to see on the FolioStuff live ticker bar. View today's leaderboard, trending tickers, and community voting stats.",
+  alternates: { canonical: `${BASE_URL}/ticker-bar` },
+  openGraph: {
+    title: "Ticker Bar | FolioStuff",
+    description:
+      "Vote for the stocks you want to see on the FolioStuff live ticker bar. View today's leaderboard, trending tickers, and community voting stats.",
+    url: `${BASE_URL}/ticker-bar`,
+    siteName: "FolioStuff",
+    type: "website",
+    images: [{ url: "/foliostuff-thumbnail.png", width: 1200, height: 630 }],
+  },
 };
 
 export default function TickerBarPage() {

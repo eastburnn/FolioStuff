@@ -19,7 +19,8 @@
       "Bash(npm uninstall:*)",
       "Bash(identify /Users/chrisray/Desktop/Projects/FolioStuff/folio/app/favicon.ico)",
       "Bash(sips -g pixelWidth -g pixelHeight /Users/chrisray/Desktop/Projects/FolioStuff/folio/app/favicon.ico)",
-      "Bash(sips -g pixelWidth -g pixelHeight /Users/chrisray/Desktop/Projects/FolioStuff/folio/public/favicon.png)"
+      "Bash(sips -g pixelWidth -g pixelHeight /Users/chrisray/Desktop/Projects/FolioStuff/folio/public/favicon.png)",
+      "Bash(grep -E \"\\\\.ts$|\\\\.tsx$\")"
     ]
   }
 }

@@ -25,7 +25,7 @@ const WIDGETS = [
     href: "/position-sizer",
     title: "Position Sizer",
     description:
-      "Tell it how much you're willing to lose, where you're getting in, and where you're bailing — it tells you how many shares to buy.",
+      "Tell it how much you're willing to lose, where you're getting in, and where you're bailing. It tells you exactly how many shares to buy.",
     icon: <Target size={20} className="text-accent-gold" />,
     accent: "#FFB830",
     tag: "Risk Manage",
@@ -57,7 +57,7 @@ const EXTERNAL_TOOLS = [
   {
     href: "https://edition.cnn.com/markets/fear-and-greed",
     name: "Fear & Greed Index",
-    description: "CNN's market sentiment indicator — from extreme fear to greed",
+    description: "CNN's market sentiment indicator, from extreme fear to greed",
     accent: "#FF6B6B",
     logo: "/fearandgreed.png",
   },

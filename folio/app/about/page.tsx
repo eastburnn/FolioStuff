@@ -3,10 +3,22 @@ import { PieChart, Calculator, Target, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
 
+const BASE_URL = "https://foliostuff.com";
+
 export const metadata: Metadata = {
-  title: "About — FolioStuff",
+  title: "About | FolioStuff",
   description:
-    "FolioStuff is a growing collection of free tools, calculators, and widgets for traders and investors — plus a curated directory of the best stock market resources on the web.",
+    "Free tools and calculators for traders and investors. Portfolio visualizer, cost basis calculator, position sizer, and more, all free.",
+  alternates: { canonical: `${BASE_URL}/about` },
+  openGraph: {
+    title: "About | FolioStuff",
+    description:
+      "Free tools and calculators for traders and investors. Portfolio visualizer, cost basis calculator, position sizer, and more, all free.",
+    url: `${BASE_URL}/about`,
+    siteName: "FolioStuff",
+    type: "website",
+    images: ["/foliostuff-thumbnail.png"],
+  },
 };
 
 const TOOLS = [
@@ -27,7 +39,7 @@ const TOOLS = [
   {
     href: "/position-sizer",
     title: "Position Sizer",
-    description: "Enter your risk tolerance, entry, and stop loss — get the exact share count to buy.",
+    description: "Enter your risk tolerance, entry, and stop loss to get the exact share count to buy.",
     icon: <Target size={15} className="text-accent-gold" />,
     accent: "#FFB830",
   },

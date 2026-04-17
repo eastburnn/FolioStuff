@@ -4,10 +4,22 @@ import PositionSizer from "@/components/widgets/PositionSizer";
 import Breadcrumb from "@/components/Breadcrumb";
 import OtherTools from "@/components/OtherTools";
 
+const BASE_URL = "https://foliostuff.com";
+
 export const metadata: Metadata = {
-  title: "Position Sizer — Folio",
+  title: "Position Sizer | FolioStuff",
   description:
     "Risk-based position sizing calculator. Know exactly how many shares to buy based on your account size and max risk tolerance.",
+  alternates: { canonical: `${BASE_URL}/position-sizer` },
+  openGraph: {
+    title: "Position Sizer | FolioStuff",
+    description:
+      "Risk-based position sizing calculator. Know exactly how many shares to buy based on your account size and max risk tolerance.",
+    url: `${BASE_URL}/position-sizer`,
+    siteName: "FolioStuff",
+    type: "website",
+    images: [{ url: "/foliostuff-thumbnail.png", width: 1200, height: 630 }],
+  },
 };
 
 export default function PositionSizerPage() {
@@ -28,7 +40,7 @@ export default function PositionSizerPage() {
         </h1>
         <p className="text-ink-secondary mt-2 max-w-xl">
           Never risk more than you intend to. Enter your account size, risk percentage, entry
-          price, and stop loss — instantly see the exact number of shares to buy and your full
+          price, and stop loss. Instantly see the exact number of shares to buy and your full
           risk/reward breakdown.
         </p>
       </div>

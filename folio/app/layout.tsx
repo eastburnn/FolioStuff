@@ -12,10 +12,13 @@ const inter = Inter({
   display: "swap",
 });
 
+const BASE_URL = "https://foliostuff.com";
+
 export const metadata: Metadata = {
   title: "FolioStuff - Stock Market Tools",
   description:
     "Portfolio visualizer, cost basis calculator, position sizer, and more. Built for active traders and investors.",
+  alternates: { canonical: BASE_URL },
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },
@@ -24,10 +27,18 @@ export const metadata: Metadata = {
     apple: { url: "/favicon.png", sizes: "600x600", type: "image/png" },
   },
   openGraph: {
-    images: ["/foliostuff-thumbnail.png"],
+    title: "FolioStuff - Stock Market Tools",
+    description:
+      "Portfolio visualizer, cost basis calculator, position sizer, and more. Built for active traders and investors.",
+    url: BASE_URL,
+    siteName: "FolioStuff",
+    type: "website",
+    locale: "en_US",
+    images: [{ url: "/foliostuff-thumbnail.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
+    site: "@itschrisray",
     images: ["/foliostuff-thumbnail.png"],
   },
 };

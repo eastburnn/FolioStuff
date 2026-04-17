@@ -4,10 +4,22 @@ import CostBasisCalculator from "@/components/widgets/CostBasisCalculator";
 import Breadcrumb from "@/components/Breadcrumb";
 import OtherTools from "@/components/OtherTools";
 
+const BASE_URL = "https://foliostuff.com";
+
 export const metadata: Metadata = {
-  title: "Cost Basis Calculator — Folio",
+  title: "Cost Basis Calculator | FolioStuff",
   description:
     "Calculate how adding to or trimming a position changes your average cost per share.",
+  alternates: { canonical: `${BASE_URL}/cost-basis` },
+  openGraph: {
+    title: "Cost Basis Calculator | FolioStuff",
+    description:
+      "Calculate how adding to or trimming a position changes your average cost per share.",
+    url: `${BASE_URL}/cost-basis`,
+    siteName: "FolioStuff",
+    type: "website",
+    images: [{ url: "/foliostuff-thumbnail.png", width: 1200, height: 630 }],
+  },
 };
 
 export default function CostBasisPage() {

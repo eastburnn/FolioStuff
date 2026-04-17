@@ -204,7 +204,7 @@ export default function TickerBarContent() {
             </div>
             <div>
               <p className="text-ink-primary font-semibold mb-1">What about after midnight?</p>
-              <p>Until new votes push tickers into the top 30, the bar shows the previous day&apos;s top 30 as a holdover — clearly labeled.</p>
+              <p>Until new votes push tickers into the top 30, the bar shows the previous day&apos;s top 30 as a holdover, clearly labeled.</p>
             </div>
           </div>
         )}
@@ -234,7 +234,7 @@ export default function TickerBarContent() {
       {/* ── Holdover notice ── */}
       {stats?.isHoldover && (
         <div className="mb-8 px-4 py-3 rounded-xl border border-accent-gold/30 bg-accent-gold/[0.06] text-sm text-accent-gold">
-          Showing yesterday&apos;s top tickers — vote below to influence today&apos;s feed.
+          Showing yesterday&apos;s top tickers. Vote below to influence today&apos;s feed.
         </div>
       )}
 
@@ -244,7 +244,7 @@ export default function TickerBarContent() {
           Cast your vote
           {remaining < 10 && remaining > 0 && (
             <span className="ml-2 normal-case tracking-normal text-accent-green font-normal">
-              — {remaining} slot{remaining === 1 ? "" : "s"} remaining today
+              · {remaining} slot{remaining === 1 ? "" : "s"} remaining today
             </span>
           )}
         </SectionLabel>
@@ -344,7 +344,7 @@ export default function TickerBarContent() {
         {loadingStats ? (
           <div className="text-ink-muted text-sm">Loading…</div>
         ) : stats?.leaderboard.length === 0 ? (
-          <div className="text-ink-muted text-sm">No votes yet today — be the first!</div>
+          <div className="text-ink-muted text-sm">No votes yet today. Be the first!</div>
         ) : (
           <div className="rounded-2xl border border-white/[0.06] bg-bg-card overflow-hidden">
             <table className="w-full text-sm">
@@ -426,7 +426,7 @@ export default function TickerBarContent() {
           <span className="flex items-center gap-2"><TrendingUp size={12} />Rising fast (last 30 min)</span>
         </SectionLabel>
         {!stats || stats.trending.length === 0 ? (
-          <p className="text-ink-muted text-sm">Not enough data yet — check back soon.</p>
+          <p className="text-ink-muted text-sm">Not enough data yet. Check back soon.</p>
         ) : (
           <div className="grid sm:grid-cols-2 gap-3">
             {stats.trending.map((t) => (
@@ -453,7 +453,7 @@ export default function TickerBarContent() {
           <span className="flex items-center gap-2"><Star size={12} />Most consistent</span>
         </SectionLabel>
         {!stats || stats.consistent.length === 0 ? (
-          <p className="text-ink-muted text-sm">Consistency data builds over time — check back after a few days of voting.</p>
+          <p className="text-ink-muted text-sm">Consistency data builds over time. Check back after a few days of voting.</p>
         ) : (
           <div className="grid sm:grid-cols-2 gap-3">
             {stats.consistent.map((t, i) => (
