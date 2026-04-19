@@ -10,7 +10,6 @@ export const metadata: Metadata = {
   title: "Portfolio Visualizer | FolioStuff",
   description:
     "Build a shareable portfolio chart. Input your tickers and allocations, then download a beautiful PNG card for Twitter.",
-  alternates: { canonical: `${BASE_URL}/portfolio-visualizer` },
   openGraph: {
     title: "Portfolio Visualizer | FolioStuff",
     description:

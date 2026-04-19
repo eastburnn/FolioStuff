@@ -9,7 +9,6 @@ export const metadata: Metadata = {
   title: "About | FolioStuff",
   description:
     "Free tools and calculators for traders and investors. Portfolio visualizer, cost basis calculator, position sizer, and more, all free.",
-  alternates: { canonical: `${BASE_URL}/about` },
   openGraph: {
     title: "About | FolioStuff",
     description:

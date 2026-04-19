@@ -18,7 +18,6 @@ export const metadata: Metadata = {
   title: "FolioStuff - Stock Market Tools",
   description:
     "Portfolio visualizer, cost basis calculator, position sizer, and more. Built for active traders and investors.",
-  alternates: { canonical: BASE_URL },
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },

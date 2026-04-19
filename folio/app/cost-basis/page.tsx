@@ -10,7 +10,6 @@ export const metadata: Metadata = {
   title: "Cost Basis Calculator | FolioStuff",
   description:
     "Calculate how adding to or trimming a position changes your average cost per share.",
-  alternates: { canonical: `${BASE_URL}/cost-basis` },
   openGraph: {
     title: "Cost Basis Calculator | FolioStuff",
     description:

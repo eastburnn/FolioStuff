@@ -10,7 +10,6 @@ export const metadata: Metadata = {
   title: "Position Sizer | FolioStuff",
   description:
     "Risk-based position sizing calculator. Know exactly how many shares to buy based on your account size and max risk tolerance.",
-  alternates: { canonical: `${BASE_URL}/position-sizer` },
   openGraph: {
     title: "Position Sizer | FolioStuff",
     description:
