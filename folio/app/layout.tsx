@@ -12,12 +12,13 @@ const inter = Inter({
   display: "swap",
 });
 
-const BASE_URL = "https://foliostuff.com";
+const BASE_URL = "https://www.foliostuff.com";
 
 export const metadata: Metadata = {
   title: "FolioStuff - Stock Market Tools",
   description:
     "Portfolio visualizer, cost basis calculator, position sizer, and more. Built for active traders and investors.",
+  alternates: { canonical: BASE_URL },
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any" },

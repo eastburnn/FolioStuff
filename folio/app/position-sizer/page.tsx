@@ -4,12 +4,13 @@ import PositionSizer from "@/components/widgets/PositionSizer";
 import Breadcrumb from "@/components/Breadcrumb";
 import OtherTools from "@/components/OtherTools";
 
-const BASE_URL = "https://foliostuff.com";
+const BASE_URL = "https://www.foliostuff.com";
 
 export const metadata: Metadata = {
   title: "Position Sizer | FolioStuff",
   description:
     "Risk-based position sizing calculator. Know exactly how many shares to buy based on your account size and max risk tolerance.",
+  alternates: { canonical: `${BASE_URL}/position-sizer` },
   openGraph: {
     title: "Position Sizer | FolioStuff",
     description:

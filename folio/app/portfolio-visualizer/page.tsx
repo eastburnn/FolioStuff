@@ -4,12 +4,13 @@ import PortfolioVisualizer from "@/components/widgets/PortfolioVisualizer";
 import Breadcrumb from "@/components/Breadcrumb";
 import OtherTools from "@/components/OtherTools";
 
-const BASE_URL = "https://foliostuff.com";
+const BASE_URL = "https://www.foliostuff.com";
 
 export const metadata: Metadata = {
   title: "Portfolio Visualizer | FolioStuff",
   description:
     "Build a shareable portfolio chart. Input your tickers and allocations, then download a beautiful PNG card for Twitter.",
+  alternates: { canonical: `${BASE_URL}/portfolio-visualizer` },
   openGraph: {
     title: "Portfolio Visualizer | FolioStuff",
     description:

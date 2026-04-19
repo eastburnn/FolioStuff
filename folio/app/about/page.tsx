@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
-import { PieChart, Calculator, Target, ExternalLink } from "lucide-react";
+import { PieChart, Calculator, Target } from "lucide-react";
 import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
 
-const BASE_URL = "https://foliostuff.com";
+const BASE_URL = "https://www.foliostuff.com";
 
 export const metadata: Metadata = {
   title: "About | FolioStuff",
   description:
     "Free tools and calculators for traders and investors. Portfolio visualizer, cost basis calculator, position sizer, and more, all free.",
+  alternates: { canonical: `${BASE_URL}/about` },
   openGraph: {
     title: "About | FolioStuff",
     description:

@@ -4,12 +4,13 @@ import CostBasisCalculator from "@/components/widgets/CostBasisCalculator";
 import Breadcrumb from "@/components/Breadcrumb";
 import OtherTools from "@/components/OtherTools";
 
-const BASE_URL = "https://foliostuff.com";
+const BASE_URL = "https://www.foliostuff.com";
 
 export const metadata: Metadata = {
   title: "Cost Basis Calculator | FolioStuff",
   description:
     "Calculate how adding to or trimming a position changes your average cost per share.",
+  alternates: { canonical: `${BASE_URL}/cost-basis` },
   openGraph: {
     title: "Cost Basis Calculator | FolioStuff",
     description:
