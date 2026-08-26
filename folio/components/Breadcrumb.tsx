@@ -20,7 +20,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
       "@type": "ListItem",
       position: i + 1,
       name: item.label,
-      item: `https://foliostuff.com${item.href}`,
+      item: `https://www.foliostuff.com${item.href}`,
     })),
   };
 

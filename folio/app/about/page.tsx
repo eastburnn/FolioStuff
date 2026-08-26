@@ -3,21 +3,19 @@ import { PieChart, Calculator, Target } from "lucide-react";
 import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
 
-const BASE_URL = "https://www.foliostuff.com";
-
 export const metadata: Metadata = {
-  title: "About | FolioStuff",
+  title: "About",
   description:
     "Free tools and calculators for traders and investors. Portfolio visualizer, cost basis calculator, position sizer, and more, all free.",
-  alternates: { canonical: `${BASE_URL}/about` },
+  alternates: { canonical: "/about" },
   openGraph: {
     title: "About | FolioStuff",
     description:
       "Free tools and calculators for traders and investors. Portfolio visualizer, cost basis calculator, position sizer, and more, all free.",
-    url: `${BASE_URL}/about`,
+    url: "/about",
     siteName: "FolioStuff",
     type: "website",
-    images: ["/foliostuff-thumbnail.png"],
+    images: [{ url: "/foliostuff-thumbnail.jpg", width: 1200, height: 630 }],
   },
 };
 
@@ -47,7 +45,7 @@ const TOOLS = [
 
 export default function AboutPage() {
   return (
-    <div className="pt-24 grid-bg min-h-screen">
+    <div className="pt-16 grid-bg min-h-screen">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-10 pb-24">
         <Breadcrumb items={[{ label: "About", href: "/about" }]} />
 

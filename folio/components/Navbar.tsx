@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 const NAV_LINKS = [
   { href: "/", label: "Tools" },
-  { href: "/ticker-bar", label: "Ticker Bar" },
   { href: "/about", label: "About" },
 ];
 
@@ -19,7 +19,7 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
-          <img src="/favicon.png" alt="Foliostuff" className="w-7 h-7 rounded-lg" />
+          <Image src="/favicon.png" alt="Foliostuff" width={28} height={28} className="w-7 h-7 rounded-lg" />
           <span
             className="font-black tracking-tight text-base transition-all duration-300 group-hover:-translate-y-0.5 group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]"
           >
