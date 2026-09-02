@@ -13,7 +13,7 @@ const COLUMNS = [
   {
     heading: "Directory",
     links: [
-      { href: "/tools", label: "Browse the Directory" },
+      { href: "/directory", label: "Browse the Directory" },
       { href: "/submit", label: "Submit Your Tool" },
       { href: "/dashboard", label: "Dashboard" },
     ],

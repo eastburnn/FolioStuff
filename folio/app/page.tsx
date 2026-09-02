@@ -4,7 +4,8 @@ import Link from "next/link";
 import WidgetCard from "@/components/WidgetCard";
 import HeroWordmark from "@/components/HeroWordmark";
 import ListingCard from "@/components/directory/ListingCard";
-import { getPublishedListings } from "@/lib/listings";
+import FeaturedListingCard from "@/components/directory/FeaturedListingCard";
+import { getPublishedListings, getFeaturedListings } from "@/lib/listings";
 import { safeJsonLd } from "@/lib/json-ld";
 
 export const revalidate = 300;
@@ -84,7 +85,10 @@ const EXTERNAL_TOOLS = [
 ];
 
 export default async function Home() {
-  const communityListings = await getPublishedListings(6);
+  const [communityListings, featuredListings] = await Promise.all([
+    getPublishedListings(6),
+    getFeaturedListings(),
+  ]);
 
   return (
     <div className="grid-bg hero-glow min-h-screen">
@@ -157,6 +161,9 @@ export default async function Home() {
                 </div>
               </a>
             ))}
+            {featuredListings.map((listing) => (
+              <FeaturedListingCard key={listing.slug} listing={listing} />
+            ))}
           </div>
         </div>
       </section>
@@ -192,7 +199,7 @@ export default async function Home() {
                 ))}
               </div>
               <Link
-                href="/tools"
+                href="/directory"
                 className="inline-block mt-6 text-xs font-semibold uppercase tracking-widest text-ink-secondary hover:text-ink-primary transition-colors"
               >
                 Browse the full directory →

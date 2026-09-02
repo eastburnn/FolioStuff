@@ -63,7 +63,7 @@ export default async function MakerPage({ params }: PageProps) {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-10 pb-24">
         <Breadcrumb
           items={[
-            { label: "Directory", href: "/tools" },
+            { label: "Directory", href: "/directory" },
             { label: name, href: `/makers/${username}` },
           ]}
         />
@@ -112,7 +112,7 @@ export default async function MakerPage({ params }: PageProps) {
 
         <p className="text-xs text-ink-muted mt-12">
           Part of the{" "}
-          <Link href="/tools" className="underline underline-offset-2 hover:text-ink-secondary">
+          <Link href="/directory" className="underline underline-offset-2 hover:text-ink-secondary">
             FolioStuff indie tool directory
           </Link>
           .

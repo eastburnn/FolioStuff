@@ -1,19 +1,21 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ListingCard from "./ListingCard";
+import ToolSearch from "./ToolSearch";
 import type { PublishedListing } from "@/lib/listings";
 import { normalizeTag } from "@/lib/tags";
 
-// Tag-filterable grid of published listings. The active tag lives in the URL
-// (?tag=) so filtered views can be shared and Back/Forward work; filtering
-// itself is client-side so the directory page stays static.
+// Searchable, tag-filterable grid of published listings. The active tag lives
+// in the URL (?tag=) so filtered views can be shared; search is client-side
+// over the loaded listings with name suggestions as you type.
 export default function DirectoryGrid({ listings }: { listings: PublishedListing[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const rawTag = searchParams.get("tag");
   const activeTag = rawTag ? normalizeTag(rawTag) : null;
+  const [query, setQuery] = useState("");
 
   const tagCounts = useMemo(() => {
     const counts = new Map<string, number>();
@@ -22,10 +24,19 @@ export default function DirectoryGrid({ listings }: { listings: PublishedListing
   }, [listings]);
 
   const knownTag = activeTag !== null && tagCounts.some(([t]) => t === activeTag);
-  const visible = activeTag ? listings.filter((l) => l.tags.includes(activeTag)) : listings;
+  const q = query.trim().toLowerCase();
+  const visible = listings.filter(
+    (l) =>
+      (!activeTag || l.tags.includes(activeTag)) &&
+      (!q ||
+        l.name.toLowerCase().includes(q) ||
+        l.tagline.toLowerCase().includes(q) ||
+        l.tags.some((t) => t.includes(q)) ||
+        l.maker_name.toLowerCase().includes(q))
+  );
 
   const select = (tag: string | null) => {
-    router.replace(tag ? `/tools?tag=${encodeURIComponent(tag)}` : "/tools", { scroll: false });
+    router.replace(tag ? `/directory?tag=${encodeURIComponent(tag)}` : "/directory", { scroll: false });
   };
 
   const chipClass = (active: boolean) =>
@@ -37,6 +48,10 @@ export default function DirectoryGrid({ listings }: { listings: PublishedListing
 
   return (
     <div>
+      <div className="mb-6">
+        <ToolSearch names={listings.map((l) => l.name)} value={query} onChange={setQuery} placeholder="Search tools by name, tag, or maker" />
+      </div>
+
       {tagCounts.length > 0 && (
         <div className="flex items-center gap-2 flex-wrap mb-6" role="group" aria-label="Filter by tag">
           <button type="button" onClick={() => select(null)} aria-pressed={activeTag === null} className={chipClass(activeTag === null)}>
@@ -62,15 +77,22 @@ export default function DirectoryGrid({ listings }: { listings: PublishedListing
       )}
 
       <p className="text-xs text-ink-muted mb-6" aria-live="polite">
-        {activeTag
-          ? `Showing ${visible.length} of ${listings.length} listings tagged "${activeTag}".`
+        {q || activeTag
+          ? `Showing ${visible.length} of ${listings.length} listings${activeTag ? ` tagged "${activeTag}"` : ""}${q ? ` matching "${query.trim()}"` : ""}.`
           : `Showing all ${listings.length} listings.`}
       </p>
 
       {visible.length === 0 ? (
         <p className="text-sm text-ink-muted">
-          No listings tagged &quot;{activeTag}&quot; yet.{" "}
-          <button type="button" onClick={() => select(null)} className="text-ink-secondary hover:text-ink-primary underline underline-offset-2">
+          No listings match.{" "}
+          <button
+            type="button"
+            onClick={() => {
+              setQuery("");
+              select(null);
+            }}
+            className="text-ink-secondary hover:text-ink-primary underline underline-offset-2"
+          >
             Show all listings
           </button>
         </p>

@@ -10,7 +10,7 @@ import { hasSupabaseEnv } from "@/lib/supabase/config";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
-  { href: "/tools", label: "Directory" },
+  { href: "/directory", label: "Directory" },
 ];
 
 function isActive(pathname: string, href: string): boolean {

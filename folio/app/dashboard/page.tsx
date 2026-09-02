@@ -8,6 +8,7 @@ import Avatar from "@/components/directory/Avatar";
 import Breadcrumb from "@/components/Breadcrumb";
 import ConfirmButton from "@/components/directory/ConfirmButton";
 import { deleteOwnListing } from "./actions";
+import { getAdminContext } from "@/lib/admin-gate";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -69,6 +70,10 @@ export default async function DashboardPage({
   const listings = (data ?? []) as ListingRow[];
   const profile = profileData as Profile | null;
 
+  // Server-side check against the app_admins table; the button never renders
+  // for anyone else, and /admin re-checks on every request regardless.
+  const isAdmin = Boolean(await getAdminContext());
+
   return (
     <div className="pt-16 grid-bg min-h-screen">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 pt-10 pb-24">
@@ -101,6 +106,19 @@ export default async function DashboardPage({
           <div className="rounded-xl border border-white/[0.1] bg-white/[0.04] p-4 mb-8 text-sm text-ink-secondary">
             Listing deleted.
           </div>
+        )}
+
+        {isAdmin && (
+          <Link
+            href="/admin"
+            className="flex items-center justify-between gap-4 rounded-2xl border border-accent-purple/40 bg-accent-purple/[0.08] hover:bg-accent-purple/[0.14] transition-colors p-5 mb-8"
+          >
+            <div>
+              <p className="text-sm font-semibold text-accent-purple">Admin dashboard</p>
+              <p className="text-xs text-ink-muted mt-0.5">Review queue, directory controls, and email previews.</p>
+            </div>
+            <span className="text-accent-purple text-lg">→</span>
+          </Link>
         )}
 
         {/* Profile card */}
@@ -162,7 +180,7 @@ export default async function DashboardPage({
                       Edit
                     </Link>
                     {l.is_published && (
-                      <Link href={`/tools/${l.slug}`} className="text-ink-secondary hover:text-ink-primary underline underline-offset-2">
+                      <Link href={`/directory/${l.slug}`} className="text-ink-secondary hover:text-ink-primary underline underline-offset-2">
                         View live listing
                       </Link>
                     )}

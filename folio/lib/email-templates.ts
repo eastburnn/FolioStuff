@@ -111,7 +111,7 @@ export function adminNewSubmissionEmail(listingName: string, isEdit = false): Em
 
 export function approvedEmail(listingName: string, slug: string, isEdit = false): EmailContent {
   const name = escapeHtml(listingName);
-  const listingUrl = `${SITE_URL}/tools/${slug}`;
+  const listingUrl = `${SITE_URL}/directory/${slug}`;
   if (isEdit) {
     return {
       subject: `Your changes to ${listingName} are live`,

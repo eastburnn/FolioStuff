@@ -7,7 +7,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const listings = await getPublishedListings();
 
   const listingEntries: MetadataRoute.Sitemap = listings.map((l) => ({
-    url: `${BASE_URL}/tools/${l.slug}`,
+    url: `${BASE_URL}/directory/${l.slug}`,
     changeFrequency: "monthly",
     priority: 0.7,
   }));
@@ -39,7 +39,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     },
     {
-      url: `${BASE_URL}/tools`,
+      url: `${BASE_URL}/directory`,
       changeFrequency: "daily",
       priority: 0.8,
     },

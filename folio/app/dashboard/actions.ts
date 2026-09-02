@@ -128,8 +128,8 @@ export async function deleteOwnListing(listingId: string): Promise<void> {
 
   if (listing.is_published) {
     revalidatePath("/");
-    revalidatePath("/tools");
-    revalidatePath(`/tools/${listing.slug}`);
+    revalidatePath("/directory");
+    revalidatePath(`/directory/${listing.slug}`);
     revalidatePath("/sitemap.xml");
     const { data: profile } = await supabase.from("profiles").select("username").eq("id", user.id).maybeSingle();
     if (profile?.username) revalidatePath(`/makers/${profile.username}`);
@@ -304,10 +304,10 @@ export async function deleteOwnAccount(
   await supabase.auth.signOut();
 
   revalidatePath("/");
-  revalidatePath("/tools");
+  revalidatePath("/directory");
   revalidatePath("/sitemap.xml");
   for (const listing of listings ?? []) {
-    if (listing.is_published) revalidatePath(`/tools/${listing.slug}`);
+    if (listing.is_published) revalidatePath(`/directory/${listing.slug}`);
   }
   if (profile?.username) revalidatePath(`/makers/${profile.username}`);
 

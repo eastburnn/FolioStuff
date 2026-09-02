@@ -32,8 +32,8 @@ async function requireAdmin(): Promise<SupabaseClient | null> {
 
 function revalidateDirectory(slug?: string) {
   revalidatePath("/");
-  revalidatePath("/tools");
-  if (slug) revalidatePath(`/tools/${slug}`);
+  revalidatePath("/directory");
+  if (slug) revalidatePath(`/directory/${slug}`);
   revalidatePath("/sitemap.xml");
   revalidatePath("/admin");
 }
@@ -260,7 +260,7 @@ export async function deleteMakerAccount(ownerId: string): Promise<void> {
   }
   revalidateDirectory();
   for (const listing of listings ?? []) {
-    if (listing.is_published) revalidatePath(`/tools/${listing.slug}`);
+    if (listing.is_published) revalidatePath(`/directory/${listing.slug}`);
   }
   if (profile?.username) revalidatePath(`/makers/${profile.username}`);
 }
@@ -326,4 +326,43 @@ export async function republishListing(listingId: string): Promise<void> {
   }
   revalidateDirectory(data.slug);
   await revalidateMakerPage(admin, data.owner_id);
+}
+
+// Directory tab toggles. Pausing a listing hides it from the site and the
+// sitemap (its page 404s) without touching the maker's data; featuring adds
+// it to the homepage Featured section.
+export async function setListingPublished(formData: FormData): Promise<void> {
+  const admin = await requireAdmin();
+  if (!admin) throw new Error("Not authorized.");
+  const id = String(formData.get("id") ?? "");
+  const on = formData.get("value") === "1";
+  if (!id) return;
+
+  const { data } = await admin.from("listings").select("slug, owner_id, published").eq("id", id).maybeSingle();
+  if (!data || !data.published) return;
+
+  const { error } = await admin.from("listings").update({ is_published: on }).eq("id", id);
+  if (error) {
+    console.error("Publish toggle failed:", error);
+    throw new Error("Could not update the listing.");
+  }
+  revalidateDirectory(data.slug);
+  revalidatePath("/admin/directory");
+  await revalidateMakerPage(admin, data.owner_id);
+}
+
+export async function setListingFeatured(formData: FormData): Promise<void> {
+  const admin = await requireAdmin();
+  if (!admin) throw new Error("Not authorized.");
+  const id = String(formData.get("id") ?? "");
+  const on = formData.get("value") === "1";
+  if (!id) return;
+
+  const { error } = await admin.from("listings").update({ is_featured: on }).eq("id", id);
+  if (error) {
+    console.error("Feature toggle failed:", error);
+    throw new Error("Could not update the listing.");
+  }
+  revalidatePath("/");
+  revalidatePath("/admin/directory");
 }

@@ -123,7 +123,7 @@ export default async function AdminPage() {
                           {listing.is_published ? "Edit of a live listing" : "Edit of an unpublished listing"}
                         </span>
                         {listing.is_published && (
-                          <a href={`/tools/${listing.slug}`} target="_blank" rel="noopener noreferrer"
+                          <a href={`/directory/${listing.slug}`} target="_blank" rel="noopener noreferrer"
                             className="text-xs text-accent-gold hover:underline">
                             Compare with the live version
                           </a>
@@ -221,8 +221,8 @@ export default async function AdminPage() {
                         <span className="ml-2 text-[10px] font-semibold uppercase tracking-wider text-accent-gold">edit pending</span>
                       )}
                     </p>
-                    <a href={`/tools/${l.slug}`} className="text-xs text-ink-muted hover:text-ink-secondary">
-                      /tools/{l.slug}
+                    <a href={`/directory/${l.slug}`} className="text-xs text-ink-muted hover:text-ink-secondary">
+                      /directory/{l.slug}
                     </a>
                     <span className="text-xs text-ink-muted/70"> · {ownerEmails.get(l.owner_id) ?? "unknown email"}</span>
                   </div>
@@ -250,7 +250,7 @@ export default async function AdminPage() {
                 <div key={l.id} className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-bg-card/60 p-4">
                   <div className="min-w-0">
                     <p className="text-sm font-semibold text-ink-primary">{l.published?.name ?? l.name}</p>
-                    <span className="text-xs text-ink-muted">/tools/{l.slug} · {ownerEmails.get(l.owner_id) ?? "unknown email"}</span>
+                    <span className="text-xs text-ink-muted">/directory/{l.slug} · {ownerEmails.get(l.owner_id) ?? "unknown email"}</span>
                   </div>
                   <div className="flex items-center gap-4 shrink-0">
                     {l.published && (

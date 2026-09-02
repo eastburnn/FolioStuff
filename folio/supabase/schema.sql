@@ -9,7 +9,7 @@ create table if not exists public.app_admins (
 );
 
 insert into public.app_admins (email)
-values ('chrris.ray@gmail.com')
+values ('itschrisray@gmail.com')
 on conflict (email) do nothing;
 
 -- RLS with no policies: the table is invisible through the public API.
@@ -54,6 +54,7 @@ create table if not exists public.listings (
   status text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
   review_feedback text,
   is_published boolean not null default false,
+  is_featured boolean not null default false,
   published jsonb,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
@@ -63,6 +64,7 @@ create table if not exists public.listings (
 create index if not exists listings_status_idx on public.listings (status);
 create index if not exists listings_published_idx on public.listings (is_published) where is_published;
 create index if not exists listings_owner_idx on public.listings (owner_id);
+create index if not exists listings_featured_idx on public.listings (is_featured) where is_featured;
 
 create or replace function public.valid_tags(t text[])
 returns boolean
@@ -194,15 +196,14 @@ create policy "read own or admin"
   on public.listings for select
   using (owner_id = auth.uid() or public.is_admin());
 
-create or replace view public.published_listings
+drop view if exists public.published_listings;
+create view public.published_listings
 with (security_barrier = true) as
-  select slug, owner_id, reviewed_at,
+  select slug, owner_id, reviewed_at, is_featured,
          published - 'source_icon_path' - 'source_screenshot_paths' as published
   from public.listings
   where is_published = true and published is not null;
 
--- Read-only for API roles: Supabase's default privileges would otherwise
--- grant DML on the view, which runs as the owner and bypasses table RLS.
 revoke all on public.published_listings from anon, authenticated;
 grant select on public.published_listings to anon, authenticated;
 
@@ -293,7 +294,7 @@ begin
       new.id := old.id;
     end if;
     if new.username is not null and new.username in (
-      'admin', 'api', 'about', 'auth', 'dashboard', 'login', 'logout', 'signup',
+      'admin', 'api', 'about', 'auth', 'dashboard', 'directory', 'login', 'logout', 'signup',
       'submit', 'tools', 'makers', 'privacy', 'terms', 'settings', 'profile',
       'folio', 'foliostuff', 'www', 'mail', 'support', 'help'
     ) then

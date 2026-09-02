@@ -6,7 +6,7 @@ import { publicImageUrl } from "@/lib/supabase/config";
 export default function ListingCard({ listing }: { listing: PublishedListing }) {
   return (
     <Link
-      href={`/tools/${listing.slug}`}
+      href={`/directory/${listing.slug}`}
       className="group flex items-start gap-4 p-5 rounded-2xl border border-white/[0.07] bg-bg-card hover:border-white/[0.16] transition-all duration-300 hover:-translate-y-1"
     >
       <div className="w-11 h-11 rounded-xl shrink-0 overflow-hidden bg-white/[0.06]">

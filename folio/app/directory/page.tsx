@@ -8,12 +8,12 @@ export const metadata: Metadata = {
   title: "Indie Tool Directory",
   description:
     "A hand-reviewed directory of stock market, investing, and finance tools built by indie developers and regular people, not giant companies.",
-  alternates: { canonical: "/tools" },
+  alternates: { canonical: "/directory" },
   openGraph: {
     title: "Indie Tool Directory | FolioStuff",
     description:
       "A hand-reviewed directory of stock market, investing, and finance tools built by indie developers and regular people, not giant companies.",
-    url: "/tools",
+    url: "/directory",
     siteName: "FolioStuff",
     type: "website",
     images: [{ url: "/foliostuff-thumbnail.jpg", width: 1200, height: 630 }],
@@ -33,7 +33,7 @@ export default async function ToolsPage({
   return (
     <div className="pt-16 grid-bg min-h-screen">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-10 pb-24">
-        <Breadcrumb items={[{ label: "Directory", href: "/tools" }]} />
+        <Breadcrumb items={[{ label: "Directory", href: "/directory" }]} />
 
         <h1 className="text-3xl font-bold text-ink-primary tracking-tight mb-3">
           Indie tool directory

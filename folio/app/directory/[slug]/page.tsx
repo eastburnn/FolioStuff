@@ -25,11 +25,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: listing.name,
     description,
-    alternates: { canonical: `/tools/${slug}` },
+    alternates: { canonical: `/directory/${slug}` },
     openGraph: {
       title: `${listing.name} | FolioStuff Directory`,
       description,
-      url: `/tools/${slug}`,
+      url: `/directory/${slug}`,
       siteName: "FolioStuff",
       type: "website",
       images: listing.icon_path
@@ -73,8 +73,8 @@ export default async function ListingPage({ params }: PageProps) {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-10 pb-24">
         <Breadcrumb
           items={[
-            { label: "Directory", href: "/tools" },
-            { label: listing.name, href: `/tools/${slug}` },
+            { label: "Directory", href: "/directory" },
+            { label: listing.name, href: `/directory/${slug}` },
           ]}
         />
 
@@ -98,7 +98,7 @@ export default async function ListingPage({ params }: PageProps) {
               {listing.tags.map((tag) => (
                 <Link
                   key={tag}
-                  href={`/tools?tag=${encodeURIComponent(tag)}`}
+                  href={`/directory?tag=${encodeURIComponent(tag)}`}
                   className="text-[10px] font-medium px-2.5 py-1 rounded-full border border-white/[0.1] text-ink-muted hover:text-ink-primary hover:border-white/[0.2] transition-colors"
                 >
                   {tag}
@@ -194,7 +194,7 @@ export default async function ListingPage({ params }: PageProps) {
 
         <p className="text-xs text-ink-muted mt-10">
           Listed in the{" "}
-          <Link href="/tools" className="underline underline-offset-2 hover:text-ink-secondary">
+          <Link href="/directory" className="underline underline-offset-2 hover:text-ink-secondary">
             FolioStuff indie tool directory
           </Link>
           . Built something yourself?{" "}

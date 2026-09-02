@@ -40,6 +40,7 @@ export interface ListingRow {
   status: "pending" | "approved" | "rejected";
   review_feedback: string | null;
   is_published: boolean;
+  is_featured: boolean;
   published: PublishedListing | null;
   created_at: string;
   updated_at: string;
@@ -155,4 +156,23 @@ export function slugify(name: string, maxLength = 52): string {
     .replace(/[^a-z0-9]+/g, "-")
     .slice(0, maxLength)
     .replace(/^-+|-+$/g, "");
+}
+
+// Listings the admin flagged as featured; shown in the homepage Featured
+// section in addition to their normal place in the directory.
+export async function getFeaturedListings(): Promise<PublishedListing[]> {
+  if (!hasSupabaseEnv()) return [];
+  try {
+    const { data, error } = await publicClient()
+      .from("published_listings")
+      .select("published")
+      .eq("is_featured", true)
+      .order("reviewed_at", { ascending: false });
+    if (error || !data) return [];
+    return data
+      .map((row) => normalizePublished(row.published))
+      .filter((p): p is PublishedListing => p !== null);
+  } catch {
+    return [];
+  }
 }
