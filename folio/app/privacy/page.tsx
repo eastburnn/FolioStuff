@@ -21,7 +21,7 @@ const SECTIONS = [
   {
     heading: "The short version",
     paragraphs: [
-      "FolioStuff has no accounts, no logins, and no forms asking for your personal information. The numbers you type into the tools are processed entirely in your browser and never sent to our servers. The only data we collect is anonymous usage analytics, described below.",
+      "You can use every tool on FolioStuff without an account, and the numbers you type into them are processed entirely in your browser and never sent to our servers. If you create an account to submit a tool to the directory, we store your email address and the listing content you give us, and nothing more. The only other data we collect is anonymous usage analytics, described below.",
     ],
   },
   {
@@ -31,9 +31,28 @@ const SECTIONS = [
     ],
   },
   {
+    heading: "Accounts and directory submissions",
+    paragraphs: [
+      "Creating an account requires an email address and a password. Passwords are hashed and never visible to us. If you submit a tool, we store what you provide: the tool's name, URL, description, tags, any social links for the tool, and any images you upload. Your profile's display name, and your X handle if you set one, are attached to each listing and shown publicly with it. This data lives in our database and file storage, hosted by Supabase.",
+      "Pending submissions are private and visible only to you and the site admin, and rejected submissions are deleted outright rather than stored. Approved listings are public by design, since that is the point of submitting. Submitting requires a display name and username, which appear publicly on your listings and maker page; your bio, photo, and links are optional additions to that page. You can delete your own listings at any time from your dashboard, which removes their content and images. You can also delete your whole account from your profile settings, which permanently removes your profile, your listings, and every image you uploaded. We also reserve the right to remove listings or accounts ourselves, as described in the Terms of Service.",
+    ],
+  },
+  {
+    heading: "Emails",
+    paragraphs: [
+      "We send transactional email only: confirmation of your account, and updates about your submission, such as approval or feedback. These are sent through Resend, our email provider. We do not send marketing email, and we do not share your address with anyone else.",
+    ],
+  },
+  {
     heading: "Analytics",
     paragraphs: [
       "We use Google Analytics to understand how the site is used: which pages get visited, roughly where visitors come from, and what kind of device they use. This data is aggregated and does not identify you personally. Google Analytics sets cookies to do this. You can block these with a browser extension or your browser's cookie settings, and the site works exactly the same without them.",
+    ],
+  },
+  {
+    heading: "Spam protection",
+    paragraphs: [
+      "The signup, login, and submission forms use Cloudflare Turnstile to keep bots out. Turnstile analyzes technical signals from your browser to decide whether you are human, without the traffic-light puzzles. Its processing is covered by Cloudflare's privacy policy.",
     ],
   },
   {
@@ -101,7 +120,7 @@ export default function PrivacyPage() {
           </div>
         </section>
 
-        <p className="text-xs text-ink-muted mt-10">Last updated: August 25, 2026</p>
+        <p className="text-xs text-ink-muted mt-10">Last updated: August 28, 2026</p>
       </div>
     </div>
   );

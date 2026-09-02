@@ -1,8 +1,17 @@
 import type { MetadataRoute } from "next";
+import { getPublishedListings } from "@/lib/listings";
 
 const BASE_URL = "https://www.foliostuff.com";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const listings = await getPublishedListings();
+
+  const listingEntries: MetadataRoute.Sitemap = listings.map((l) => ({
+    url: `${BASE_URL}/tools/${l.slug}`,
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
+
   return [
     {
       url: BASE_URL,
@@ -30,9 +39,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.6,
     },
     {
+      url: `${BASE_URL}/tools`,
+      changeFrequency: "daily",
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/submit`,
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
+    {
       url: `${BASE_URL}/privacy`,
       changeFrequency: "yearly",
       priority: 0.3,
     },
+    {
+      url: `${BASE_URL}/terms`,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    ...listingEntries,
   ];
 }

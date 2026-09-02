@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import Script from "next/script";
-import Image from "next/image";
-import Link from "next/link";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -66,30 +65,7 @@ export default function RootLayout({
         </Script>
         <Navbar />
         <main className="flex-1">{children}</main>
-        <footer className="border-t border-white/[0.05] py-6 px-4">
-          <div className="max-w-6xl mx-auto flex flex-col items-center gap-2">
-            <p className="text-[11px] text-ink-muted text-center">
-              For informational purposes only. Nothing on this site constitutes financial advice.
-            </p>
-            <p className="text-[11px] text-ink-muted text-center">
-              Some links on this site are affiliate links. We may earn a commission if you sign up
-              through them, at no extra cost to you.
-            </p>
-            <div className="flex items-center gap-1.5 text-xs text-ink-muted">
-              <span>Made by</span>
-              <a href="https://www.itschrisray.com" target="_blank" rel="noopener noreferrer" className="text-ink-secondary hover:text-ink-primary transition-colors">itschrisray.com</a>
-              <span>·</span>
-              <a href="https://x.com/itschrisray" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-ink-secondary hover:text-ink-primary transition-colors">
-                <Image src="/twitter.png" alt="X" width={12} height={12} className="w-3 h-3 opacity-60" />
-                @itschrisray
-              </a>
-              <span>·</span>
-              <Link href="/privacy" className="text-ink-secondary hover:text-ink-primary transition-colors">
-                Privacy
-              </Link>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </body>
     </html>
   );

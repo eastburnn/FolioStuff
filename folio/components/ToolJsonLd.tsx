@@ -1,3 +1,4 @@
+import { safeJsonLd } from "@/lib/json-ld";
 const BASE_URL = "https://www.foliostuff.com";
 
 interface ToolJsonLdProps {
@@ -26,7 +27,7 @@ export default function ToolJsonLd({ name, description, path }: ToolJsonLdProps)
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
     />
   );
 }

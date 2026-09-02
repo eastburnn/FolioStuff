@@ -1,7 +1,13 @@
 import { PieChart, Calculator, Target, ExternalLink } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import WidgetCard from "@/components/WidgetCard";
 import HeroWordmark from "@/components/HeroWordmark";
+import ListingCard from "@/components/directory/ListingCard";
+import { getPublishedListings } from "@/lib/listings";
+import { safeJsonLd } from "@/lib/json-ld";
+
+export const revalidate = 300;
 
 const WEBSITE_JSON_LD = {
   "@context": "https://schema.org",
@@ -77,12 +83,14 @@ const EXTERNAL_TOOLS = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const communityListings = await getPublishedListings(6);
+
   return (
     <div className="grid-bg hero-glow min-h-screen">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBSITE_JSON_LD) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(WEBSITE_JSON_LD) }}
       />
       {/* Hero */}
       <section className="pt-28 pb-20 px-4 sm:px-6 text-center">
@@ -109,7 +117,7 @@ export default function Home() {
       <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-24">
         <div className="border-t border-white/[0.06] pt-12">
           <h2 className="text-xs text-ink-muted uppercase tracking-widest mb-6">
-            Our other stuff
+            Featured stuff
           </h2>
           <div className="grid sm:grid-cols-2 gap-6">
             {OTHER_STUFF.map((item) => (
@@ -150,6 +158,47 @@ export default function Home() {
               </a>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Community directory */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-24">
+        <div className="border-t border-white/[0.06] pt-12">
+          <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
+            <h2 className="text-xs text-ink-muted uppercase tracking-widest">
+              From the community
+            </h2>
+            <Link
+              href="/submit"
+              className="group inline-flex items-center gap-1.5 rounded-xl bg-accent-purple/[0.12] border border-accent-purple/40 hover:bg-accent-purple/[0.22] hover:border-accent-purple/60 hover:shadow-[0_0_24px_rgba(139,92,246,0.25)] transition-all duration-200 px-4 py-2 text-xs font-semibold text-accent-purple"
+            >
+              Submit your tool
+              <span className="transition-transform duration-200 group-hover:translate-x-0.5">→</span>
+            </Link>
+          </div>
+          {communityListings.length === 0 ? (
+            <p className="text-sm text-ink-muted">
+              A hand-reviewed directory of investing and finance tools built by indie makers.
+              Built something?{" "}
+              <Link href="/submit" className="text-ink-secondary hover:text-ink-primary underline underline-offset-2">
+                Be the first listing.
+              </Link>
+            </p>
+          ) : (
+            <>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {communityListings.map((listing) => (
+                  <ListingCard key={listing.slug} listing={listing} />
+                ))}
+              </div>
+              <Link
+                href="/tools"
+                className="inline-block mt-6 text-xs font-semibold uppercase tracking-widest text-ink-secondary hover:text-ink-primary transition-colors"
+              >
+                Browse the full directory →
+              </Link>
+            </>
+          )}
         </div>
       </section>
 

@@ -1,4 +1,5 @@
 import { ChevronDown } from "lucide-react";
+import { safeJsonLd } from "@/lib/json-ld";
 
 interface ToolInfoSection {
   heading: string;
@@ -31,7 +32,7 @@ export default function ToolInfo({ sections, faqs, className = "max-w-3xl" }: To
     <div className={`${className} mx-auto px-4 sm:px-6 pb-24`}>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(faqJsonLd) }}
       />
 
       {sections.map((section) => (
