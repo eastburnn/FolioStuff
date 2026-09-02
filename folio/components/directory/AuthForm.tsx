@@ -15,6 +15,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = safeNext(searchParams.get("next"));
+  const expired = searchParams.get("expired") === "1";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -113,6 +114,12 @@ export default function AuthForm({ mode }: AuthFormProps) {
           placeholder={mode === "signup" ? "At least 8 characters" : "Your password"}
         />
       </div>
+
+      {expired && (
+        <p className="text-xs text-ink-muted text-center">
+          You were logged out after 24 hours away. Log in again to continue.
+        </p>
+      )}
 
       <TurnstileWidget className="flex justify-center" />
 
