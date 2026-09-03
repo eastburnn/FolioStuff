@@ -170,7 +170,7 @@ export default async function Home() {
             Good stuff around the web
           </h2>
           {/* Phones: two square tiles per row; wider screens keep the row layout. */}
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 items-start">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
             {EXTERNAL_TOOLS.map((tool) => (
               <a
                 key={tool.href}
@@ -192,7 +192,7 @@ export default async function Home() {
                   <p className="text-sm font-semibold text-ink-primary group-hover:text-white transition-colors">
                     {tool.name}
                   </p>
-                  <p className="text-[11px] sm:text-xs text-ink-muted leading-relaxed mt-0.5 line-clamp-3 sm:line-clamp-none">
+                  <p className="text-[11px] sm:text-xs text-ink-muted leading-relaxed mt-0.5 line-clamp-3 sm:line-clamp-none min-h-[3.4rem] sm:min-h-0">
                     {tool.description}
                   </p>
                 </div>
