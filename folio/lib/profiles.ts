@@ -28,11 +28,11 @@ export const RESERVED_USERNAMES = new Set([
 
 // Makers can type a bare domain such as "itschrisray.com"; the https prefix
 // is added on save. Returns the normalized link, or an error to show.
-export function normalizeLink(raw: string | null, label: string): { url: string | null; error?: string } {
+export function normalizeLink(raw: string | null, label: string, maxLength = 200): { url: string | null; error?: string } {
   if (!raw) return { url: null };
   let value = raw.trim();
   if (!value) return { url: null };
-  if (value.length > 200) return { url: null, error: `${label} link is too long.` };
+  if (value.length > maxLength) return { url: null, error: `${label} link is too long.` };
   if (/\s/.test(value)) return { url: null, error: `${label} link cannot contain spaces.` };
   if (!/^https?:\/\//i.test(value)) value = `https://${value}`;
   let parsed: URL;

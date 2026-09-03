@@ -176,9 +176,9 @@ export default function ListingForm({ action, submitLabel, initial }: ListingFor
 
       <div>
         <label htmlFor="url" className={labelClass}>Tool URL</label>
-        <input id="url" name="url" type="url" required maxLength={300}
+        <input id="url" name="url" type="text" inputMode="url" required maxLength={300}
           value={url} onChange={(e) => setUrl(e.target.value)}
-          className={inputClass} placeholder="https://yourtool.com" />
+          className={inputClass} placeholder="yourtool.com" />
       </div>
 
       <div>
