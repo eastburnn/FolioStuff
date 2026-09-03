@@ -1,5 +1,8 @@
 import { normalizeTags, MAX_TAGS } from "./tags";
 import { parseSocials, type Socials } from "./socials";
+import { MAX_IMAGE_BYTES, MAX_SCREENSHOTS, MAX_TOTAL_IMAGE_BYTES, formatBytes } from "./image-limits";
+
+export { MAX_IMAGE_BYTES, MAX_SCREENSHOTS };
 
 // Shared server-side validation for the submit and edit actions.
 
@@ -13,8 +16,6 @@ export interface ListingFields {
 }
 
 const ALLOWED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp"];
-export const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
-export const MAX_SCREENSHOTS = 3;
 
 export function extractFields(formData: FormData): { fields: ListingFields } | { error: string } {
   // Honeypot: bots fill every field; humans never see this one.
@@ -44,6 +45,17 @@ export function validImage(file: File): string | null {
   if (!ALLOWED_IMAGE_TYPES.includes(file.type)) return "Images must be PNG, JPEG, or WebP.";
   if (file.size > MAX_IMAGE_BYTES) return "Images must be 2MB or smaller.";
   if (file.size === 0) return "An uploaded image appears to be empty.";
+  return null;
+}
+
+// Combined size guard. The request body cap in next.config.ts rejects a
+// bigger payload before any action runs, so this mostly catches callers
+// that skip the browser-side preparation.
+export function validImageSet(files: File[]): string | null {
+  const total = files.reduce((sum, f) => sum + f.size, 0);
+  if (total > MAX_TOTAL_IMAGE_BYTES) {
+    return `Images add up to more than ${formatBytes(MAX_TOTAL_IMAGE_BYTES)} combined. Use fewer or smaller screenshots.`;
+  }
   return null;
 }
 

@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { validImage, imageExtension } from "./listing-form";
+import { validImage, validImageSet, imageExtension } from "./listing-form";
 
 // Uploads submitted images into the private listing-uploads bucket under the
 // maker's own folder (enforced by storage RLS). Server-side use only.
@@ -21,6 +21,8 @@ export async function uploadListingImages(
     const err = validImage(shot);
     if (err) return { error: err };
   }
+  const setError = validImageSet([icon, ...screenshots].filter((f): f is File => Boolean(f)));
+  if (setError) return { error: setError };
 
   if (icon) {
     const path = `${userId}/${listingId}/icon-${Date.now()}.${imageExtension(icon)}`;

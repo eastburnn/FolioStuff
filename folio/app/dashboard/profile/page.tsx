@@ -71,7 +71,7 @@ export default async function ProfileSettingsPage({
         <ProfileForm
           action={updateProfile}
           profile={profile}
-          hasAvatar={Boolean(profile?.avatar_path)}
+          userId={user.id}
           requiredFlow={Boolean(required)}
         />
         <DeleteAccountSection action={deleteOwnAccount} />

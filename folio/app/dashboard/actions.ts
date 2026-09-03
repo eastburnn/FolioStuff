@@ -6,11 +6,12 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { validImage, imageExtension, extractFields, getUploadedFiles } from "@/lib/listing-form";
 import { uploadListingImages } from "@/lib/listing-uploads";
-import { deleteListingFiles, deleteAvatarFiles } from "@/lib/listing-cleanup";
+import { deleteListingFiles, deleteAvatarFiles, pruneFolder } from "@/lib/listing-cleanup";
 import { normalizePublished } from "@/lib/listings";
 import { notifyAdminNewSubmission } from "@/lib/email";
 import { verifyTurnstile } from "@/lib/turnstile";
-import { USERNAME_PATTERN, RESERVED_USERNAMES } from "@/lib/profiles";
+import { USERNAME_PATTERN, RESERVED_USERNAMES, normalizeLink } from "@/lib/profiles";
+import { parseSocial, type SocialKey } from "@/lib/socials";
 import type { ListingFormState } from "@/components/directory/ListingForm";
 import type { ProfileFormState } from "@/components/directory/ProfileForm";
 
@@ -156,12 +157,30 @@ export async function updateProfile(
   const display_name = clean("display_name", 80);
   const bio = clean("bio", 500);
   let username = clean("username", 30);
-  let x_handle = clean("x_handle", 30);
-  let bluesky_handle = clean("bluesky_handle", 100);
-  let threads_handle = clean("threads_handle", 30);
-  const linkedin_url = clean("linkedin_url", 200);
-  const facebook_url = clean("facebook_url", 200);
-  const website_url = clean("website_url", 200);
+  // Social fields accept a profile link, "@handle", or a bare handle.
+  const social = (key: SocialKey, field: string) => parseSocial(key, String(formData.get(field) ?? "").slice(0, 300));
+  const socialInputs = {
+    x: social("x", "x_handle"),
+    bluesky: social("bluesky", "bluesky_handle"),
+    threads: social("threads", "threads_handle"),
+    linkedin: social("linkedin", "linkedin_url"),
+    facebook: social("facebook", "facebook_url"),
+  };
+  for (const parsed of Object.values(socialInputs)) {
+    if (parsed && "error" in parsed) return { error: parsed.error };
+  }
+  const handleOf = (p: (typeof socialInputs)[SocialKey]) => (p && "handle" in p ? p.handle : null);
+  const urlOf = (p: (typeof socialInputs)[SocialKey]) => (p && "url" in p ? p.url : null);
+  const x_handle = handleOf(socialInputs.x);
+  const bluesky_handle = handleOf(socialInputs.bluesky);
+  const threads_handle = handleOf(socialInputs.threads);
+  const linkedin_url = urlOf(socialInputs.linkedin);
+  const facebook_url = urlOf(socialInputs.facebook);
+
+  // The website accepts a bare domain; the https prefix is added here.
+  const website = normalizeLink(clean("website_url", 200), "Website");
+  if (website.error) return { error: website.error };
+  const website_url = website.url;
 
   if (username) {
     username = username.toLowerCase();
@@ -171,18 +190,6 @@ export async function updateProfile(
     if (RESERVED_USERNAMES.has(username)) {
       return { error: "That username is reserved. Pick another." };
     }
-  }
-  if (x_handle) x_handle = x_handle.replace(/^@/, "");
-  if (bluesky_handle) bluesky_handle = bluesky_handle.replace(/^@/, "");
-  if (threads_handle) threads_handle = threads_handle.replace(/^@/, "");
-  if (linkedin_url && !/^https:\/\/([a-z0-9-]+\.)?linkedin\.com\/.+/i.test(linkedin_url)) {
-    return { error: "LinkedIn link must be a full https://linkedin.com/... URL." };
-  }
-  if (facebook_url && !/^https:\/\/([a-z0-9-]+\.)?facebook\.com\/.+/i.test(facebook_url)) {
-    return { error: "Facebook link must be a full https://facebook.com/... URL." };
-  }
-  if (website_url && !/^https?:\/\/.+\..+/i.test(website_url)) {
-    return { error: "Website must be a full URL starting with http(s)://" };
   }
 
   // Optional avatar upload into the maker's own folder of the public bucket.
@@ -232,9 +239,27 @@ export async function updateProfile(
 
   const { error } = await supabase.from("profiles").upsert(row);
   if (error) {
+    // The picture was uploaded before the save; do not leave it orphaned.
+    if (avatar_path) await supabase.storage.from("avatars").remove([avatar_path]);
     if (error.code === "23505") return { error: "That username is already taken." };
     console.error("Profile save failed:", error);
     return { error: "Could not save your profile. Please try again." };
+  }
+
+  // A replaced picture leaves the previous file behind; drop everything in
+  // the maker's own avatar folder except the one just saved.
+  if (avatar_path) {
+    try {
+      const { data: current } = await supabase
+        .from("profiles")
+        .select("avatar_path")
+        .eq("id", user.id)
+        .maybeSingle();
+      const keep = new Set([avatar_path, current?.avatar_path].filter((p): p is string => Boolean(p)));
+      await pruneFolder(createAdminClient(), "avatars", user.id, keep);
+    } catch (err) {
+      console.error("Old avatar cleanup failed:", err);
+    }
   }
 
   revalidatePath("/dashboard/profile");

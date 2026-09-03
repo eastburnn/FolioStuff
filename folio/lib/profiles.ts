@@ -26,6 +26,31 @@ export const RESERVED_USERNAMES = new Set([
   "folio", "foliostuff", "www", "mail", "support", "help",
 ]);
 
+// Makers can type a bare domain such as "itschrisray.com"; the https prefix
+// is added on save. Returns the normalized link, or an error to show.
+export function normalizeLink(raw: string | null, label: string): { url: string | null; error?: string } {
+  if (!raw) return { url: null };
+  let value = raw.trim();
+  if (!value) return { url: null };
+  if (value.length > 200) return { url: null, error: `${label} link is too long.` };
+  if (/\s/.test(value)) return { url: null, error: `${label} link cannot contain spaces.` };
+  if (!/^https?:\/\//i.test(value)) value = `https://${value}`;
+  let parsed: URL;
+  try {
+    parsed = new URL(value);
+  } catch {
+    return { url: null, error: `${label} link does not look like a web address.` };
+  }
+  const hostOk = /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(parsed.hostname);
+  if (!hostOk || parsed.username || parsed.password) {
+    return { url: null, error: `${label} link does not look like a web address.` };
+  }
+  // Store the parser's canonical form (ASCII host, lowercase scheme) so the
+  // database check constraint always agrees; a bare domain keeps no slash.
+  const bare = parsed.pathname === "/" && !parsed.search && !parsed.hash && !value.endsWith("/");
+  return { url: bare ? parsed.href.replace(/\/$/, "") : parsed.href };
+}
+
 export function avatarUrl(path: string): string {
   return `${SUPABASE_URL}/storage/v1/object/public/avatars/${path}`;
 }

@@ -1,9 +1,12 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useCallback, useEffect, useState } from "react";
 import { Check, X, Pencil } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { USERNAME_PATTERN, RESERVED_USERNAMES, type Profile } from "@/lib/profiles";
+import Avatar from "./Avatar";
+import AvatarCropper from "./AvatarCropper";
+import { MAX_SOURCE_BYTES } from "@/lib/image-limits";
 
 export interface ProfileFormState {
   error: string | null;
@@ -13,13 +16,15 @@ export interface ProfileFormState {
 interface ProfileFormProps {
   action: (state: ProfileFormState, formData: FormData) => Promise<ProfileFormState>;
   profile: Profile | null;
-  hasAvatar: boolean;
+  userId: string;
   requiredFlow?: boolean;
 }
 
 const inputClass =
   "w-full bg-bg-card border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-ink-primary placeholder-ink-muted focus:outline-none focus:border-white/20 transition-colors";
 const labelClass = "block text-xs text-ink-muted uppercase tracking-widest mb-2";
+const fileClass =
+  "block w-full text-sm text-ink-secondary file:mr-4 file:rounded-lg file:border-0 file:bg-white/[0.08] file:px-4 file:py-2 file:text-sm file:font-medium file:text-ink-primary hover:file:bg-white/[0.12]";
 
 type Availability =
   | "idle"
@@ -30,8 +35,50 @@ type Availability =
   | "reserved"
   | "cannot-remove";
 
-export default function ProfileForm({ action, profile, hasAvatar, requiredFlow }: ProfileFormProps) {
+export default function ProfileForm({ action, profile, userId, requiredFlow }: ProfileFormProps) {
   const [state, formAction, pending] = useActionState(action, { error: null });
+
+  // Profile picture flow: picking a file opens the crop editor; the cropped
+  // result is held here and attached to the form as "avatar" on submit, so
+  // the original photo is never uploaded.
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [cropped, setCropped] = useState<File | null>(null);
+  const [croppedUrl, setCroppedUrl] = useState<string | null>(null);
+  const [avatarError, setAvatarError] = useState<string | null>(null);
+  useEffect(() => {
+    return () => {
+      if (croppedUrl) URL.revokeObjectURL(croppedUrl);
+    };
+  }, [croppedUrl]);
+  const onAvatarPicked = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const picked = e.target.files?.[0] ?? null;
+    e.target.value = "";
+    setAvatarError(null);
+    if (!picked) return;
+    if (picked.size > MAX_SOURCE_BYTES) {
+      setAvatarError("Images must be 10MB or smaller.");
+      return;
+    }
+    setPendingFile(picked);
+  };
+  const onCropDone = useCallback((file: File) => {
+    setCropped(file);
+    setCroppedUrl(URL.createObjectURL(file));
+    setPendingFile(null);
+  }, []);
+  const onCropCancel = useCallback(() => setPendingFile(null), []);
+  // Once saved, the page shows the stored picture; drop the local copy so a
+  // later save does not upload it again.
+  useEffect(() => {
+    if (state.saved && !state.error) {
+      setCropped(null);
+      setCroppedUrl(null);
+    }
+  }, [state]);
+  const submit = (formData: FormData) => {
+    if (cropped) formData.set("avatar", cropped, cropped.name);
+    formAction(formData);
+  };
 
   const originalUsername = profile?.username ?? "";
   const [username, setUsername] = useState(originalUsername);
@@ -102,7 +149,7 @@ export default function ProfileForm({ action, profile, hasAvatar, requiredFlow }
   const hint = availabilityHint[availability];
 
   return (
-    <form action={formAction} className="space-y-6">
+    <form action={submit} className="space-y-6">
       {requiredFlow && <input type="hidden" name="required_flow" value="1" />}
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
@@ -177,19 +224,37 @@ export default function ProfileForm({ action, profile, hasAvatar, requiredFlow }
       </div>
 
       <div>
-        <label htmlFor="avatar" className={labelClass}>
-          Profile picture {hasAvatar ? "(leave empty to keep the current one)" : ""}
-        </label>
-        <input id="avatar" name="avatar" type="file" accept="image/png,image/jpeg,image/webp"
-          className="block w-full text-sm text-ink-secondary file:mr-4 file:rounded-lg file:border-0 file:bg-white/[0.08] file:px-4 file:py-2 file:text-sm file:font-medium file:text-ink-primary hover:file:bg-white/[0.12]" />
-        <p className="text-xs text-ink-muted mt-2">Square works best. PNG, JPEG, or WebP, up to 2MB.</p>
+        <label htmlFor="avatar" className={labelClass}>Profile picture</label>
+        <div className="flex items-center gap-4">
+          {croppedUrl ? (
+            // Object URL preview of the freshly cropped picture.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={croppedUrl} alt="Your new profile picture"
+              className="w-16 h-16 rounded-full object-cover shrink-0" />
+          ) : (
+            <Avatar userId={userId} avatarPath={profile?.avatar_path ?? null} size={64}
+              alt="Your current profile picture" />
+          )}
+          <div className="min-w-0 flex-1">
+            <input id="avatar" type="file" accept="image/*" onChange={onAvatarPicked} className={fileClass} />
+            <p className="text-xs text-ink-muted mt-2">
+              {croppedUrl
+                ? "Looks good. Save your profile to keep it."
+                : "Pick any image up to 10MB. You can zoom and reposition it before saving."}
+            </p>
+            {avatarError && <p className="text-xs text-red-400 mt-2" role="alert">{avatarError}</p>}
+          </div>
+        </div>
       </div>
+      {pendingFile && (
+        <AvatarCropper file={pendingFile} onDone={onCropDone} onCancel={onCropCancel} />
+      )}
 
       <div>
         <label htmlFor="website_url" className={labelClass}>Website</label>
-        <input id="website_url" name="website_url" type="url" maxLength={200}
-          defaultValue={profile?.website_url ?? ""} className={inputClass}
-          placeholder="https://yoursite.com" />
+        <input id="website_url" name="website_url" type="text" inputMode="url" maxLength={200}
+          autoComplete="url" defaultValue={profile?.website_url ?? ""} className={inputClass}
+          placeholder="yoursite.com" />
         <p className="text-xs text-ink-muted mt-2">
           Your personal or portfolio site, not a specific tool's site.
         </p>
@@ -197,32 +262,32 @@ export default function ProfileForm({ action, profile, hasAvatar, requiredFlow }
 
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="x_handle" className={labelClass}>X handle</label>
-          <input id="x_handle" name="x_handle" type="text" maxLength={30}
-            defaultValue={profile?.x_handle ?? ""} className={inputClass} placeholder="@you" />
+          <label htmlFor="x_handle" className={labelClass}>X (Twitter)</label>
+          <input id="x_handle" name="x_handle" type="text" maxLength={300}
+            defaultValue={profile?.x_handle ?? ""} className={inputClass} placeholder="@you or x.com/you" />
         </div>
         <div>
-          <label htmlFor="bluesky_handle" className={labelClass}>Bluesky handle</label>
-          <input id="bluesky_handle" name="bluesky_handle" type="text" maxLength={100}
+          <label htmlFor="bluesky_handle" className={labelClass}>Bluesky</label>
+          <input id="bluesky_handle" name="bluesky_handle" type="text" maxLength={300}
             defaultValue={profile?.bluesky_handle ?? ""} className={inputClass}
-            placeholder="you.bsky.social" />
+            placeholder="@you.bsky.social or just you" />
         </div>
         <div>
-          <label htmlFor="threads_handle" className={labelClass}>Threads handle</label>
-          <input id="threads_handle" name="threads_handle" type="text" maxLength={30}
-            defaultValue={profile?.threads_handle ?? ""} className={inputClass} placeholder="@you" />
+          <label htmlFor="threads_handle" className={labelClass}>Threads</label>
+          <input id="threads_handle" name="threads_handle" type="text" maxLength={300}
+            defaultValue={profile?.threads_handle ?? ""} className={inputClass} placeholder="@you or threads.net/@you" />
         </div>
         <div>
-          <label htmlFor="linkedin_url" className={labelClass}>LinkedIn URL</label>
-          <input id="linkedin_url" name="linkedin_url" type="url" maxLength={200}
+          <label htmlFor="linkedin_url" className={labelClass}>LinkedIn</label>
+          <input id="linkedin_url" name="linkedin_url" type="text" inputMode="url" maxLength={200}
             defaultValue={profile?.linkedin_url ?? ""} className={inputClass}
-            placeholder="https://linkedin.com/in/you" />
+            placeholder="linkedin.com/in/you or just you" />
         </div>
         <div>
-          <label htmlFor="facebook_url" className={labelClass}>Facebook URL</label>
-          <input id="facebook_url" name="facebook_url" type="url" maxLength={200}
+          <label htmlFor="facebook_url" className={labelClass}>Facebook</label>
+          <input id="facebook_url" name="facebook_url" type="text" inputMode="url" maxLength={200}
             defaultValue={profile?.facebook_url ?? ""} className={inputClass}
-            placeholder="https://facebook.com/you" />
+            placeholder="facebook.com/you or just you" />
         </div>
       </div>
 

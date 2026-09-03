@@ -4,7 +4,6 @@ import { createClient } from "@/lib/supabase/server";
 import { getAdminContext } from "@/lib/admin-gate";
 import { normalizePublished, type ListingRow } from "@/lib/listings";
 import { publicImageUrl } from "@/lib/supabase/config";
-import AdminNav from "@/components/directory/AdminNav";
 import AdminDirectoryGrid, { type AdminDirectoryItem } from "@/components/directory/AdminDirectoryGrid";
 import { setListingPublished, setListingFeatured } from "../actions";
 
@@ -54,22 +53,19 @@ export default async function AdminDirectoryPage() {
   });
 
   return (
-    <div className="pt-16 min-h-screen">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-10 pb-24">
-        <AdminNav current="/admin/directory" />
-        <h1 className="text-3xl font-bold text-ink-primary tracking-tight mb-3">Directory</h1>
-        <p className="text-sm text-ink-secondary mb-8 max-w-2xl">
-          Every approved tool. <span className="text-ink-primary">Live</span> controls whether it
-          appears on the site and in the sitemap; switching it off pauses the listing without
-          deleting anything. <span className="text-ink-primary">Featured</span> adds a larger card
-          to the homepage Featured section.
-        </p>
-        <AdminDirectoryGrid
-          items={items}
-          publishAction={setListingPublished}
-          featureAction={setListingFeatured}
-        />
-      </div>
+    <div>
+      <h1 className="text-3xl font-bold text-ink-primary tracking-tight mb-3">Directory</h1>
+      <p className="text-sm text-ink-secondary mb-8 max-w-2xl">
+        Every approved tool. <span className="text-ink-primary">Live</span> controls whether it
+        appears on the site and in the sitemap; switching it off pauses the listing without
+        deleting anything. <span className="text-ink-primary">Featured</span> adds a larger card
+        to the homepage Featured section.
+      </p>
+      <AdminDirectoryGrid
+        items={items}
+        publishAction={setListingPublished}
+        featureAction={setListingFeatured}
+      />
     </div>
   );
 }
