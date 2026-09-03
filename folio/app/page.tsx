@@ -95,14 +95,24 @@ export default async function Home() {
       </section>
 
       {/* Widget cards */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-24">
-        <h2 className="text-xs text-ink-muted uppercase tracking-widest mb-6">
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-16 sm:pb-24">
+        <h2 className="text-xs text-ink-muted uppercase tracking-widest mb-4 sm:mb-6">
           The tools
         </h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-7">
-          {WIDGETS.map((w, i) => (
-            <WidgetCard key={w.href} {...w} delay={i * 80} />
-          ))}
+        {/* Phones: a swipeable row with the next card peeking in from the
+            right and a fade over the edge. Wider screens: the usual grid. */}
+        <div className="relative -mx-4 sm:mx-0">
+          <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7 overflow-x-auto sm:overflow-visible snap-x snap-mandatory scrollbar-none px-4 sm:px-0 pb-1 sm:pb-0">
+            {WIDGETS.map((w, i) => (
+              <div key={w.href} className="flex snap-start shrink-0 w-[80%] sm:w-auto sm:shrink">
+                <WidgetCard {...w} delay={i * 80} />
+              </div>
+            ))}
+          </div>
+          <div
+            aria-hidden="true"
+            className="sm:hidden pointer-events-none absolute inset-y-0 right-0 w-14 bg-gradient-to-l from-bg-surface via-bg-surface/60 to-transparent"
+          />
         </div>
       </section>
 

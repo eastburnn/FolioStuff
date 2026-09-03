@@ -88,3 +88,11 @@
     @apply bg-bg-card rounded-xl p-4 border border-white/[0.06];
   }
 }
+
+/* Hides the scrollbar on swipeable rows without disabling scrolling. */
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}

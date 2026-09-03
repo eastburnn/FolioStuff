@@ -41,7 +41,7 @@ export default function WidgetCard({
             : "none",
           transform: hovered ? "translateY(-4px)" : "translateY(0)",
         }}
-        className="relative rounded-2xl border bg-bg-card p-5 sm:p-7 cursor-pointer transition-all duration-300 overflow-hidden select-none h-full"
+        className="relative rounded-2xl border bg-bg-card p-4 sm:p-7 cursor-pointer transition-all duration-300 overflow-hidden select-none h-full"
       >
         {/* Radial glow overlay */}
         <div
@@ -54,7 +54,7 @@ export default function WidgetCard({
 
         <div className="relative z-10 flex flex-col h-full">
           {/* Icon + Tag row */}
-          <div className="flex items-center gap-3 mb-3.5 sm:mb-5">
+          <div className="flex items-center gap-2.5 sm:gap-3 mb-3 sm:mb-5">
             <div
               style={{
                 background: `${accent}18`,
@@ -89,7 +89,7 @@ export default function WidgetCard({
           {/* CTA */}
           <div
             style={{ color: accent }}
-            className="flex items-center gap-1.5 mt-auto pt-3.5 sm:pt-5 text-xs font-semibold uppercase tracking-widest"
+            className="flex items-center gap-1.5 mt-auto pt-3 sm:pt-5 text-xs font-semibold uppercase tracking-widest"
           >
             <span>Open tool</span>
             <ArrowRight
