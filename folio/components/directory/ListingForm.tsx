@@ -40,6 +40,23 @@ const labelClass = "block text-xs text-ink-muted uppercase tracking-widest mb-2"
 const fileClass =
   "block w-full text-sm text-ink-secondary file:mr-4 file:rounded-lg file:border-0 file:bg-white/[0.08] file:px-4 file:py-2 file:text-sm file:font-medium file:text-ink-primary hover:file:bg-white/[0.12]";
 
+// Counts screenshots whose shape is far enough from 16:10 that the preview
+// card will visibly crop them.
+async function countOffRatio(files: File[]): Promise<number> {
+  let count = 0;
+  for (const file of files) {
+    try {
+      const bitmap = await createImageBitmap(file);
+      const ratio = bitmap.width / bitmap.height;
+      bitmap.close();
+      if (Math.abs(ratio - 1.6) / 1.6 > 0.12) count++;
+    } catch {
+      /* unmeasurable files are simply not counted */
+    }
+  }
+  return count;
+}
+
 // Text fields are controlled so a validation error from the server does not
 // wipe what the maker typed (React resets uncontrolled fields after a form
 // action settles). Prepared images live in state for the same reason.
@@ -65,6 +82,7 @@ export default function ListingForm({ action, submitLabel, initial }: ListingFor
   // never travel to the server.
   const [icon, setIcon] = useState<File | null>(null);
   const [shots, setShots] = useState<File[]>([]);
+  const [offRatio, setOffRatio] = useState(0);
   const [preparing, setPreparing] = useState(0);
   const [fileError, setFileError] = useState<string | null>(null);
   const iconSeq = useRef(0);
@@ -101,6 +119,7 @@ export default function ListingForm({ action, submitLabel, initial }: ListingFor
     const picked = Array.from(input.files ?? []);
     const seq = ++shotsSeq.current;
     setFileError(null);
+    setOffRatio(0);
     if (picked.length === 0) {
       setShots([]);
       return;
@@ -118,7 +137,10 @@ export default function ListingForm({ action, submitLabel, initial }: ListingFor
       for (const f of picked) {
         prepared.push(await prepareImage(f, { maxSide: SCREENSHOT_MAX_SIDE, quality: 0.85, keepAlpha: false }));
       }
-      if (seq === shotsSeq.current) setShots(prepared);
+      if (seq === shotsSeq.current) {
+        setShots(prepared);
+        setOffRatio(await countOffRatio(prepared));
+      }
     } catch (err) {
       if (seq !== shotsSeq.current) return;
       setShots([]);
@@ -230,12 +252,20 @@ export default function ListingForm({ action, submitLabel, initial }: ListingFor
         <input id="screenshots" type="file" multiple accept="image/*"
           onChange={onShotsChange} className={fileClass} />
         <p className="text-xs text-ink-muted mt-2">
-          Up to {MAX_SCREENSHOTS} images, 10MB each. We shrink them to {SCREENSHOT_MAX_SIDE} pixels
-          and compress them a little so pages load fast.
+          Up to {MAX_SCREENSHOTS} images, 10MB each. Preview cards use a 16:10 frame, so a
+          1600 by 1000 pixel screenshot (or any 16:10 size) shows best. Other shapes are
+          cropped in the card; the full image opens on click. We shrink and lightly compress
+          uploads so pages load fast.
         </p>
         {shots.length > 0 && (
           <p className="text-xs text-accent-green mt-2">
             Ready to upload, {shots.length} {shots.length === 1 ? "image" : "images"}, {formatBytes(shotsTotal)} together.
+          </p>
+        )}
+        {offRatio > 0 && (
+          <p className="text-xs text-accent-gold mt-1">
+            {offRatio === 1 ? "One screenshot is" : `${offRatio} screenshots are`} not 16:10, so the preview
+            card will crop {offRatio === 1 ? "it" : "them"}. The full image still opens on click.
           </p>
         )}
         {initial && initial.screenshotCount > 0 && (

@@ -9,7 +9,8 @@ interface Shot {
   alt: string;
 }
 
-// Swipeable row of screenshots. Tapping one opens it in a lightbox where a
+// Swipeable row of screenshots, each cropped to the same 16:10 frame so the
+// row lines up. Tapping one opens the full image in a lightbox where a
 // tap, double click, or the zoom buttons switch between fit and 2x; when
 // zoomed, the image scrolls in both directions. Arrow keys and the side
 // buttons move between screenshots, Escape closes.
@@ -75,7 +76,7 @@ export default function ScreenshotGallery({ shots }: { shots: Shot[] }) {
               type="button"
               onClick={() => open(i)}
               aria-label={`Open screenshot ${i + 1} of ${shots.length}`}
-              className="group snap-start shrink-0 w-[84%] sm:w-[calc(50%-0.5rem)] rounded-xl border border-white/[0.08] hover:border-white/[0.2] overflow-hidden bg-bg-card transition-colors"
+              className="group snap-start shrink-0 w-[84%] sm:w-[calc(50%-0.5rem)] aspect-[16/10] rounded-xl border border-white/[0.08] hover:border-white/[0.2] overflow-hidden bg-bg-card transition-colors"
             >
               <Image
                 src={shot.src}
@@ -83,7 +84,7 @@ export default function ScreenshotGallery({ shots }: { shots: Shot[] }) {
                 width={800}
                 height={500}
                 sizes="(max-width: 640px) 84vw, 400px"
-                className="w-full h-auto group-hover:opacity-90 transition-opacity"
+                className="w-full h-full object-cover object-top group-hover:opacity-90 transition-opacity"
               />
             </button>
           ))}
