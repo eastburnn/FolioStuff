@@ -30,11 +30,12 @@ const COLUMNS = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/[0.05] pt-12 pb-8 px-4 sm:px-6">
+    <footer className="border-t border-white/[0.05] pt-8 sm:pt-12 pb-6 sm:pb-8 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4 mb-12">
+        {/* Phones: brand on top, then the three link groups side by side. */}
+        <div className="grid grid-cols-3 gap-x-4 gap-y-6 sm:gap-10 sm:grid-cols-2 lg:grid-cols-4 mb-8 sm:mb-12">
           {/* Brand */}
-          <div>
+          <div className="col-span-3 sm:col-span-1">
             <Link href="/" className="inline-flex items-center gap-2.5 mb-3">
               <Image src="/favicon.png" alt="Foliostuff" width={28} height={28} className="w-7 h-7 rounded-lg" />
               <span className="font-black tracking-tight text-base">
@@ -50,15 +51,15 @@ export default function Footer() {
 
           {COLUMNS.map((col) => (
             <div key={col.heading}>
-              <h3 className="text-xs text-ink-muted uppercase tracking-widest mb-4">
+              <h3 className="text-[10px] sm:text-xs text-ink-muted uppercase tracking-widest mb-2.5 sm:mb-4">
                 {col.heading}
               </h3>
-              <ul className="space-y-2.5">
+              <ul className="space-y-1.5 sm:space-y-2.5">
                 {col.links.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-ink-secondary hover:text-ink-primary transition-colors"
+                      className="text-xs sm:text-sm text-ink-secondary hover:text-ink-primary transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -69,7 +70,7 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="border-t border-white/[0.05] pt-6 flex flex-col items-center gap-3">
+        <div className="border-t border-white/[0.05] pt-5 sm:pt-6 flex flex-col items-center gap-2.5 sm:gap-3">
           <p className="text-[11px] text-ink-muted text-center max-w-2xl">
             For informational purposes only. Nothing on this site constitutes financial advice.
             Some links on this site are affiliate links. We may earn a commission if you sign up
