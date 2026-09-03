@@ -49,17 +49,6 @@ const WIDGETS = [
   },
 ];
 
-const OTHER_STUFF = [
-  {
-    href: "https://www.howmanytradingdays.com",
-    name: "How Many Trading Days",
-    description:
-      "Instantly see how many trading days are left in the year, whether the market is open, and every U.S. market holiday. All live, always accurate, and free.",
-    accent: "#8B5CF6",
-    logo: "/howmanytradingdays.png",
-  },
-];
-
 const EXTERNAL_TOOLS = [
   {
     href: "https://www.tradingview.com/?aff_id=165315",
@@ -117,56 +106,21 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Our other stuff */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-24">
-        <div className="border-t border-white/[0.06] pt-12">
-          <h2 className="text-xs text-ink-muted uppercase tracking-widest mb-6">
-            Featured stuff
-          </h2>
-          <div className="grid sm:grid-cols-2 gap-6">
-            {OTHER_STUFF.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-start gap-5 p-6 rounded-2xl border border-white/[0.07] bg-bg-card hover:border-white/[0.16] transition-all duration-300 hover:-translate-y-1"
-              >
-                <div className="w-12 h-12 rounded-xl shrink-0 overflow-hidden">
-                  <Image
-                    src={item.logo}
-                    alt={item.name}
-                    width={48}
-                    height={48}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <p className="text-base font-semibold text-ink-primary group-hover:text-white transition-colors">
-                    {item.name}
-                  </p>
-                  <p className="text-sm text-ink-secondary leading-relaxed mt-1.5">
-                    {item.description}
-                  </p>
-                  <span
-                    style={{ color: item.accent }}
-                    className="flex items-center gap-1.5 mt-4 text-xs font-semibold uppercase tracking-widest"
-                  >
-                    Visit site
-                    <ExternalLink
-                      size={12}
-                      className="transition-transform duration-200 group-hover:translate-x-1"
-                    />
-                  </span>
-                </div>
-              </a>
-            ))}
-            {featuredListings.map((listing) => (
-              <FeaturedListingCard key={listing.slug} listing={listing} />
-            ))}
+      {/* Featured listings, chosen in the admin directory */}
+      {featuredListings.length > 0 && (
+        <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-24">
+          <div className="border-t border-white/[0.06] pt-12">
+            <h2 className="text-xs text-ink-muted uppercase tracking-widest mb-6">
+              Featured stuff
+            </h2>
+            <div className="grid sm:grid-cols-2 gap-6">
+              {featuredListings.map((listing) => (
+                <FeaturedListingCard key={listing.slug} listing={listing} />
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Community directory */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-24">
