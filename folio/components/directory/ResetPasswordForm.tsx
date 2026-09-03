@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import PasswordInput from "./PasswordInput";
 
 export default function ResetPasswordForm() {
   const router = useRouter();
@@ -10,6 +11,8 @@ export default function ResetPasswordForm() {
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  const mismatch = confirm.length > 0 && password !== confirm;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,24 +38,19 @@ export default function ResetPasswordForm() {
     }
   };
 
-  const inputClass =
-    "w-full bg-bg-card border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-ink-primary placeholder-ink-muted focus:outline-none focus:border-white/20 transition-colors";
-
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label htmlFor="password" className="block text-xs text-ink-muted uppercase tracking-widest mb-2">
           New password
         </label>
-        <input
+        <PasswordInput
           id="password"
-          type="password"
           required
           minLength={8}
           autoComplete="new-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className={inputClass}
           placeholder="At least 8 characters"
         />
       </div>
@@ -60,20 +58,20 @@ export default function ResetPasswordForm() {
         <label htmlFor="confirm" className="block text-xs text-ink-muted uppercase tracking-widest mb-2">
           Confirm new password
         </label>
-        <input
+        <PasswordInput
           id="confirm"
-          type="password"
           required
           minLength={8}
           autoComplete="new-password"
           value={confirm}
           onChange={(e) => setConfirm(e.target.value)}
-          className={inputClass}
+          invalid={mismatch}
           placeholder="Same password again"
         />
+        {mismatch && <p className="text-xs text-red-400 mt-2">Passwords do not match.</p>}
       </div>
 
-      {error && <p className="text-sm text-red-400">{error}</p>}
+      {error && <p className="text-sm text-red-400" role="alert">{error}</p>}
 
       <button
         type="submit"
