@@ -78,61 +78,15 @@ export default function Navbar() {
       style={{ background: "rgba(6, 8, 15, 0.85)", backdropFilter: "blur(16px)" }}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2 min-w-0" ref={menuRef}>
-          {/* Phone menu button, left of the logo */}
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            aria-controls="mobile-menu"
-            className="md:hidden -ml-2 p-2 rounded-lg text-ink-secondary hover:text-ink-primary hover:bg-white/[0.06] transition-colors"
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+          <Image src="/favicon.png" alt="Foliostuff" width={28} height={28} className="w-7 h-7 rounded-lg" />
+          <span
+            className="font-black tracking-tight text-base transition-all duration-300 group-hover:-translate-y-0.5 group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]"
           >
-            {open ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
-          </button>
-
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-            <Image src="/favicon.png" alt="Foliostuff" width={28} height={28} className="w-7 h-7 rounded-lg" />
-            <span
-              className="font-black tracking-tight text-base transition-all duration-300 group-hover:-translate-y-0.5 group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]"
-            >
-              <span style={{ color: "#8B5CF6" }}>folio</span><span style={{ color: "#EEF2FF" }}>stuff</span>
-            </span>
-          </Link>
-
-          {/* Phone dropdown */}
-          {open && (
-            <div
-              id="mobile-menu"
-              className="md:hidden absolute left-4 top-[calc(100%+0.5rem)] w-56 rounded-2xl border border-white/[0.08] bg-bg-card p-2 shadow-2xl"
-            >
-              <nav className="flex flex-col">
-                {NAV_LINKS.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                      isActive(pathname, link.href)
-                        ? "bg-white/[0.07] text-ink-primary"
-                        : "text-ink-secondary hover:text-ink-primary hover:bg-white/[0.04]"
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </nav>
-              <div className="border-t border-white/[0.06] mt-2 pt-2 flex flex-col gap-2">
-                <Link href="/submit" className={`${submitClass} px-3 py-2.5 text-center`}>
-                  Submit
-                </Link>
-                <Link href={account.href} className={`${accountClass} px-3 py-2.5 text-center`}>
-                  {account.label}
-                </Link>
-              </div>
-            </div>
-          )}
-        </div>
+            <span style={{ color: "#8B5CF6" }}>folio</span><span style={{ color: "#EEF2FF" }}>stuff</span>
+          </span>
+        </Link>
 
         {/* Desktop links and actions */}
         <div className="hidden md:flex items-center gap-2 min-w-0">
@@ -159,6 +113,52 @@ export default function Navbar() {
               {account.label}
             </Link>
           </div>
+        </div>
+        {/* Phone menu, on the right */}
+        <div className="md:hidden relative" ref={menuRef}>
+          {/* Phone menu button */}
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            className="-mr-2 p-2 rounded-lg text-ink-secondary hover:text-ink-primary hover:bg-white/[0.06] transition-colors"
+          >
+            {open ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
+          </button>
+
+          {/* Phone dropdown */}
+          {open && (
+            <div
+              id="mobile-menu"
+              className="absolute right-0 top-[calc(100%+0.75rem)] w-56 rounded-2xl border border-white/[0.08] bg-bg-card p-2 shadow-2xl"
+            >
+              <nav className="flex flex-col">
+                {NAV_LINKS.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                      isActive(pathname, link.href)
+                        ? "bg-white/[0.07] text-ink-primary"
+                        : "text-ink-secondary hover:text-ink-primary hover:bg-white/[0.04]"
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+              <div className="border-t border-white/[0.06] mt-2 pt-2 flex flex-col gap-2">
+                <Link href="/submit" className={`${submitClass} px-3 py-2.5 text-center`}>
+                  Submit
+                </Link>
+                <Link href={account.href} className={`${accountClass} px-3 py-2.5 text-center`}>
+                  {account.label}
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>
