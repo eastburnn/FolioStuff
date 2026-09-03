@@ -170,14 +170,14 @@ export default async function Home() {
             Good stuff around the web
           </h2>
           {/* Phones: two square tiles per row; wider screens keep the row layout. */}
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 items-start">
             {EXTERNAL_TOOLS.map((tool) => (
               <a
                 key={tool.href}
                 href={tool.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex flex-col sm:flex-row items-start gap-2.5 sm:gap-3.5 p-3.5 sm:p-4 aspect-square sm:aspect-auto rounded-xl border border-white/[0.06] bg-bg-card/60 hover:border-white/[0.12] hover:bg-bg-card transition-all duration-200"
+                className="group flex flex-col sm:flex-row items-start gap-2.5 sm:gap-3.5 p-3.5 sm:p-4 rounded-xl border border-white/[0.06] bg-bg-card/60 hover:border-white/[0.12] hover:bg-bg-card transition-all duration-200"
               >
                 <div
                   style={tool.logo ? undefined : { background: `${tool.accent}18`, borderColor: `${tool.accent}28` }}
