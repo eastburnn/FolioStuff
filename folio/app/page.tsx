@@ -169,14 +169,15 @@ export default async function Home() {
           <h2 className="text-xs text-ink-muted uppercase tracking-widest mb-6">
             Good stuff around the web
           </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {/* Phones: two square tiles per row; wider screens keep the row layout. */}
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
             {EXTERNAL_TOOLS.map((tool) => (
               <a
                 key={tool.href}
                 href={tool.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-start gap-3.5 p-4 rounded-xl border border-white/[0.06] bg-bg-card/60 hover:border-white/[0.12] hover:bg-bg-card transition-all duration-200"
+                className="group flex flex-col sm:flex-row items-start gap-2.5 sm:gap-3.5 p-3.5 sm:p-4 aspect-square sm:aspect-auto rounded-xl border border-white/[0.06] bg-bg-card/60 hover:border-white/[0.12] hover:bg-bg-card transition-all duration-200"
               >
                 <div
                   style={tool.logo ? undefined : { background: `${tool.accent}18`, borderColor: `${tool.accent}28` }}
@@ -187,11 +188,11 @@ export default async function Home() {
                     : <ExternalLink size={13} style={{ color: tool.accent }} />
                   }
                 </div>
-                <div>
+                <div className="min-w-0">
                   <p className="text-sm font-semibold text-ink-primary group-hover:text-white transition-colors">
                     {tool.name}
                   </p>
-                  <p className="text-xs text-ink-muted leading-relaxed mt-0.5">
+                  <p className="text-[11px] sm:text-xs text-ink-muted leading-relaxed mt-0.5 line-clamp-3 sm:line-clamp-none">
                     {tool.description}
                   </p>
                 </div>

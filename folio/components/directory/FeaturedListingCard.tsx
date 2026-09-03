@@ -10,13 +10,13 @@ export default function FeaturedListingCard({ listing }: { listing: PublishedLis
   return (
     <Link
       href={`/directory/${listing.slug}`}
-      className="group relative flex items-start gap-5 p-6 rounded-2xl border border-accent-purple/40 bg-bg-card hover:border-accent-purple/70 hover:shadow-[0_0_40px_rgba(139,92,246,0.18)] transition-all duration-300 hover:-translate-y-1 overflow-hidden"
+      className="group relative flex flex-col sm:flex-row items-start gap-4 sm:gap-5 p-5 sm:p-6 rounded-2xl border border-accent-purple/40 bg-bg-card hover:border-accent-purple/70 hover:shadow-[0_0_40px_rgba(139,92,246,0.18)] transition-all duration-300 hover:-translate-y-1 overflow-hidden"
     >
       <div
         className="absolute inset-0 pointer-events-none opacity-70"
         style={{ background: "radial-gradient(circle at 0% 0%, rgba(139,92,246,0.14), transparent 60%)" }}
       />
-      <div className="relative w-14 h-14 rounded-xl shrink-0 overflow-hidden bg-white/[0.06]">
+      <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl shrink-0 overflow-hidden bg-white/[0.06]">
         {listing.icon_path && (
           <Image
             src={publicImageUrl(listing.icon_path)}
@@ -27,25 +27,26 @@ export default function FeaturedListingCard({ listing }: { listing: PublishedLis
           />
         )}
       </div>
-      <div className="relative min-w-0 flex flex-col">
-        <div className="flex items-center gap-2 flex-wrap">
-          <p className="text-base font-semibold text-ink-primary group-hover:text-white transition-colors">
+      <div className="relative min-w-0 w-full flex flex-col">
+        <div className="flex items-center gap-2">
+          <p className="text-base font-semibold text-ink-primary group-hover:text-white transition-colors truncate">
             {listing.name}
           </p>
-          <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border border-accent-purple/40 bg-accent-purple/[0.12] text-accent-purple">
+          <span className="inline-flex shrink-0 items-center gap-1 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border border-accent-purple/40 bg-accent-purple/[0.12] text-accent-purple">
             <Star size={10} />
             Featured
           </span>
         </div>
         <p className="text-sm text-ink-secondary leading-relaxed mt-1.5">{listing.tagline}</p>
         <div className="flex items-center gap-1.5 flex-wrap mt-3">
+          {/* Tags on one row; the maker credit drops below on narrow cards. */}
           {listing.tags.map((tag) => (
             <span key={tag} className="text-[10px] font-medium px-2 py-0.5 rounded-full border border-white/[0.1] text-ink-muted">
               {tag}
             </span>
           ))}
-          <span className="text-[11px] text-ink-muted ml-auto">by {listing.maker_name}</span>
         </div>
+        <span className="text-[11px] text-ink-muted mt-2 sm:mt-1.5 sm:self-end">by {listing.maker_name}</span>
       </div>
     </Link>
   );
