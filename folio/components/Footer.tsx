@@ -32,11 +32,11 @@ export default function Footer() {
   return (
     <footer className="border-t border-white/[0.05] pt-8 sm:pt-12 pb-6 sm:pb-8 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
-        {/* Phones: two columns, link groups first and the brand in the last
-            cell so the description fills a full column. */}
-        <div className="grid grid-cols-2 gap-x-6 gap-y-7 sm:gap-10 lg:grid-cols-4 mb-8 sm:mb-12">
+        {/* Phones: brand across the top, then the three link groups spread
+            across one row, each column sized to its longest link. */}
+        <div className="grid grid-cols-[auto_auto_auto] justify-between gap-x-3 gap-y-6 sm:gap-10 sm:grid-cols-2 lg:grid-cols-4 mb-8 sm:mb-12">
           {/* Brand */}
-          <div className="order-last sm:order-first">
+          <div className="col-span-3 sm:col-span-1">
             <Link href="/" className="inline-flex items-center gap-2.5 mb-3">
               <Image src="/favicon.png" alt="Foliostuff" width={28} height={28} className="w-7 h-7 rounded-lg" />
               <span className="font-black tracking-tight text-base">
@@ -60,7 +60,7 @@ export default function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-xs sm:text-sm text-ink-secondary hover:text-ink-primary transition-colors whitespace-nowrap"
+                      className="text-[11px] sm:text-sm text-ink-secondary hover:text-ink-primary transition-colors whitespace-nowrap"
                     >
                       {link.label}
                     </Link>
@@ -72,10 +72,9 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/[0.05] pt-5 sm:pt-6 flex flex-col items-center gap-2.5 sm:gap-3">
-          <p className="text-[11px] text-ink-muted text-center max-w-2xl">
-            For informational purposes only. Nothing on this site constitutes financial advice.
-            Some links on this site are affiliate links. We may earn a commission if you sign up
-            through them, at no extra cost to you.
+          <p className="text-[11px] text-ink-muted text-center max-w-xl">
+            For information only, not financial advice. Some links are affiliate links that may
+            earn us a commission at no cost to you.
           </p>
           <div className="flex items-center gap-1.5 text-xs text-ink-muted">
             <span>Made by</span>
