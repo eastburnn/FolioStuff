@@ -99,7 +99,7 @@ export default async function Home() {
         <h2 className="text-xs text-ink-muted uppercase tracking-widest mb-6">
           The tools
         </h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-7">
           {WIDGETS.map((w, i) => (
             <WidgetCard key={w.href} {...w} delay={i * 80} />
           ))}
