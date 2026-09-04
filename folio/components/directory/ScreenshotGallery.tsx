@@ -19,6 +19,36 @@ export default function ScreenshotGallery({ shots }: { shots: Shot[] }) {
   const [zoomed, setZoomed] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
+  const [canLeft, setCanLeft] = useState(false);
+  const [canRight, setCanRight] = useState(false);
+
+  // Edge hints only appear when there is something to scroll to in that
+  // direction, and disappear at either end of the row.
+  useEffect(() => {
+    const row = rowRef.current;
+    if (!row) return;
+    const update = () => {
+      setCanLeft(row.scrollLeft > 4);
+      setCanRight(row.scrollLeft + row.clientWidth < row.scrollWidth - 4);
+    };
+    update();
+    row.addEventListener("scroll", update, { passive: true });
+    const observer = new ResizeObserver(update);
+    observer.observe(row);
+    return () => {
+      row.removeEventListener("scroll", update);
+      observer.disconnect();
+    };
+  }, [shots.length]);
+
+  const scrollRow = (direction: 1 | -1) => {
+    const row = rowRef.current;
+    if (!row) return;
+    const card = row.firstElementChild as HTMLElement | null;
+    const amount = card ? card.getBoundingClientRect().width + 16 : row.clientWidth * 0.8;
+    row.scrollBy({ left: direction * amount, behavior: "smooth" });
+  };
 
   const open = (i: number) => {
     setZoomed(false);
@@ -69,7 +99,7 @@ export default function ScreenshotGallery({ shots }: { shots: Shot[] }) {
       {/* Phones: swipe through with the next one peeking in. Wider screens:
           a two-up row that still scrolls when there are more. */}
       <div className="relative -mx-4 sm:mx-0">
-        <div className="flex gap-3 sm:gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-none px-4 sm:px-0 pb-1">
+        <div ref={rowRef} className="flex gap-3 sm:gap-4 overflow-x-auto snap-x snap-mandatory scroll-pl-4 sm:scroll-pl-0 scrollbar-none px-4 sm:px-0">
           {shots.map((shot, i) => (
             <button
               key={shot.src}
@@ -89,11 +119,39 @@ export default function ScreenshotGallery({ shots }: { shots: Shot[] }) {
             </button>
           ))}
         </div>
-        {shots.length > 1 && (
+        {/* Phones: a soft fade at whichever edge still has more to show. */}
+        {canRight && (
           <div
             aria-hidden="true"
-            className="sm:hidden pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-bg-surface via-bg-surface/60 to-transparent"
+            className="sm:hidden pointer-events-none absolute inset-y-0 right-0 w-8 rounded-r-xl bg-gradient-to-l from-bg-surface/80 to-transparent transition-opacity"
           />
+        )}
+        {canLeft && (
+          <div
+            aria-hidden="true"
+            className="sm:hidden pointer-events-none absolute inset-y-0 left-0 w-8 rounded-l-xl bg-gradient-to-r from-bg-surface/80 to-transparent transition-opacity"
+          />
+        )}
+        {/* Wider screens: chevrons that step the row one card at a time. */}
+        {canLeft && (
+          <button
+            type="button"
+            onClick={() => scrollRow(-1)}
+            aria-label="Scroll screenshots left"
+            className={`${iconButton} hidden sm:flex absolute left-2 top-1/2 -translate-y-1/2 shadow-lg`}
+          >
+            <ChevronLeft size={18} aria-hidden="true" />
+          </button>
+        )}
+        {canRight && (
+          <button
+            type="button"
+            onClick={() => scrollRow(1)}
+            aria-label="Scroll screenshots right"
+            className={`${iconButton} hidden sm:flex absolute right-2 top-1/2 -translate-y-1/2 shadow-lg`}
+          >
+            <ChevronRight size={18} aria-hidden="true" />
+          </button>
         )}
       </div>
 
