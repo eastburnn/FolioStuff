@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import TurnstileWidget from "./TurnstileWidget";
 import TagsInput from "./TagsInput";
 import { SOCIAL_PLATFORMS, type Socials } from "@/lib/socials";
@@ -307,6 +308,15 @@ export default function ListingForm({ action, submitLabel, initial }: ListingFor
 
       {fileError && <p className="text-sm text-red-400" role="alert">{fileError}</p>}
       {state.error && <p className="text-sm text-red-400" role="alert">{state.error}</p>}
+
+      <p className="text-[11px] text-ink-muted leading-relaxed">
+        By submitting you confirm you have the rights to everything included, that the tool is
+        yours to list, and that you agree to the{" "}
+        <Link href="/terms" className="underline underline-offset-2 hover:text-ink-secondary">Terms of Service</Link>{" "}
+        and{" "}
+        <Link href="/privacy" className="underline underline-offset-2 hover:text-ink-secondary">Privacy Policy</Link>.
+        Listings can be paused or removed at our discretion.
+      </p>
 
       <button type="submit" disabled={pending || preparing > 0}
         className="rounded-xl bg-accent-purple/[0.12] border border-accent-purple/40 hover:bg-accent-purple/[0.22] hover:border-accent-purple/60 hover:shadow-[0_0_24px_rgba(139,92,246,0.25)] transition-all duration-200 px-6 py-3 text-sm font-semibold text-accent-purple disabled:opacity-50">

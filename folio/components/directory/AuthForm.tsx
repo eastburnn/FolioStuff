@@ -174,6 +174,15 @@ export default function AuthForm({ mode }: AuthFormProps) {
         {pending ? "One moment..." : isLogin ? "Log in" : "Create account"}
       </button>
 
+      {!isLogin && (
+        <p className="text-[11px] text-ink-muted text-center leading-relaxed">
+          By creating an account you agree to the{" "}
+          <Link href="/terms" className="underline underline-offset-2 hover:text-ink-secondary">Terms of Service</Link>{" "}
+          and{" "}
+          <Link href="/privacy" className="underline underline-offset-2 hover:text-ink-secondary">Privacy Policy</Link>.
+        </p>
+      )}
+
       <p className="text-xs text-ink-muted text-center pt-2">
         {isLogin ? (
           <>

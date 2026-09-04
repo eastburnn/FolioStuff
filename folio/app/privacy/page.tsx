@@ -34,7 +34,15 @@ const SECTIONS = [
     heading: "Accounts and directory submissions",
     paragraphs: [
       "Creating an account requires an email address and a password. Passwords are hashed and never visible to us. If you submit a tool, we store what you provide: the tool's name, URL, description, tags, any social links for the tool, and any images you upload. Your profile's display name, and your X handle if you set one, are attached to each listing and shown publicly with it. This data lives in our database and file storage, hosted by Supabase.",
-      "Pending submissions are private and visible only to you and the site admin, and rejected submissions are deleted outright rather than stored. Approved listings are public by design, since that is the point of submitting. Submitting requires a display name and username, which appear publicly on your listings and maker page; your bio, photo, and links are optional additions to that page. You can delete your own listings at any time from your dashboard, which removes their content and images. You can also delete your whole account from your profile settings, which permanently removes your profile, your listings, and every image you uploaded. We also reserve the right to remove listings or accounts ourselves, as described in the Terms of Service.",
+      "Images are prepared in your browser before upload: screenshots and icons are resized and compressed, and profile pictures are cropped to the square you choose. Only the prepared version reaches our servers; the original file never leaves your device. Images attached to pending submissions are private. Once a listing is approved, its icon and screenshots become public files, as does your profile picture.",
+      "Pending submissions are private and visible only to you and the site admin, and rejected submissions are deleted outright rather than stored. Approved listings are public by design, since that is the point of submitting. Submitting requires a display name and username, which appear publicly on your listings and maker page; your bio, photo, website, and social links are optional additions to that page. Social handles you enter are normalized to a standard form, and links get an https prefix if you leave it off. You can delete your own listings at any time from your dashboard, which removes their content and images. You can also delete your whole account from your profile settings, which permanently removes your profile, your listings, and every image you uploaded. We may also pause a listing (it stays stored but hidden from the site and search engines), feature it on the homepage, or remove listings or accounts ourselves, as described in the Terms of Service.",
+    ],
+  },
+  {
+    heading: "Logging in and cookies",
+    paragraphs: [
+      "When you log in, we set cookies that keep you signed in and one that records when you last visited. You are logged out automatically after 24 hours without a visit, so a forgotten session on a shared device does not stay open. If a login attempt fails, we tell you whether the problem is the email or the password, which means the login form will confirm whether an email address has an account here; every attempt is protected by the spam check described below, so this cannot be used to scan for accounts in bulk.",
+      "Beyond login and the analytics cookies described below, we set no cookies of our own.",
     ],
   },
   {
@@ -120,7 +128,7 @@ export default function PrivacyPage() {
           </div>
         </section>
 
-        <p className="text-xs text-ink-muted mt-10">Last updated: August 28, 2026</p>
+        <p className="text-xs text-ink-muted mt-10">Last updated: September 3, 2026</p>
       </div>
     </div>
   );
