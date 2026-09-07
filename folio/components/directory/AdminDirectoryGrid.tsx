@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import ToolSearch from "./ToolSearch";
+import ConfirmButton from "./ConfirmButton";
 
 export interface AdminDirectoryItem {
   id: string;
@@ -16,12 +17,16 @@ export interface AdminDirectoryItem {
   isPublished: boolean;
   isFeatured: boolean;
   editPending: boolean;
+  ownerId: string;
+  ownerEmail: string;
 }
 
 interface AdminDirectoryGridProps {
   items: AdminDirectoryItem[];
   publishAction: (formData: FormData) => Promise<void>;
   featureAction: (formData: FormData) => Promise<void>;
+  deleteAction: (formData: FormData) => Promise<void>;
+  deleteAccountAction: (formData: FormData) => Promise<void>;
 }
 
 function Toggle({
@@ -57,7 +62,7 @@ function Toggle({
   );
 }
 
-export default function AdminDirectoryGrid({ items, publishAction, featureAction }: AdminDirectoryGridProps) {
+export default function AdminDirectoryGrid({ items, publishAction, featureAction, deleteAction, deleteAccountAction }: AdminDirectoryGridProps) {
   const [query, setQuery] = useState("");
 
   const visible = useMemo(() => {
@@ -112,16 +117,39 @@ export default function AdminDirectoryGrid({ items, publishAction, featureAction
                   </div>
                   <p className="text-xs text-ink-secondary leading-relaxed mt-1">{item.tagline}</p>
                   <p className="text-[11px] text-ink-muted mt-1.5">
-                    {item.tags.join(", ")} · by {item.makerName} ·{" "}
+                    {item.tags.join(", ")} · by {item.makerName}
+                  </p>
+                  <p className="text-[11px] text-ink-muted mt-0.5 break-all">
                     <Link href={`/directory/${item.slug}`} className="underline underline-offset-2 hover:text-ink-secondary">
                       /directory/{item.slug}
                     </Link>
+                    {" · "}{item.ownerEmail}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-6 mt-4 pt-4 border-t border-white/[0.05]">
+              <div className="flex items-center flex-wrap gap-x-6 gap-y-3 mt-4 pt-4 border-t border-white/[0.05]">
                 <Toggle action={publishAction} id={item.id} on={item.isPublished} label="Live" onColor="bg-accent-green" />
                 <Toggle action={featureAction} id={item.id} on={item.isFeatured} label="Featured" onColor="bg-accent-purple" />
+              </div>
+              <div className="flex items-center flex-wrap gap-x-4 gap-y-2 mt-3 pt-3 border-t border-white/[0.05]">
+                <form action={deleteAction}>
+                  <input type="hidden" name="id" value={item.id} />
+                  <ConfirmButton
+                    message={`Permanently delete the listing "${item.name}" and its images?`}
+                    className="text-xs text-ink-muted hover:text-red-400 transition-colors"
+                  >
+                    Delete listing
+                  </ConfirmButton>
+                </form>
+                <form action={deleteAccountAction}>
+                  <input type="hidden" name="owner" value={item.ownerId} />
+                  <ConfirmButton
+                    message={`Delete this maker's ACCOUNT (${item.ownerEmail}) along with all of their listings and files? This cannot be undone.`}
+                    className="text-xs text-ink-muted hover:text-red-400 transition-colors"
+                  >
+                    Delete account
+                  </ConfirmButton>
+                </form>
               </div>
             </div>
           ))}

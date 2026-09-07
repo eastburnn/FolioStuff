@@ -5,7 +5,7 @@ import { getAdminContext } from "@/lib/admin-gate";
 import { normalizePublished, type ListingRow } from "@/lib/listings";
 import { publicImageUrl } from "@/lib/supabase/config";
 import AdminDirectoryGrid, { type AdminDirectoryItem } from "@/components/directory/AdminDirectoryGrid";
-import { setListingPublished, setListingFeatured } from "../actions";
+import { setListingPublished, setListingFeatured, deleteListingForm, deleteMakerAccountForm } from "../actions";
 
 export const metadata: Metadata = {
   title: "Admin Directory",
@@ -33,6 +33,13 @@ export default async function AdminDirectoryPage() {
     .order("reviewed_at", { ascending: false });
   const rows = (data ?? []) as ListingRow[];
 
+  // Maker emails, one lookup per unique owner, for the delete confirmations.
+  const ownerEmails = new Map<string, string>();
+  for (const ownerId of new Set(rows.map((r) => r.owner_id))) {
+    const { data: owner } = await admin.auth.admin.getUserById(ownerId);
+    if (owner?.user?.email) ownerEmails.set(ownerId, owner.user.email);
+  }
+
   const items: AdminDirectoryItem[] = rows.flatMap((row) => {
     const snapshot = normalizePublished(row.published);
     if (!snapshot) return [];
@@ -48,6 +55,8 @@ export default async function AdminDirectoryPage() {
         isPublished: row.is_published,
         isFeatured: row.is_featured,
         editPending: row.status === "pending",
+        ownerId: row.owner_id,
+        ownerEmail: ownerEmails.get(row.owner_id) ?? "unknown email",
       },
     ];
   });
@@ -65,6 +74,8 @@ export default async function AdminDirectoryPage() {
         items={items}
         publishAction={setListingPublished}
         featureAction={setListingFeatured}
+        deleteAction={deleteListingForm}
+        deleteAccountAction={deleteMakerAccountForm}
       />
     </div>
   );

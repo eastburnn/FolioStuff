@@ -5,14 +5,7 @@ import { getAdminContext } from "@/lib/admin-gate";
 import type { ListingRow } from "@/lib/listings";
 import { SOCIAL_PLATFORMS, normalizeSocials } from "@/lib/socials";
 import ConfirmButton from "@/components/directory/ConfirmButton";
-import {
-  approveListing,
-  rejectListing,
-  unpublishListing,
-  republishListing,
-  deleteListing,
-  deleteMakerAccount,
-} from "./actions";
+import { approveListing, rejectListing, deleteListing, deleteMakerAccount } from "./actions";
 
 export const metadata: Metadata = {
   title: "Admin",
@@ -47,12 +40,10 @@ export default async function AdminPage() {
   const listings = (rows ?? []) as ListingRow[];
 
   const pending = listings.filter((l) => l.status === "pending");
-  const published = listings.filter((l) => l.is_published);
-  const unpublished = listings.filter((l) => l.status === "approved" && !l.is_published);
 
   // Maker emails, one lookup per unique owner.
   const ownerEmails = new Map<string, string>();
-  for (const ownerId of new Set(listings.map((l) => l.owner_id))) {
+  for (const ownerId of new Set(pending.map((l) => l.owner_id))) {
     const { data } = await admin.auth.admin.getUserById(ownerId);
     if (data?.user?.email) ownerEmails.set(ownerId, data.user.email);
   }
@@ -101,7 +92,7 @@ export default async function AdminPage() {
         Review queue
       </h1>
 
-      <section className="mb-14">
+      <section>
         <h2 className="text-xs text-ink-muted uppercase tracking-widest mb-4">
           Pending ({pendingViews.length})
         </h2>
@@ -215,70 +206,6 @@ export default async function AdminPage() {
         )}
       </section>
 
-      <section className="mb-14">
-        <h2 className="text-xs text-ink-muted uppercase tracking-widest mb-4">
-          Live ({published.length})
-        </h2>
-        {published.length === 0 ? (
-          <p className="text-sm text-ink-muted">No published listings yet.</p>
-        ) : (
-          <div className="space-y-3">
-            {published.map((l) => (
-              <div key={l.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-white/[0.06] bg-bg-card/60 p-4">
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-ink-primary truncate">
-                    {l.published?.name ?? l.name}
-                    {l.status === "pending" && (
-                      <span className="ml-2 text-[10px] font-semibold uppercase tracking-wider text-accent-gold">edit pending</span>
-                    )}
-                  </p>
-                  <a href={`/directory/${l.slug}`} className="block text-xs text-ink-muted hover:text-ink-secondary truncate">
-                    /directory/{l.slug}
-                  </a>
-                  <span className="block text-xs text-ink-muted/70 break-all">{ownerEmails.get(l.owner_id) ?? "unknown email"}</span>
-                </div>
-                <div className="flex items-center flex-wrap gap-x-4 gap-y-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-0 border-white/[0.05]">
-                  <form action={unpublishListing.bind(null, l.id)}>
-                    <button type="submit" className="text-xs text-ink-muted hover:text-red-400 transition-colors">
-                      Unpublish
-                    </button>
-                  </form>
-                  {dangerLinks(l)}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
-
-      {unpublished.length > 0 && (
-        <section className="mb-14">
-          <h2 className="text-xs text-ink-muted uppercase tracking-widest mb-4">
-            Unpublished ({unpublished.length})
-          </h2>
-          <div className="space-y-3">
-            {unpublished.map((l) => (
-              <div key={l.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-white/[0.06] bg-bg-card/60 p-4">
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-ink-primary truncate">{l.published?.name ?? l.name}</p>
-                  <span className="block text-xs text-ink-muted truncate">/directory/{l.slug}</span>
-                  <span className="block text-xs text-ink-muted/70 break-all">{ownerEmails.get(l.owner_id) ?? "unknown email"}</span>
-                </div>
-                <div className="flex items-center flex-wrap gap-x-4 gap-y-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-0 border-white/[0.05]">
-                  {l.published && (
-                    <form action={republishListing.bind(null, l.id)}>
-                      <button type="submit" className="text-xs text-accent-green hover:underline transition-colors">
-                        Republish
-                      </button>
-                    </form>
-                  )}
-                  {dangerLinks(l)}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
     </div>
   );
 }

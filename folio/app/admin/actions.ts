@@ -366,3 +366,19 @@ export async function setListingFeatured(formData: FormData): Promise<void> {
   revalidatePath("/");
   revalidatePath("/admin/directory");
 }
+
+// Form versions of the destructive actions for the Manage Directory grid,
+// which is a client component and passes ids through hidden inputs.
+export async function deleteListingForm(formData: FormData): Promise<void> {
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  await deleteListing(id);
+  revalidatePath("/admin/directory");
+}
+
+export async function deleteMakerAccountForm(formData: FormData): Promise<void> {
+  const owner = String(formData.get("owner") ?? "");
+  if (!owner) return;
+  await deleteMakerAccount(owner);
+  revalidatePath("/admin/directory");
+}
