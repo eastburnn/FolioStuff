@@ -8,7 +8,7 @@ import AdminDirectoryGrid, { type AdminDirectoryItem } from "@/components/direct
 import { setListingPublished, setListingFeatured, deleteListingForm, deleteMakerAccountForm } from "../actions";
 
 export const metadata: Metadata = {
-  title: "Admin Directory",
+  title: "Manage Directory",
   robots: { index: false, follow: false },
 };
 
@@ -63,12 +63,12 @@ export default async function AdminDirectoryPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-ink-primary tracking-tight mb-3">Directory</h1>
+      <h1 className="text-3xl font-bold text-ink-primary tracking-tight mb-3">Manage Directory</h1>
       <p className="text-sm text-ink-secondary mb-8 max-w-2xl">
-        Every approved tool. <span className="text-ink-primary">Live</span> controls whether it
-        appears on the site and in the sitemap; switching it off pauses the listing without
-        deleting anything. <span className="text-ink-primary">Featured</span> adds a larger card
-        to the homepage Featured section.
+        Every tool that has been approved, live or paused, with its controls in one place.{" "}
+        <span className="text-ink-primary">Live</span> shows or hides it on the site and in the
+        sitemap without deleting anything. <span className="text-ink-primary">Featured</span>{" "}
+        adds a larger card to the homepage. Deleting a listing or a maker account is permanent.
       </p>
       <AdminDirectoryGrid
         items={items}

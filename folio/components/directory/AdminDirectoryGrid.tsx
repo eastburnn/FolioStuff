@@ -91,9 +91,9 @@ export default function AdminDirectoryGrid({ items, publishAction, featureAction
           {visible.map((item) => (
             <div
               key={item.id}
-              className={`rounded-2xl border bg-bg-card p-5 ${item.isPublished ? "border-white/[0.08]" : "border-white/[0.06] opacity-70"}`}
+              className={`flex flex-col rounded-2xl border bg-bg-card p-5 ${item.isPublished ? "border-white/[0.08]" : "border-white/[0.06] opacity-70"}`}
             >
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-4 flex-1">
                 <div className="w-11 h-11 rounded-xl shrink-0 overflow-hidden bg-white/[0.06]">
                   {item.iconUrl && (
                     <Image src={item.iconUrl} alt="" width={44} height={44} className="w-full h-full object-cover" />
@@ -127,7 +127,7 @@ export default function AdminDirectoryGrid({ items, publishAction, featureAction
                   </p>
                 </div>
               </div>
-              <div className="flex items-center flex-wrap gap-x-6 gap-y-3 mt-4 pt-4 border-t border-white/[0.05]">
+              <div className="flex items-center flex-wrap gap-x-6 gap-y-3 mt-auto pt-4 border-t border-white/[0.05]">
                 <Toggle action={publishAction} id={item.id} on={item.isPublished} label="Live" onColor="bg-accent-green" />
                 <Toggle action={featureAction} id={item.id} on={item.isFeatured} label="Featured" onColor="bg-accent-purple" />
               </div>
