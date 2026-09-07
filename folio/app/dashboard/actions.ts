@@ -263,7 +263,10 @@ export async function updateProfile(
   }
 
   revalidatePath("/dashboard/profile");
-  if (username) revalidatePath(`/makers/${username}`);
+  if (username) {
+    revalidatePath(`/makers/${username}`);
+    revalidatePath("/sitemap.xml");
+  }
   if (prevProfile?.username && prevProfile.username !== username) {
     revalidatePath(`/makers/${prevProfile.username}`);
   }
