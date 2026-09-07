@@ -43,7 +43,11 @@ export async function middleware(request: NextRequest) {
 
   if (user) {
     const lastSeen = Number(request.cookies.get(LAST_SEEN_COOKIE)?.value ?? 0);
-    if (lastSeen > 0 && Date.now() - lastSeen > INACTIVITY_LIMIT_MS) {
+    // A stamp left behind by an older session must not end a brand new one:
+    // a sign-in newer than the stamp means the user just came back.
+    const signedInAt = Date.parse(user.last_sign_in_at ?? "") || 0;
+    const stale = lastSeen > 0 && Date.now() - lastSeen > INACTIVITY_LIMIT_MS && signedInAt <= lastSeen;
+    if (stale) {
       // Away too long: end the session and send them to log in again.
       await supabase.auth.signOut();
       const loginUrl = request.nextUrl.clone();

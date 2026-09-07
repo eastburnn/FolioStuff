@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { safeNext } from "@/lib/safe-next";
@@ -29,7 +30,17 @@ export async function login(_prev: LoginState, formData: FormData): Promise<Logi
     password,
     options: { captchaToken },
   });
-  if (!error) redirect(next);
+  if (!error) {
+    // Fresh last-visit stamp so an old one cannot end this new session.
+    const jar = await cookies();
+    jar.set("fs-last-seen", String(Date.now()), {
+      path: "/",
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60 * 24 * 400,
+    });
+    redirect(next);
+  }
 
   const message = error.message.toLowerCase();
   if (message.includes("invalid login credentials")) {
