@@ -75,6 +75,7 @@ export default async function AdminPage() {
 
   const dangerLinks = (l: ListingRow, size = "text-xs") => (
     <>
+      {/* Wrapped by the caller's flex row; each is its own form. */}
       <form action={deleteListing.bind(null, l.id)}>
         <ConfirmButton
           message={`Permanently delete the listing "${l.published?.name ?? l.name}" and its images?`}
@@ -113,9 +114,9 @@ export default async function AdminPage() {
               const socialEntries = SOCIAL_PLATFORMS.filter((p) => socials[p.key]);
               const isEdit = Boolean(listing.published);
               return (
-                <div key={listing.id} className="rounded-2xl border border-white/[0.08] bg-bg-card p-6">
+                <div key={listing.id} className="rounded-2xl border border-white/[0.08] bg-bg-card p-4 sm:p-6">
                   {isEdit && (
-                    <div className="flex items-center justify-between gap-3 mb-4 rounded-lg border border-accent-gold/30 bg-accent-gold/[0.08] px-3 py-2">
+                    <div className="flex items-center justify-between gap-3 flex-wrap mb-4 rounded-lg border border-accent-gold/30 bg-accent-gold/[0.08] px-3 py-2">
                       <span className="text-[10px] font-semibold uppercase tracking-wider text-accent-gold">
                         {listing.is_published ? "Edit of a live listing" : "Edit of an unpublished listing"}
                       </span>
@@ -128,36 +129,49 @@ export default async function AdminPage() {
                     </div>
                   )}
 
-                  <div className="flex items-start gap-4 mb-4">
+                  {/* Icon beside the name and link; details stack beneath in
+                      short lines so nothing wraps mid-word on a phone. */}
+                  <div className="flex items-center gap-3 mb-3">
                     {iconUrl ? (
                       // Signed URL from the private bucket; plain img avoids
                       // exposing the signed link through the optimizer.
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={iconUrl} alt="" className="w-12 h-12 rounded-xl object-cover shrink-0" />
+                      <img src={iconUrl} alt="" className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl object-cover shrink-0" />
                     ) : (
-                      <div className="w-12 h-12 rounded-xl bg-white/[0.06] shrink-0" />
+                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white/[0.06] shrink-0" />
                     )}
                     <div className="min-w-0">
-                      <p className="text-base font-semibold text-ink-primary">{listing.name}</p>
+                      <p className="text-base font-semibold text-ink-primary leading-tight truncate">{listing.name}</p>
                       <a href={listing.url} target="_blank" rel="noopener noreferrer nofollow"
-                        className="text-xs text-accent-purple hover:underline break-all">
-                        {listing.url}
+                        className="block text-xs text-accent-purple hover:underline truncate">
+                        {listing.url.replace(/^https?:\/\//, "")}
                       </a>
-                      <p className="text-xs text-ink-muted mt-1">
-                        {(listing.tags ?? []).join(", ") || "no tags"} · by {listing.maker_name}
-                        {listing.maker_x_handle ? ` (@${listing.maker_x_handle})` : ""}
-                        {" · "}{ownerEmails.get(listing.owner_id) ?? "unknown email"}
-                      </p>
-                      {socialEntries.map((p) => (
-                        <p key={p.key} className="text-xs text-ink-muted mt-1 break-all">
-                          {p.label}:{" "}
-                          <a href={socials[p.key]} target="_blank" rel="noopener noreferrer nofollow" className="hover:text-ink-secondary underline underline-offset-2">
-                            {socials[p.key]}
-                          </a>
-                        </p>
-                      ))}
                     </div>
                   </div>
+                  <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
+                    {(listing.tags ?? []).map((tag) => (
+                      <span key={tag} className="text-[10px] font-medium px-2 py-0.5 rounded-full border border-white/[0.1] text-ink-muted">
+                        {tag}
+                      </span>
+                    ))}
+                    {(listing.tags ?? []).length === 0 && <span className="text-xs text-ink-muted">no tags</span>}
+                  </div>
+                  <p className="text-xs text-ink-muted">
+                    by {listing.maker_name}
+                    {listing.maker_x_handle ? ` (@${listing.maker_x_handle})` : ""}
+                  </p>
+                  <p className="text-xs text-ink-muted break-all">{ownerEmails.get(listing.owner_id) ?? "unknown email"}</p>
+                  {socialEntries.length > 0 && (
+                    <p className="text-xs text-ink-muted mt-1 flex flex-wrap gap-x-3 gap-y-1">
+                      {socialEntries.map((p) => (
+                        <a key={p.key} href={socials[p.key]} target="_blank" rel="noopener noreferrer nofollow"
+                          className="hover:text-ink-secondary underline underline-offset-2">
+                          {p.label}
+                        </a>
+                      ))}
+                    </p>
+                  )}
+                  <div className="mb-4" />
 
                   <p className="text-sm text-ink-secondary mb-1 font-medium">{listing.tagline}</p>
                   <p className="text-sm text-ink-secondary leading-relaxed whitespace-pre-line mb-4">
@@ -174,24 +188,24 @@ export default async function AdminPage() {
                   )}
 
                   <div className="flex flex-col sm:flex-row gap-3">
-                    <form action={approveListing.bind(null, listing.id)}>
+                    <form action={approveListing.bind(null, listing.id)} className="sm:shrink-0">
                       <button type="submit"
-                        className="rounded-xl bg-accent-green/[0.15] border border-accent-green/40 hover:bg-accent-green/[0.25] transition-colors px-5 py-2.5 text-sm font-semibold text-accent-green">
-                        {listing.is_published ? "Approve and replace live version" : "Approve and publish"}
+                        className="w-full rounded-xl bg-accent-green/[0.15] border border-accent-green/40 hover:bg-accent-green/[0.25] transition-colors px-5 py-2.5 text-sm font-semibold text-accent-green whitespace-nowrap">
+                        {listing.is_published ? "Approve and replace live" : "Approve and publish"}
                       </button>
                     </form>
-                    <form action={rejectListing.bind(null, listing.id)} className="flex flex-1 gap-3">
+                    <form action={rejectListing.bind(null, listing.id)} className="flex flex-col sm:flex-row flex-1 gap-3 min-w-0">
                       <input name="feedback" type="text" required maxLength={1000}
-                        placeholder={isEdit ? "Feedback (the previous version is kept)" : "Feedback for the maker (required to reject)"}
-                        className="flex-1 bg-bg-base border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-ink-primary placeholder-ink-muted focus:outline-none focus:border-white/20" />
+                        placeholder={isEdit ? "Feedback (previous version is kept)" : "Feedback for the maker"}
+                        className="flex-1 min-w-0 bg-bg-base border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-ink-primary placeholder-ink-muted focus:outline-none focus:border-white/20" />
                       <button type="submit"
-                        className="rounded-xl bg-red-400/[0.12] border border-red-400/40 hover:bg-red-400/[0.2] transition-colors px-5 py-2.5 text-sm font-semibold text-red-400">
+                        className="rounded-xl bg-red-400/[0.12] border border-red-400/40 hover:bg-red-400/[0.2] transition-colors px-5 py-2.5 text-sm font-semibold text-red-400 whitespace-nowrap">
                         {isEdit ? "Reject changes" : "Reject"}
                       </button>
                     </form>
                   </div>
 
-                  <div className="flex items-center gap-4 mt-4 pt-3 border-t border-white/[0.05]">
+                  <div className="flex items-center flex-wrap gap-x-4 gap-y-2 mt-4 pt-3 border-t border-white/[0.05]">
                     {dangerLinks(listing)}
                   </div>
                 </div>
@@ -210,20 +224,20 @@ export default async function AdminPage() {
         ) : (
           <div className="space-y-3">
             {published.map((l) => (
-              <div key={l.id} className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-bg-card/60 p-4">
+              <div key={l.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-white/[0.06] bg-bg-card/60 p-4">
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-ink-primary">
+                  <p className="text-sm font-semibold text-ink-primary truncate">
                     {l.published?.name ?? l.name}
                     {l.status === "pending" && (
                       <span className="ml-2 text-[10px] font-semibold uppercase tracking-wider text-accent-gold">edit pending</span>
                     )}
                   </p>
-                  <a href={`/directory/${l.slug}`} className="text-xs text-ink-muted hover:text-ink-secondary">
+                  <a href={`/directory/${l.slug}`} className="block text-xs text-ink-muted hover:text-ink-secondary truncate">
                     /directory/{l.slug}
                   </a>
-                  <span className="text-xs text-ink-muted/70"> · {ownerEmails.get(l.owner_id) ?? "unknown email"}</span>
+                  <span className="block text-xs text-ink-muted/70 break-all">{ownerEmails.get(l.owner_id) ?? "unknown email"}</span>
                 </div>
-                <div className="flex items-center gap-4 shrink-0">
+                <div className="flex items-center flex-wrap gap-x-4 gap-y-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-0 border-white/[0.05]">
                   <form action={unpublishListing.bind(null, l.id)}>
                     <button type="submit" className="text-xs text-ink-muted hover:text-red-400 transition-colors">
                       Unpublish
@@ -244,12 +258,13 @@ export default async function AdminPage() {
           </h2>
           <div className="space-y-3">
             {unpublished.map((l) => (
-              <div key={l.id} className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.06] bg-bg-card/60 p-4">
+              <div key={l.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-white/[0.06] bg-bg-card/60 p-4">
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-ink-primary">{l.published?.name ?? l.name}</p>
-                  <span className="text-xs text-ink-muted">/directory/{l.slug} · {ownerEmails.get(l.owner_id) ?? "unknown email"}</span>
+                  <p className="text-sm font-semibold text-ink-primary truncate">{l.published?.name ?? l.name}</p>
+                  <span className="block text-xs text-ink-muted truncate">/directory/{l.slug}</span>
+                  <span className="block text-xs text-ink-muted/70 break-all">{ownerEmails.get(l.owner_id) ?? "unknown email"}</span>
                 </div>
-                <div className="flex items-center gap-4 shrink-0">
+                <div className="flex items-center flex-wrap gap-x-4 gap-y-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-0 border-white/[0.05]">
                   {l.published && (
                     <form action={republishListing.bind(null, l.id)}>
                       <button type="submit" className="text-xs text-accent-green hover:underline transition-colors">
