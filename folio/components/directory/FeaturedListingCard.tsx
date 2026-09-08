@@ -24,7 +24,7 @@ export default function FeaturedListingCard({ listing }: { listing: PublishedLis
   return (
     <Link
       href={`/directory/${listing.slug}`}
-      className="group relative flex flex-col sm:flex-row items-start gap-3 sm:gap-5 p-4 sm:p-6 rounded-2xl border border-accent-purple/40 bg-bg-card hover:border-accent-purple/70 hover:shadow-[0_0_40px_rgba(139,92,246,0.18)] transition-all duration-300 hover:-translate-y-1 overflow-hidden"
+      className="group relative flex flex-col sm:flex-row items-start gap-3 sm:gap-5 p-4 sm:p-6 h-full rounded-2xl border border-accent-purple/40 bg-bg-card hover:border-accent-purple/70 hover:shadow-[0_0_40px_rgba(139,92,246,0.18)] transition-all duration-300 hover:-translate-y-1 overflow-hidden"
     >
       <div
         className="absolute inset-0 pointer-events-none opacity-70"
@@ -44,10 +44,10 @@ export default function FeaturedListingCard({ listing }: { listing: PublishedLis
         </div>
         <div className="flex sm:hidden items-center gap-2 min-w-0">{nameRow}</div>
       </div>
-      <div className="relative min-w-0 w-full flex flex-col">
+      <div className="relative min-w-0 w-full flex-1 flex flex-col self-stretch">
         <div className="hidden sm:flex items-center gap-2 min-w-0">{nameRow}</div>
         <p className="text-sm text-ink-secondary leading-relaxed sm:mt-1.5">{listing.tagline}</p>
-        <div className="flex items-center gap-1.5 flex-wrap mt-2.5 sm:mt-3">
+        <div className="flex items-center gap-1.5 flex-wrap mt-auto pt-2.5 sm:pt-3">
           {listing.tags.map((tag) => (
             <span key={tag} className="text-[10px] font-medium px-2 py-0.5 rounded-full border border-white/[0.1] text-ink-muted">
               {tag}

@@ -7,7 +7,7 @@ export default function ListingCard({ listing }: { listing: PublishedListing }) 
   return (
     <Link
       href={`/directory/${listing.slug}`}
-      className="group flex items-start gap-4 p-5 rounded-2xl border border-white/[0.07] bg-bg-card hover:border-white/[0.16] transition-all duration-300 hover:-translate-y-1"
+      className="group flex items-start gap-4 p-5 h-full rounded-2xl border border-white/[0.07] bg-bg-card hover:border-white/[0.16] transition-all duration-300 hover:-translate-y-1"
     >
       <div className="w-11 h-11 rounded-xl shrink-0 overflow-hidden bg-white/[0.06]">
         {listing.icon_path && (
@@ -20,12 +20,12 @@ export default function ListingCard({ listing }: { listing: PublishedListing }) 
           />
         )}
       </div>
-      <div className="min-w-0">
+      <div className="min-w-0 flex-1 flex flex-col self-stretch">
         <p className="text-sm font-semibold text-ink-primary group-hover:text-white transition-colors">
           {listing.name}
         </p>
         <p className="text-xs text-ink-secondary leading-relaxed mt-1">{listing.tagline}</p>
-        <div className="flex items-center gap-1.5 flex-wrap mt-2.5">
+        <div className="flex items-center gap-1.5 flex-wrap mt-auto pt-3">
           {listing.tags.map((tag) => (
             <span
               key={tag}
