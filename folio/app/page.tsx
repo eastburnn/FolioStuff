@@ -96,7 +96,7 @@ export default async function Home() {
         <p className="text-[11px] sm:text-xs uppercase tracking-[0.28em] text-ink-muted mb-6 sm:mb-7">
           Useful tools for managing your money
         </p>
-        <HeroSearch tools={searchTools} tags={searchTags} />
+        <HeroSearch ownTools={WIDGETS.map((w) => ({ name: w.title, href: w.href }))} tools={searchTools} tags={searchTags} />
       </section>
 
       {/* Widget cards */}

@@ -2,21 +2,26 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search, Tag, Wrench } from "lucide-react";
+import { Globe, Search, Tag, Wrench } from "lucide-react";
 
 interface HeroSearchProps {
+  // The site's own calculators.
+  ownTools: { name: string; href: string }[];
+  // Directory listings.
   tools: { name: string; slug: string }[];
   tags: string[];
 }
 
 type Suggestion =
+  | { kind: "own"; label: string; href: string }
   | { kind: "tool"; label: string; href: string }
   | { kind: "tag"; label: string; href: string };
 
-// Homepage search. Suggests matching tool names (which open the tool's page)
-// and tags (which open the directory filtered to that tag). Pressing Enter
-// with free text opens the directory with that search applied.
-export default function HeroSearch({ tools, tags }: HeroSearchProps) {
+// Homepage search. Suggests the site's own tools (wrench), directory
+// listings (globe), and tags (which open the directory filtered to that
+// tag). Pressing Enter with free text opens the directory with that search
+// applied, unless it exactly names a tool.
+export default function HeroSearch({ ownTools, tools, tags }: HeroSearchProps) {
   const router = useRouter();
   const [value, setValue] = useState("");
   const [open, setOpen] = useState(false);
@@ -28,6 +33,11 @@ export default function HeroSearch({ tools, tags }: HeroSearchProps) {
     Number(!a.toLowerCase().startsWith(q)) - Number(!b.toLowerCase().startsWith(q)) || a.localeCompare(b);
   const suggestions: Suggestion[] = q
     ? [
+        ...ownTools
+          .filter((t) => t.name.toLowerCase().includes(q))
+          .sort((a, b) => byPrefix(a.name, b.name))
+          .slice(0, 3)
+          .map((t) => ({ kind: "own" as const, label: t.name, href: t.href })),
         ...tools
           .filter((t) => t.name.toLowerCase().includes(q))
           .sort((a, b) => byPrefix(a.name, b.name))
@@ -58,6 +68,8 @@ export default function HeroSearch({ tools, tags }: HeroSearchProps) {
     const text = value.trim();
     if (!text) return;
     // An exact tool name goes straight to the tool; anything else searches.
+    const own = ownTools.find((t) => t.name.toLowerCase() === text.toLowerCase());
+    if (own) return go(own.href);
     const exact = tools.find((t) => t.name.toLowerCase() === text.toLowerCase());
     go(exact ? `/directory/${exact.slug}` : `/directory?q=${encodeURIComponent(text)}`);
   };
@@ -129,14 +141,16 @@ export default function HeroSearch({ tools, tags }: HeroSearchProps) {
                 i === highlight ? "bg-white/[0.06] text-ink-primary" : "text-ink-secondary hover:bg-white/[0.06] hover:text-ink-primary"
               }`}
             >
-              {s.kind === "tool" ? (
+              {s.kind === "own" ? (
                 <Wrench size={14} className="text-accent-purple shrink-0" aria-hidden="true" />
+              ) : s.kind === "tool" ? (
+                <Globe size={14} className="text-sky-400 shrink-0" aria-hidden="true" />
               ) : (
                 <Tag size={14} className="text-accent-green shrink-0" aria-hidden="true" />
               )}
               <span className="truncate">{s.label}</span>
               <span className="ml-auto text-[10px] uppercase tracking-wider text-ink-muted shrink-0">
-                {s.kind === "tool" ? "Tool" : "Tag"}
+                {s.kind === "own" ? "Tool" : s.kind === "tool" ? "Directory" : "Tag"}
               </span>
             </li>
           ))}
