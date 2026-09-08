@@ -15,7 +15,7 @@ export default function DirectoryGrid({ listings }: { listings: PublishedListing
   const searchParams = useSearchParams();
   const rawTag = searchParams.get("tag");
   const activeTag = rawTag ? normalizeTag(rawTag) : null;
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(() => (searchParams.get("q") ?? "").slice(0, 100));
 
   const tagCounts = useMemo(() => {
     const counts = new Map<string, number>();

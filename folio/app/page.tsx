@@ -5,6 +5,7 @@ import WidgetCard from "@/components/WidgetCard";
 import HeroWordmark from "@/components/HeroWordmark";
 import ListingCard from "@/components/directory/ListingCard";
 import FeaturedListingCard from "@/components/directory/FeaturedListingCard";
+import HeroSearch from "@/components/directory/HeroSearch";
 import { getPublishedListings, getFeaturedListings } from "@/lib/listings";
 import { safeJsonLd } from "@/lib/json-ld";
 
@@ -74,10 +75,13 @@ const EXTERNAL_TOOLS = [
 ];
 
 export default async function Home() {
-  const [communityListings, featuredListings] = await Promise.all([
-    getPublishedListings(6),
+  const [allListings, featuredListings] = await Promise.all([
+    getPublishedListings(),
     getFeaturedListings(),
   ]);
+  const communityListings = allListings.slice(0, 6);
+  const searchTools = allListings.map((l) => ({ name: l.name, slug: l.slug }));
+  const searchTags = [...new Set(allListings.flatMap((l) => l.tags))].sort();
 
   return (
     <div className="grid-bg hero-glow min-h-screen">
@@ -88,10 +92,7 @@ export default async function Home() {
       {/* Hero */}
       <section className="pt-28 pb-20 px-4 sm:px-6 text-center">
         <HeroWordmark />
-
-        <p className="text-base sm:text-lg text-ink-secondary max-w-lg mx-auto leading-relaxed">
-          Tools for traders, investors, and stock market enthusiasts.
-        </p>
+        <HeroSearch tools={searchTools} tags={searchTags} />
       </section>
 
       {/* Widget cards */}

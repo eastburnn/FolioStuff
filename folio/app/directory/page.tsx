@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 export default async function ToolsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tag?: string }>;
+  searchParams: Promise<{ tag?: string; q?: string }>;
 }) {
   await searchParams;
   const listings = await getPublishedListings();
