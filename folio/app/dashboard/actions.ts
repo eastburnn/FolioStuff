@@ -95,7 +95,7 @@ export async function updateListing(
 
   const isEdit = Boolean(snapshot);
   await notifyAdminNewSubmission(fields.name, isEdit);
-  redirect(isEdit ? "/dashboard?edited=1" : "/dashboard?submitted=1");
+  redirect(isEdit ? "/dashboard/maker?edited=1" : "/dashboard/maker?submitted=1");
 }
 
 export async function deleteOwnListing(listingId: string): Promise<void> {
@@ -135,7 +135,7 @@ export async function deleteOwnListing(listingId: string): Promise<void> {
     const { data: profile } = await supabase.from("profiles").select("username").eq("id", user.id).maybeSingle();
     if (profile?.username) revalidatePath(`/makers/${profile.username}`);
   }
-  redirect("/dashboard?deleted=1");
+  redirect("/dashboard/maker?deleted=1");
 }
 
 export async function updateProfile(

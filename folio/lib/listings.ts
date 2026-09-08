@@ -130,6 +130,22 @@ export async function getPublishedListingsByOwner(ownerId: string): Promise<Publ
   }
 }
 
+export async function getPublishedListingsBySlugs(slugs: string[]): Promise<PublishedListing[]> {
+  if (!hasSupabaseEnv() || slugs.length === 0) return [];
+  try {
+    const { data, error } = await publicClient()
+      .from("published_listings")
+      .select("published")
+      .in("slug", slugs);
+    if (error || !data) return [];
+    return data
+      .map((row) => normalizePublished(row.published))
+      .filter((p): p is PublishedListing => p !== null);
+  } catch {
+    return [];
+  }
+}
+
 export async function getListingOwnerId(slug: string): Promise<string | null> {
   if (!hasSupabaseEnv()) return null;
   try {

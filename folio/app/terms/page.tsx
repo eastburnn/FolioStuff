@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
 
 export const metadata: Metadata = {
@@ -103,15 +104,10 @@ export default function TermsPage() {
           <h2 className="text-xs text-ink-muted uppercase tracking-widest mb-4">Contact</h2>
           <div className="rounded-2xl border border-white/[0.06] bg-bg-card p-6 text-sm text-ink-secondary leading-relaxed">
             <p>
-              Questions about these terms? Reach out on{" "}
-              <a
-                href="https://x.com/itschrisray"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-ink-primary hover:text-white transition-colors underline underline-offset-2"
-              >
-                X&nbsp;(@itschrisray)
-              </a>
+              Questions about these terms? Use the{" "}
+              <Link href="/contact" className="text-ink-primary hover:text-white transition-colors underline underline-offset-2">
+                contact form
+              </Link>
               .
             </p>
           </div>

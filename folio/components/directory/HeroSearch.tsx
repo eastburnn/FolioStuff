@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { Globe, Search, Tag, Wrench } from "lucide-react";
 
 interface HeroSearchProps {
-  // The site's own calculators.
-  ownTools: { name: string; href: string }[];
+  // The site's own calculators, with the extra terms each one answers to.
+  ownTools: { name: string; href: string; keywords?: string[] }[];
   // Directory listings.
   tools: { name: string; slug: string }[];
   tags: string[];
@@ -34,7 +34,7 @@ export default function HeroSearch({ ownTools, tools, tags }: HeroSearchProps) {
   const suggestions: Suggestion[] = q
     ? [
         ...ownTools
-          .filter((t) => t.name.toLowerCase().includes(q))
+          .filter((t) => t.name.toLowerCase().includes(q) || (t.keywords ?? []).some((k) => k.includes(q)))
           .sort((a, b) => byPrefix(a.name, b.name))
           .slice(0, 3)
           .map((t) => ({ kind: "own" as const, label: t.name, href: t.href })),

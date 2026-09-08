@@ -14,6 +14,13 @@ export default function AdminNav() {
   const pathname = usePathname();
   return (
     <div className="mb-10">
+      <Link
+        href="/dashboard"
+        className="inline-flex items-center gap-1.5 text-xs text-ink-muted hover:text-ink-primary transition-colors mb-4"
+      >
+        <span aria-hidden="true">←</span>
+        Back to your dashboard
+      </Link>
       <p className="text-xs text-ink-muted uppercase tracking-widest mb-4">Admin dashboard</p>
       <div className="flex items-center gap-1 border-b border-white/[0.06] pb-3">
         {TABS.map((tab) => (

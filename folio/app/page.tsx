@@ -6,6 +6,7 @@ import HeroWordmark from "@/components/HeroWordmark";
 import ListingCard from "@/components/directory/ListingCard";
 import FeaturedListingCard from "@/components/directory/FeaturedListingCard";
 import HeroSearch from "@/components/directory/HeroSearch";
+import BookmarkButton from "@/components/directory/BookmarkButton";
 import { OWN_TOOLS } from "@/components/OwnTools";
 import { getPublishedListings, getFeaturedListings } from "@/lib/listings";
 import { safeJsonLd } from "@/lib/json-ld";
@@ -69,7 +70,7 @@ export default async function Home() {
         <p className="text-[11px] sm:text-xs uppercase tracking-[0.28em] text-ink-muted mb-6 sm:mb-7">
           Useful tools for managing your money
         </p>
-        <HeroSearch ownTools={OWN_TOOLS.map((w) => ({ name: w.title, href: w.href }))} tools={searchTools} tags={searchTags} />
+        <HeroSearch ownTools={OWN_TOOLS.map((w) => ({ name: w.title, href: w.href, keywords: w.keywords }))} tools={searchTools} tags={searchTags} />
       </section>
 
       {/* Widget cards */}
@@ -80,10 +81,11 @@ export default async function Home() {
         {/* Phones: a swipeable row with the next card peeking in from the
             right and a fade over the edge. Wider screens: the usual grid. */}
         <div className="relative -mx-4 sm:mx-0">
-          <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7 overflow-x-auto sm:overflow-visible snap-x snap-mandatory scrollbar-none px-4 sm:px-0 pb-1 sm:pb-0">
+          <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5 overflow-x-auto sm:overflow-visible snap-x snap-mandatory scrollbar-none px-4 sm:px-0 pb-1 sm:pb-0">
             {OWN_TOOLS.map((w, i) => (
-              <div key={w.href} className="flex snap-start shrink-0 w-[80%] sm:w-auto sm:shrink">
+              <div key={w.href} className="relative flex snap-start shrink-0 w-[80%] sm:w-auto sm:shrink">
                 <WidgetCard {...w} delay={i * 80} />
+                <BookmarkButton kind="tool" refId={w.href} className="absolute top-3 right-3" />
               </div>
             ))}
           </div>
@@ -109,7 +111,10 @@ export default async function Home() {
             </h2>
             <div className="grid sm:grid-cols-2 gap-6">
               {featuredListings.map((listing) => (
-                <FeaturedListingCard key={listing.slug} listing={listing} />
+                <div key={listing.slug} className="relative">
+                  <FeaturedListingCard listing={listing} />
+                  <BookmarkButton kind="listing" refId={listing.slug} className="absolute top-3 right-3" />
+                </div>
               ))}
             </div>
           </div>
@@ -143,7 +148,10 @@ export default async function Home() {
             <>
               <div className="grid sm:grid-cols-2 gap-4">
                 {communityListings.map((listing) => (
-                  <ListingCard key={listing.slug} listing={listing} />
+                  <div key={listing.slug} className="relative">
+                    <ListingCard listing={listing} />
+                    <BookmarkButton kind="listing" refId={listing.slug} className="absolute top-3 right-3" />
+                  </div>
                 ))}
               </div>
               <Link

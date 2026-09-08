@@ -5,6 +5,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import OtherTools from "@/components/OtherTools";
 import ToolJsonLd from "@/components/ToolJsonLd";
 import ToolInfo from "@/components/ToolInfo";
+import BookmarkButton from "@/components/directory/BookmarkButton";
 
 const INFO_SECTIONS = [
   {
@@ -72,7 +73,10 @@ export default function Page() {
             Grow
           </span>
         </div>
-        <h1 className="text-3xl font-bold text-ink-primary tracking-tight">Compound Interest Calculator</h1>
+        <div className="flex items-start justify-between gap-4">
+          <h1 className="text-3xl font-bold text-ink-primary tracking-tight">Compound Interest Calculator</h1>
+          <BookmarkButton kind="tool" refId="/compound-interest-calculator" withLabel className="mt-1 shrink-0" />
+        </div>
         <p className="text-ink-secondary mt-2 max-w-xl">
           See what a starting amount plus regular contributions turns into over time. Pick the rate and how often it compounds, and watch the chart separate your money from the interest it earned.
         </p>

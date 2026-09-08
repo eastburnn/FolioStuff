@@ -44,6 +44,8 @@ export default async function MakerPage({ params }: PageProps) {
   if (!profile) notFound();
 
   const listings = await getPublishedListingsByOwner(profile.id);
+  // A maker page goes public only once a submission has been approved.
+  if (listings.length === 0) notFound();
   const name = profile.display_name || profile.username || "Maker";
 
   const socials = [

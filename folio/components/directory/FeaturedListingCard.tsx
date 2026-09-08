@@ -9,16 +9,17 @@ import { publicImageUrl } from "@/lib/supabase/config";
 // Phones get a compact header row (icon, name, badge) with the tagline
 // running full width beneath it; wider screens put the icon beside the text.
 export default function FeaturedListingCard({ listing }: { listing: PublishedListing }) {
+  // Badge stacked above the name, so the pair sits centered beside the icon.
   const nameRow = (
-    <>
-      <p className="text-base font-semibold text-ink-primary group-hover:text-white transition-colors truncate">
-        {listing.name}
-      </p>
-      <span className="inline-flex shrink-0 items-center gap-1 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border border-accent-purple/40 bg-accent-purple/[0.12] text-accent-purple">
-        <Star size={10} />
+    <div className="min-w-0">
+      <span className="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-accent-purple mb-0.5">
+        <Star size={10} fill="currentColor" />
         Featured
       </span>
-    </>
+      <p className="text-base font-semibold text-ink-primary group-hover:text-white transition-colors truncate leading-tight">
+        {listing.name}
+      </p>
+    </div>
   );
 
   return (
@@ -42,10 +43,10 @@ export default function FeaturedListingCard({ listing }: { listing: PublishedLis
             />
           )}
         </div>
-        <div className="flex sm:hidden items-center gap-2 min-w-0">{nameRow}</div>
+        <div className="flex sm:hidden items-center gap-2 min-w-0 pr-9">{nameRow}</div>
       </div>
       <div className="relative min-w-0 w-full flex-1 flex flex-col self-stretch">
-        <div className="hidden sm:flex items-center gap-2 min-w-0">{nameRow}</div>
+        <div className="hidden sm:flex items-center gap-2 min-w-0 pr-9 sm:min-h-14">{nameRow}</div>
         <p className="text-sm text-ink-secondary leading-relaxed sm:mt-1.5">{listing.tagline}</p>
         <div className="flex items-center gap-1.5 flex-wrap mt-auto pt-2.5 sm:pt-3">
           {listing.tags.map((tag) => (

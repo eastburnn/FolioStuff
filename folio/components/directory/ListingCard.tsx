@@ -20,7 +20,7 @@ export default function ListingCard({ listing }: { listing: PublishedListing }) 
           />
         )}
       </div>
-      <div className="min-w-0 flex-1 flex flex-col self-stretch">
+      <div className="min-w-0 flex-1 flex flex-col self-stretch pr-8">
         <p className="text-sm font-semibold text-ink-primary group-hover:text-white transition-colors">
           {listing.name}
         </p>

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import ListingCard from "./ListingCard";
 import ToolSearch from "./ToolSearch";
+import BookmarkButton from "./BookmarkButton";
 import type { PublishedListing } from "@/lib/listings";
 import { normalizeTag } from "@/lib/tags";
 
@@ -99,7 +100,10 @@ export default function DirectoryGrid({ listings }: { listings: PublishedListing
       ) : (
         <div className="grid sm:grid-cols-2 gap-4">
           {visible.map((listing) => (
-            <ListingCard key={listing.slug} listing={listing} />
+            <div key={listing.slug} className="relative">
+              <ListingCard listing={listing} />
+              <BookmarkButton kind="listing" refId={listing.slug} className="absolute top-3 right-3" />
+            </div>
           ))}
         </div>
       )}

@@ -5,6 +5,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import OtherTools from "@/components/OtherTools";
 import ToolJsonLd from "@/components/ToolJsonLd";
 import ToolInfo from "@/components/ToolInfo";
+import BookmarkButton from "@/components/directory/BookmarkButton";
 
 const INFO_SECTIONS = [
   {
@@ -75,9 +76,12 @@ export default function CostBasisPage() {
             Calculate
           </span>
         </div>
-        <h1 className="text-3xl font-bold text-ink-primary tracking-tight">
+        <div className="flex items-start justify-between gap-4">
+          <h1 className="text-3xl font-bold text-ink-primary tracking-tight">
           Cost Basis Calculator
         </h1>
+          <BookmarkButton kind="tool" refId="/cost-basis" withLabel className="mt-1 shrink-0" />
+        </div>
         <p className="text-ink-secondary mt-2 max-w-xl">
           See how buying more shares changes your average cost, or how selling shares affects your
           realized P&L and remaining cost basis. Supports averaging down, averaging up, and trimming.

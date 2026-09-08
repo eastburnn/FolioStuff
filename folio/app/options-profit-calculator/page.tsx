@@ -5,6 +5,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import OtherTools from "@/components/OtherTools";
 import ToolJsonLd from "@/components/ToolJsonLd";
 import ToolInfo from "@/components/ToolInfo";
+import BookmarkButton from "@/components/directory/BookmarkButton";
 
 const INFO_SECTIONS = [
   {
@@ -72,7 +73,10 @@ export default function Page() {
             Trade
           </span>
         </div>
-        <h1 className="text-3xl font-bold text-ink-primary tracking-tight">Options Profit Calculator</h1>
+        <div className="flex items-start justify-between gap-4">
+          <h1 className="text-3xl font-bold text-ink-primary tracking-tight">Options Profit Calculator</h1>
+          <BookmarkButton kind="tool" refId="/options-profit-calculator" withLabel className="mt-1 shrink-0" />
+        </div>
         <p className="text-ink-secondary mt-2 max-w-xl">
           Work out what a call or put makes or loses at expiration. Enter the strike, the premium, and how many contracts, then see the breakeven, the best and worst case, and a payoff chart across stock prices.
         </p>

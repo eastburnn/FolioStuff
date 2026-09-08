@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getPublishedListings } from "@/lib/listings";
+import { getPublishedListings, getPublishedListingsByOwner } from "@/lib/listings";
 import { getMakerUsernames } from "@/lib/profiles";
 
 const BASE_URL = "https://www.foliostuff.com";
@@ -17,12 +17,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  const makerEntries: MetadataRoute.Sitemap = makers.map((m) => ({
-    url: `${BASE_URL}/makers/${m.username}`,
-    lastModified: m.updated_at ? new Date(m.updated_at) : undefined,
-    changeFrequency: "monthly",
-    priority: 0.5,
-  }));
+  // Only makers with an approved listing have a public page.
+  const withListings = await Promise.all(
+    makers.map(async (m) => ((await getPublishedListingsByOwner(m.id)).length > 0 ? m : null))
+  );
+  const makerEntries: MetadataRoute.Sitemap = withListings
+    .filter((m): m is (typeof makers)[number] => m !== null)
+    .map((m) => ({
+      url: `${BASE_URL}/makers/${m.username}`,
+      lastModified: m.updated_at ? new Date(m.updated_at) : undefined,
+      changeFrequency: "monthly",
+      priority: 0.5,
+    }));
 
   return [
     { url: BASE_URL, changeFrequency: "weekly", priority: 1 },

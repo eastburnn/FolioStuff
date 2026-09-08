@@ -5,6 +5,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import OtherTools from "@/components/OtherTools";
 import ToolJsonLd from "@/components/ToolJsonLd";
 import ToolInfo from "@/components/ToolInfo";
+import BookmarkButton from "@/components/directory/BookmarkButton";
 
 const INFO_SECTIONS = [
   {
@@ -70,9 +71,12 @@ export default function PortfolioVisualizerPage() {
             Visualize
           </span>
         </div>
-        <h1 className="text-3xl font-bold text-ink-primary tracking-tight">
+        <div className="flex items-start justify-between gap-4">
+          <h1 className="text-3xl font-bold text-ink-primary tracking-tight">
           Portfolio Visualizer
         </h1>
+          <BookmarkButton kind="tool" refId="/portfolio-visualizer" withLabel className="mt-1 shrink-0" />
+        </div>
         <p className="text-ink-secondary mt-2 max-w-xl">
           Add your tickers and percentage allocations to generate a clean, shareable donut chart.
           Hit download for a retina-ready PNG, perfect for Twitter/X.

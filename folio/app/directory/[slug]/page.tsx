@@ -10,6 +10,7 @@ import { publicImageUrl } from "@/lib/supabase/config";
 import { safeJsonLd } from "@/lib/json-ld";
 import { SOCIAL_PLATFORMS } from "@/lib/socials";
 import ScreenshotGallery from "@/components/directory/ScreenshotGallery";
+import BookmarkButton from "@/components/directory/BookmarkButton";
 
 export const revalidate = 300;
 
@@ -100,10 +101,13 @@ export default async function ListingPage({ params }: PageProps) {
                 />
               )}
             </div>
-            <div className="min-w-0">
-              <h1 className="text-2xl sm:text-3xl font-bold text-ink-primary tracking-tight leading-tight">
-                {listing.name}
-              </h1>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-start justify-between gap-3">
+                <h1 className="text-2xl sm:text-3xl font-bold text-ink-primary tracking-tight leading-tight">
+                  {listing.name}
+                </h1>
+                <BookmarkButton kind="listing" refId={slug} withLabel className="shrink-0 mt-0.5" />
+              </div>
               <div className="flex items-center gap-1.5 flex-wrap mt-1.5">
                 {listing.tags.map((tag) => (
                   <Link

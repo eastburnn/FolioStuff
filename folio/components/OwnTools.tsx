@@ -1,7 +1,8 @@
 import { Activity, Calculator, Coins, PieChart, Target, TrendingUp } from "lucide-react";
 
 // The calculators built into the site, in display order. Used by the
-// homepage, the Tools page, and the hero search.
+// homepage, the Tools page, and the hero search. Keywords are the extra
+// terms the Tools page search matches beyond the title.
 export const OWN_TOOLS = [
   {
     href: "/portfolio-visualizer",
@@ -11,6 +12,7 @@ export const OWN_TOOLS = [
     icon: <PieChart size={20} className="text-accent-purple" />,
     accent: "#8B5CF6",
     tag: "Visualize",
+    keywords: ["portfolio", "chart", "allocation", "holdings", "pie", "share", "visualizer", "weights", "diversification"],
   },
   {
     href: "/cost-basis",
@@ -20,6 +22,7 @@ export const OWN_TOOLS = [
     icon: <Calculator size={20} className="text-accent-green" />,
     accent: "#00C896",
     tag: "Calculate",
+    keywords: ["cost basis", "average cost", "average down", "average up", "trim", "p&l", "profit", "loss", "shares", "break even"],
   },
   {
     href: "/position-sizer",
@@ -29,6 +32,7 @@ export const OWN_TOOLS = [
     icon: <Target size={20} className="text-accent-gold" />,
     accent: "#FFB830",
     tag: "Risk Manage",
+    keywords: ["position size", "risk", "stop loss", "shares to buy", "account size", "risk per trade", "sizing", "trading"],
   },
   {
     href: "/compound-interest-calculator",
@@ -38,6 +42,7 @@ export const OWN_TOOLS = [
     icon: <TrendingUp size={20} className="text-accent-purple" />,
     accent: "#8B5CF6",
     tag: "Grow",
+    keywords: ["compound interest", "savings", "growth", "interest", "retirement", "contributions", "rule of 72", "investing", "future value"],
   },
   {
     href: "/dividend-calculator",
@@ -47,6 +52,7 @@ export const OWN_TOOLS = [
     icon: <Coins size={20} className="text-accent-green" />,
     accent: "#00C896",
     tag: "Income",
+    keywords: ["dividend", "drip", "reinvest", "yield", "income", "yield on cost", "passive income", "payout"],
   },
   {
     href: "/options-profit-calculator",
@@ -56,5 +62,6 @@ export const OWN_TOOLS = [
     icon: <Activity size={20} className="text-accent-gold" />,
     accent: "#FFB830",
     tag: "Trade",
+    keywords: ["options", "calls", "puts", "premium", "strike", "breakeven", "payoff", "expiration", "trading", "profit"],
   },
 ];

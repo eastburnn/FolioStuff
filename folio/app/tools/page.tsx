@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
-import WidgetCard from "@/components/WidgetCard";
-import { OWN_TOOLS } from "@/components/OwnTools";
+import ToolsGrid from "@/components/ToolsGrid";
 
 const DESCRIPTION =
   "Free calculators for investors and anyone managing money: compound interest, dividends with DRIP, options profit, cost basis, position sizing, and a portfolio visualizer. No account needed.";
@@ -33,11 +32,7 @@ export default function ToolsPage() {
           needs no account. Your numbers never leave your device.
         </p>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {OWN_TOOLS.map((tool, i) => (
-            <WidgetCard key={tool.href} {...tool} delay={i * 60} />
-          ))}
-        </div>
+        <ToolsGrid />
 
         <p className="text-xs text-ink-muted mt-12">
           Looking for tools made by other people? Browse the{" "}

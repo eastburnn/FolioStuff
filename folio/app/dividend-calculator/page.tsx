@@ -5,6 +5,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import OtherTools from "@/components/OtherTools";
 import ToolJsonLd from "@/components/ToolJsonLd";
 import ToolInfo from "@/components/ToolInfo";
+import BookmarkButton from "@/components/directory/BookmarkButton";
 
 const INFO_SECTIONS = [
   {
@@ -72,7 +73,10 @@ export default function Page() {
             Income
           </span>
         </div>
-        <h1 className="text-3xl font-bold text-ink-primary tracking-tight">Dividend Calculator</h1>
+        <div className="flex items-start justify-between gap-4">
+          <h1 className="text-3xl font-bold text-ink-primary tracking-tight">Dividend Calculator</h1>
+          <BookmarkButton kind="tool" refId="/dividend-calculator" withLabel className="mt-1 shrink-0" />
+        </div>
         <p className="text-ink-secondary mt-2 max-w-xl">
           Project what a dividend stock or fund pays you over time. Switch between reinvesting dividends (DRIP) and taking them as cash, add dividend growth, and see how the income compounds year by year.
         </p>

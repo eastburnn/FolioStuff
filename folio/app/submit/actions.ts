@@ -92,5 +92,5 @@ export async function createListing(
   }
 
   await notifyAdminNewSubmission(fields.name);
-  redirect("/dashboard?submitted=1");
+  redirect("/dashboard/maker?submitted=1");
 }

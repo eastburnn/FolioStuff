@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
 
 export const metadata: Metadata = {
@@ -114,15 +115,10 @@ export default function PrivacyPage() {
           <h2 className="text-xs text-ink-muted uppercase tracking-widest mb-4">Questions</h2>
           <div className="rounded-2xl border border-white/[0.06] bg-bg-card p-6 text-sm text-ink-secondary leading-relaxed">
             <p>
-              If you have questions about any of this, reach out on{" "}
-              <a
-                href="https://x.com/itschrisray"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-ink-primary hover:text-white transition-colors underline underline-offset-2"
-              >
-                X&nbsp;(@itschrisray)
-              </a>
+              If you have questions about any of this, use the{" "}
+              <Link href="/contact" className="text-ink-primary hover:text-white transition-colors underline underline-offset-2">
+                contact form
+              </Link>
               .
             </p>
           </div>

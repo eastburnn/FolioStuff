@@ -75,15 +75,15 @@ export async function getProfileByUsername(username: string): Promise<Profile | 
 }
 
 // Every maker with a public page, for the sitemap.
-export async function getMakerUsernames(): Promise<{ username: string; updated_at: string }[]> {
+export async function getMakerUsernames(): Promise<{ id: string; username: string; updated_at: string }[]> {
   if (!hasSupabaseEnv()) return [];
   try {
     const { data, error } = await publicClient()
       .from("profiles")
-      .select("username, updated_at")
+      .select("id, username, updated_at")
       .not("username", "is", null);
     if (error || !data) return [];
-    return data.filter((row): row is { username: string; updated_at: string } => Boolean(row.username));
+    return data.filter((row): row is { id: string; username: string; updated_at: string } => Boolean(row.username));
   } catch {
     return [];
   }

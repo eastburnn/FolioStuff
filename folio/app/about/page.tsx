@@ -167,6 +167,25 @@ export default function AboutPage() {
           </div>
         </section>
 
+        <section className="mb-12">
+          <h2 className="text-xs text-ink-muted uppercase tracking-widest mb-4">Save what you use</h2>
+          <div className="rounded-2xl border border-white/[0.06] bg-bg-card p-6 space-y-4 text-sm text-ink-secondary leading-relaxed">
+            <p>
+              Every calculator and every directory listing has a bookmark. With a free{" "}
+              <Link href="/signup" className="text-ink-primary underline underline-offset-2 hover:text-white">
+                account
+              </Link>
+              , tap it to keep that tool on the Saved tab of your{" "}
+              <Link href="/dashboard" className="text-ink-primary underline underline-offset-2 hover:text-white">
+                dashboard
+              </Link>
+              , a private page that collects the things you actually come back to, so you open one
+              page instead of hunting for each tool again. Nobody else can see your list, and you
+              can drop anything from it with the same bookmark.
+            </p>
+          </div>
+        </section>
+
         {/* Current tools */}
         <section className="mb-12">
           <h2 className="text-xs text-ink-muted uppercase tracking-widest mb-4">Try them</h2>
@@ -214,16 +233,7 @@ export default function AboutPage() {
               feedback, or a tool to suggest? Use the{" "}
               <Link href="/contact" className="text-ink-primary hover:text-white transition-colors underline underline-offset-2">
                 contact form
-              </Link>{" "}
-              or reach out on{" "}
-              <a
-                href="https://x.com/itschrisray"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-ink-primary hover:text-white transition-colors underline underline-offset-2"
-              >
-                X&nbsp;(@itschrisray)
-              </a>
+              </Link>
               .
             </p>
           </div>
