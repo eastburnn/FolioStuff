@@ -71,9 +71,8 @@ export default function HeroSearch({ tools, tags }: HeroSearchProps) {
         if (showList && highlight >= 0) go(suggestions[highlight].href);
         else submit();
       }}
-      className="relative max-w-xl mx-auto mt-2 sm:mt-4 text-left"
+      className="relative max-w-xl mx-auto text-left"
     >
-      <Search size={17} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-muted pointer-events-none" />
       <input
         type="search"
         role="combobox"
@@ -100,9 +99,17 @@ export default function HeroSearch({ tools, tags }: HeroSearchProps) {
             setOpen(false);
           }
         }}
-        placeholder="Search tools for traders and investors"
-        className="w-full bg-bg-card/80 backdrop-blur border border-white/[0.1] rounded-2xl pl-11 pr-4 py-3.5 text-sm sm:text-base text-ink-primary placeholder-ink-muted shadow-[0_0_40px_rgba(139,92,246,0.08)] focus:outline-none focus:border-accent-purple/50 focus:shadow-[0_0_40px_rgba(139,92,246,0.18)] transition-all"
+        placeholder="Search tools or tags"
+        className="w-full bg-bg-card/80 backdrop-blur border border-accent-purple/25 rounded-2xl pl-5 pr-14 py-3.5 text-sm sm:text-base text-ink-primary placeholder-ink-muted shadow-[0_0_28px_rgba(139,92,246,0.28),0_0_70px_rgba(139,92,246,0.14)] hover:border-accent-purple/40 hover:shadow-[0_0_32px_rgba(139,92,246,0.36),0_0_80px_rgba(139,92,246,0.18)] focus:outline-none focus:border-accent-purple/60 focus:shadow-[0_0_36px_rgba(139,92,246,0.45),0_0_90px_rgba(139,92,246,0.22)] transition-all"
       />
+      {/* Clickable search button for people who do not press Enter. */}
+      <button
+        type="submit"
+        aria-label="Search"
+        className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 rounded-xl bg-accent-purple text-white hover:bg-accent-purple/90 shadow-[0_0_16px_rgba(139,92,246,0.45)] transition-colors"
+      >
+        <Search size={16} aria-hidden="true" />
+      </button>
       {showList && (
         <ul
           id="hero-search-listbox"

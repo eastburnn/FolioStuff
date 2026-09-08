@@ -33,7 +33,7 @@ export default function HeroWordmark() {
 
   return (
     <h1
-      className="font-black tracking-tight leading-none mb-6 flex justify-center flex-wrap"
+      className="font-black tracking-tight leading-none mb-1 sm:mb-1.5 flex justify-center flex-wrap"
       style={{ fontSize: "clamp(4rem, 12vw, 9rem)" }}
     >
       {LETTERS.map((letter, i) => (

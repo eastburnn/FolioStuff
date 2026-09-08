@@ -8,12 +8,12 @@ import { createListing } from "./actions";
 export const metadata: Metadata = {
   title: "Submit Your Tool",
   description:
-    "Submit your stock market, investing, or finance tool to the FolioStuff directory. Free listing with a backlink and dedicated page for indie builders.",
+    "Submit your stock market, investing, or personal finance tool to the FolioStuff directory. Free listing with a backlink and a dedicated page.",
   alternates: { canonical: "/submit" },
 };
 
 const GUIDELINES = [
-  "Built by an indie developer, a small team, or a regular person, not a large company.",
+  "Made by people who understand the problem it solves, whether that is one person or a small team. Household-name platforms are not what this directory is for.",
   "Related to stocks, investing, trading, or personal finance.",
   "Actually working and publicly accessible. Landing pages for unlaunched products get rejected.",
   "Free or paid is fine. Scams, pump groups, and signal sellers are not.",

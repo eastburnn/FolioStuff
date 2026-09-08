@@ -17,7 +17,7 @@ const WEBSITE_JSON_LD = {
   name: "FolioStuff",
   url: "https://www.foliostuff.com",
   description:
-    "Portfolio visualizer, cost basis calculator, position sizer, and more. Built for active traders and investors.",
+    "A hand-reviewed directory of stock market, investing, and personal finance tools, built by people who understand the problems they solve. Plus our own calculators, free to use with no account.",
 };
 
 const WIDGETS = [
@@ -92,6 +92,10 @@ export default async function Home() {
       {/* Hero */}
       <section className="pt-28 pb-20 px-4 sm:px-6 text-center">
         <HeroWordmark />
+        {/* Tucked under the wordmark so it reads as part of it. */}
+        <p className="text-[11px] sm:text-xs uppercase tracking-[0.28em] text-ink-muted mb-6 sm:mb-7">
+          Useful tools for managing your money
+        </p>
         <HeroSearch tools={searchTools} tags={searchTags} />
       </section>
 
@@ -150,7 +154,7 @@ export default async function Home() {
           </div>
           {communityListings.length === 0 ? (
             <p className="text-sm text-ink-muted">
-              A hand-reviewed directory of investing and finance tools built by indie makers.
+              A hand-reviewed directory of genuinely useful investing and finance tools.
               Built something?{" "}
               <Link href="/submit" className="text-ink-secondary hover:text-ink-primary underline underline-offset-2">
                 Be the first listing.

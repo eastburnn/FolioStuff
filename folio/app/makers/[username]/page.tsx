@@ -22,12 +22,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `${name} - Maker Profile`,
     description:
-      profile.bio ?? `Tools built by ${name}, listed in the FolioStuff indie tool directory.`,
+      profile.bio ?? `Tools built by ${name}, listed in the FolioStuff tool directory.`,
     alternates: { canonical: `/makers/${username}` },
     openGraph: {
       title: `${name} | FolioStuff Makers`,
       description:
-        profile.bio ?? `Tools built by ${name}, listed in the FolioStuff indie tool directory.`,
+        profile.bio ?? `Tools built by ${name}, listed in the FolioStuff tool directory.`,
       url: `/makers/${username}`,
       siteName: "FolioStuff",
       type: "profile",
@@ -113,7 +113,7 @@ export default async function MakerPage({ params }: PageProps) {
         <p className="text-xs text-ink-muted mt-12">
           Part of the{" "}
           <Link href="/directory" className="underline underline-offset-2 hover:text-ink-secondary">
-            FolioStuff indie tool directory
+            FolioStuff tool directory
           </Link>
           .
         </p>

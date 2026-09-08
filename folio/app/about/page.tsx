@@ -6,12 +6,12 @@ import Breadcrumb from "@/components/Breadcrumb";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Free tools for traders and investors, plus a hand-reviewed directory of finance tools built by indie makers.",
+    "A hand-reviewed directory of stock market, investing, and personal finance tools, built by people who understand the problems they solve. Plus our own calculators, free to use with no account.",
   alternates: { canonical: "/about" },
   openGraph: {
     title: "About | FolioStuff",
     description:
-      "Free tools for traders and investors, plus a hand-reviewed directory of finance tools built by indie makers.",
+      "A hand-reviewed directory of stock market, investing, and personal finance tools, built by people who understand the problems they solve. Plus our own calculators, free to use with no account.",
     url: "/about",
     siteName: "FolioStuff",
     type: "website",
@@ -53,21 +53,36 @@ export default function AboutPage() {
           About FolioStuff
         </h1>
         <p className="text-ink-secondary leading-relaxed mb-12 max-w-2xl">
-          FolioStuff is two things: a set of free, no-login tools for people who take their
-          investing seriously, and a hand-reviewed directory of finance tools built by indie
-          makers. No ads, no paywalls, no fluff.
+          FolioStuff is a home for useful tools for managing your money: a set of calculators
+          we built ourselves, and a hand-reviewed{" "}
+          <Link href="/directory" className="text-ink-primary underline underline-offset-2 hover:text-white">
+            directory
+          </Link>{" "}
+          of investing and finance tools made by people who understand the problems they solve.
         </p>
 
-        {/* What it is */}
         <section className="mb-12">
-          <h2 className="text-xs text-ink-muted uppercase tracking-widest mb-4">The tools</h2>
+          <h2 className="text-xs text-ink-muted uppercase tracking-widest mb-4">Our own tools</h2>
           <div className="rounded-2xl border border-white/[0.06] bg-bg-card p-6 space-y-4 text-sm text-ink-secondary leading-relaxed">
             <p>
-              The core of FolioStuff is a growing set of{" "}
-              <span className="text-ink-primary font-medium">homegrown tools and calculators</span>:
-              things that are annoyingly hard to find elsewhere, or that exist but look terrible
-              and are painful to use. Every tool runs entirely in your browser, works on a phone,
-              and needs no account. Your numbers never leave your device.
+              The site started with a few{" "}
+              <span className="text-ink-primary font-medium">homegrown calculators</span>: things
+              that were annoyingly hard to find elsewhere, or that existed but looked terrible and
+              were painful to use. The{" "}
+              <Link href="/portfolio-visualizer" className="text-ink-primary underline underline-offset-2 hover:text-white">
+                Portfolio Visualizer
+              </Link>
+              ,{" "}
+              <Link href="/cost-basis" className="text-ink-primary underline underline-offset-2 hover:text-white">
+                Cost Basis Calculator
+              </Link>
+              , and{" "}
+              <Link href="/position-sizer" className="text-ink-primary underline underline-offset-2 hover:text-white">
+                Position Sizer
+              </Link>{" "}
+              all run entirely in your browser, work on a phone, and need no account. Your numbers
+              never leave your device. More are on the way, including personal finance tools that
+              have nothing to do with the stock market.
             </p>
           </div>
         </section>
@@ -78,26 +93,43 @@ export default function AboutPage() {
             <p>
               The{" "}
               <Link href="/directory" className="text-ink-primary font-medium underline underline-offset-2 hover:text-white">
-                indie tool directory
+                tool directory
               </Link>{" "}
-              is where independent makers list the stock market, investing, and finance tools they
-              have built. Every submission is reviewed by a person before it goes live, so what you
-              find here is real, working, and worth a look. Each tool gets its own page with a
-              description, screenshots, tags, and a link straight to the maker.
+              collects stock market, investing, and personal finance tools that are genuinely worth
+              your time. Some are free, some are paid, and they come from solo builders and small
+              teams alike. What they have in common is that the people who made them understand
+              the problem they set out to solve. You will not find the household names here; you
+              already know about those.
             </p>
             <p>
-              Built something yourself? Create a free account, set up your maker profile, and{" "}
+              Every submission is reviewed by a person before it goes live. Each tool gets its own
+              page with a description, screenshots, tags, and a link straight to the site, and
+              you can browse by tag, for example{" "}
+              <Link href="/directory?tag=calculator" className="text-ink-primary underline underline-offset-2 hover:text-white">
+                calculators
+              </Link>{" "}
+              or{" "}
+              <Link href="/directory?tag=tracker" className="text-ink-primary underline underline-offset-2 hover:text-white">
+                trackers
+              </Link>
+              . Every maker has a public page too, like{" "}
+              <Link href="/makers/itschrisray" className="text-ink-primary underline underline-offset-2 hover:text-white">
+                this one
+              </Link>
+              , that gathers everything they have listed.
+            </p>
+            <p>
+              Built something? Create an account, set up your maker profile, and{" "}
               <Link href="/submit" className="text-ink-primary font-medium underline underline-offset-2 hover:text-white">
                 submit your tool
               </Link>
-              . Approved listings link back to your site, and your public maker page collects
-              everything you have listed in one place. You stay in control: edit or remove your
-              listings whenever you like.
-            </p>
-            <p>
-              Alongside the directory, the homepage keeps a short list of the best established
-              resources around the web, so screeners, charting platforms, and sentiment indicators
-              are one click away.
+              . Approved listings link back to your site, and you can edit or remove them
+              whenever you like. Alongside the directory, the{" "}
+              <Link href="/" className="text-ink-primary underline underline-offset-2 hover:text-white">
+                homepage
+              </Link>{" "}
+              keeps a short list of established resources around the web, so screeners, charting
+              platforms, and sentiment indicators are one click away.
             </p>
           </div>
         </section>
@@ -144,8 +176,8 @@ export default function AboutPage() {
               >
                 Chris Ray
               </a>
-              . The tools exist because they did not exist anywhere else in a form worth using,
-              and the directory exists because indie makers deserve a place to be found. Ideas,
+              . The calculators exist because they did not exist anywhere else in a form worth
+              using, and the directory exists because good tools deserve to be found. Ideas,
               feedback, or a tool to suggest? Reach out on{" "}
               <a
                 href="https://x.com/itschrisray"

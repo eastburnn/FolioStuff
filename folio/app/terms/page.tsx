@@ -4,12 +4,12 @@ import Breadcrumb from "@/components/Breadcrumb";
 export const metadata: Metadata = {
   title: "Terms of Service",
   description:
-    "The terms for using FolioStuff's free tools and submitting to the indie tool directory.",
+    "The terms for using FolioStuff's tools and submitting to the tool directory.",
   alternates: { canonical: "/terms" },
   openGraph: {
     title: "Terms of Service | FolioStuff",
     description:
-      "The terms for using FolioStuff's free tools and submitting to the indie tool directory.",
+      "The terms for using FolioStuff's tools and submitting to the tool directory.",
     url: "/terms",
     siteName: "FolioStuff",
     type: "website",
@@ -82,8 +82,8 @@ export default function TermsPage() {
           Terms of Service
         </h1>
         <p className="text-ink-secondary leading-relaxed mb-12 max-w-2xl">
-          The short version: the tools are free, use them at your own risk, nothing here is
-          financial advice, and if you submit to the directory, be honest and own what you upload.
+          The short version: use the tools at your own risk, nothing here is financial advice,
+          and if you submit to the directory, be honest and own what you upload.
         </p>
 
         {SECTIONS.map((section) => (

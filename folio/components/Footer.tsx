@@ -45,8 +45,8 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-xs text-ink-muted leading-relaxed sm:max-w-[220px]">
-              Free tools for traders and investors, plus a hand-reviewed directory of finance
-              tools built by indie makers.
+              Useful tools for managing your money, plus a hand-reviewed directory of investing
+              and finance tools worth knowing about.
             </p>
           </div>
 

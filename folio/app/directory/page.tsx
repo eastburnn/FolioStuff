@@ -5,14 +5,14 @@ import DirectoryGrid from "@/components/directory/DirectoryGrid";
 import { getPublishedListings } from "@/lib/listings";
 
 export const metadata: Metadata = {
-  title: "Indie Tool Directory",
+  title: "Tool Directory",
   description:
-    "A hand-reviewed directory of stock market, investing, and finance tools built by indie developers and regular people, not giant companies.",
+    "A hand-reviewed directory of stock market, investing, and personal finance tools worth your time, submitted by the people who build them.",
   alternates: { canonical: "/directory" },
   openGraph: {
-    title: "Indie Tool Directory | FolioStuff",
+    title: "Tool Directory | FolioStuff",
     description:
-      "A hand-reviewed directory of stock market, investing, and finance tools built by indie developers and regular people, not giant companies.",
+      "A hand-reviewed directory of stock market, investing, and personal finance tools worth your time, submitted by the people who build them.",
     url: "/directory",
     siteName: "FolioStuff",
     type: "website",
@@ -36,12 +36,12 @@ export default async function ToolsPage({
         <Breadcrumb items={[{ label: "Directory", href: "/directory" }]} />
 
         <h1 className="text-3xl font-bold text-ink-primary tracking-tight mb-3">
-          Indie tool directory
+          Tool directory
         </h1>
         <p className="text-ink-secondary leading-relaxed mb-4 max-w-2xl">
-          Stock market, investing, and finance tools built by indie developers and regular
-          people. Every listing is submitted by its maker and reviewed by hand before it
-          appears here.
+          Stock market, investing, and personal finance tools worth your time, from solo
+          builders to small teams. Every listing is submitted by the people who made it and
+          reviewed by hand before it appears here.
         </p>
         <Link
           href="/submit"
