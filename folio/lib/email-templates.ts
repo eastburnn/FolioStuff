@@ -164,3 +164,25 @@ export function rejectedEmail(listingName: string, feedback: string, isEdit = fa
     text: `Thanks for submitting ${listingName} to the FolioStuff directory. It was not approved this time.\n\nFeedback:\n${feedback}\n\nIf you would like another shot, address the feedback and submit again: ${SITE_URL}/submit\nRejected submissions are not kept on file, so this email is your copy of the feedback.`,
   };
 }
+
+export interface ContactFields {
+  name: string;
+  email: string;
+  topic: string;
+  subject: string;
+  message: string;
+}
+
+// Message from the contact form, delivered to the site admin. Every field is
+// user supplied, so everything is escaped.
+export function contactEmail(f: ContactFields): EmailContent {
+  const who = f.name ? `${f.name} (${f.email})` : f.email;
+  const html = layout(`
+    <p style="margin:0 0 4px;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#8B5CF6;">${escapeHtml(f.topic)}</p>
+    <h1 style="margin:0 0 16px;font-size:20px;line-height:1.3;color:#EEF2FF;">${escapeHtml(f.subject)}</h1>
+    <p style="margin:0 0 16px;font-size:13px;color:#9AA3B5;">From ${escapeHtml(who)}. Reply to this email to answer them directly.</p>
+    <div style="padding:16px;border-radius:12px;background:#0C0F1A;border:1px solid rgba(255,255,255,0.08);font-size:14px;line-height:1.6;color:#C7CEDB;white-space:pre-wrap;">${escapeHtml(f.message)}</div>
+  `);
+  const text = `${f.topic}: ${f.subject}\n\nFrom ${who}\n\n${f.message}`;
+  return { subject: `[FolioStuff contact] ${f.topic}: ${f.subject}`, html, text };
+}

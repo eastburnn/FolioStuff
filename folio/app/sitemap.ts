@@ -26,11 +26,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     { url: BASE_URL, changeFrequency: "weekly", priority: 1 },
+    { url: `${BASE_URL}/tools`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${BASE_URL}/portfolio-visualizer`, changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE_URL}/cost-basis`, changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE_URL}/position-sizer`, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/compound-interest-calculator`, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/dividend-calculator`, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${BASE_URL}/options-profit-calculator`, changeFrequency: "monthly", priority: 0.9 },
     { url: `${BASE_URL}/directory`, changeFrequency: "daily", priority: 0.8 },
     { url: `${BASE_URL}/about`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${BASE_URL}/contact`, changeFrequency: "yearly", priority: 0.4 },
     { url: `${BASE_URL}/privacy`, changeFrequency: "yearly", priority: 0.3 },
     { url: `${BASE_URL}/terms`, changeFrequency: "yearly", priority: 0.3 },
     ...listingEntries,

@@ -11,19 +11,24 @@ import { hasSupabaseEnv } from "@/lib/supabase/config";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
+  { href: "/tools", label: "Tools" },
   { href: "/directory", label: "Directory" },
   { href: "/about", label: "About" },
 ];
 
+const TOOL_PREFIXES = [
+  "/tools",
+  "/portfolio",
+  "/cost-basis",
+  "/position-sizer",
+  "/compound-interest-calculator",
+  "/dividend-calculator",
+  "/options-profit-calculator",
+];
+
 function isActive(pathname: string, href: string): boolean {
-  if (href === "/") {
-    return (
-      pathname === "/" ||
-      pathname.startsWith("/portfolio") ||
-      pathname.startsWith("/cost-basis") ||
-      pathname.startsWith("/position-sizer")
-    );
-  }
+  if (href === "/") return pathname === "/";
+  if (href === "/tools") return TOOL_PREFIXES.some((p) => pathname.startsWith(p));
   return pathname.startsWith(href);
 }
 

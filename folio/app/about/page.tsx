@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PieChart, Calculator, Target } from "lucide-react";
+import { PieChart, Calculator, Target, TrendingUp, Coins, Activity } from "lucide-react";
 import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
 
@@ -41,6 +41,27 @@ const TOOLS = [
     icon: <Target size={15} className="text-accent-gold" />,
     accent: "#FFB830",
   },
+  {
+    href: "/compound-interest-calculator",
+    title: "Compound Interest Calculator",
+    description: "See what a starting amount plus monthly contributions grows into over the years.",
+    icon: <TrendingUp size={15} className="text-accent-purple" />,
+    accent: "#8B5CF6",
+  },
+  {
+    href: "/dividend-calculator",
+    title: "Dividend Calculator",
+    description: "Project dividend income year by year, reinvested through a DRIP or taken as cash.",
+    icon: <Coins size={15} className="text-accent-green" />,
+    accent: "#00C896",
+  },
+  {
+    href: "/options-profit-calculator",
+    title: "Options Profit Calculator",
+    description: "Breakeven, max profit, max loss, and a payoff chart for calls and puts.",
+    icon: <Activity size={15} className="text-accent-gold" />,
+    accent: "#FFB830",
+  },
 ];
 
 export default function AboutPage() {
@@ -80,9 +101,21 @@ export default function AboutPage() {
               <Link href="/position-sizer" className="text-ink-primary underline underline-offset-2 hover:text-white">
                 Position Sizer
               </Link>{" "}
-              all run entirely in your browser, work on a phone, and need no account. Your numbers
-              never leave your device. More are on the way, including personal finance tools that
-              have nothing to do with the stock market.
+              came first. The{" "}
+              <Link href="/compound-interest-calculator" className="text-ink-primary underline underline-offset-2 hover:text-white">
+                Compound Interest Calculator
+              </Link>
+              ,{" "}
+              <Link href="/dividend-calculator" className="text-ink-primary underline underline-offset-2 hover:text-white">
+                Dividend Calculator
+              </Link>
+              , and{" "}
+              <Link href="/options-profit-calculator" className="text-ink-primary underline underline-offset-2 hover:text-white">
+                Options Profit Calculator
+              </Link>{" "}
+              followed. All of them run entirely in your browser, work on a phone, and need no
+              account. Your numbers never leave your device. More are on the way, including
+              personal finance tools that have nothing to do with the stock market.
             </p>
           </div>
         </section>
@@ -178,7 +211,11 @@ export default function AboutPage() {
               </a>
               . The calculators exist because they did not exist anywhere else in a form worth
               using, and the directory exists because good tools deserve to be found. Ideas,
-              feedback, or a tool to suggest? Reach out on{" "}
+              feedback, or a tool to suggest? Use the{" "}
+              <Link href="/contact" className="text-ink-primary hover:text-white transition-colors underline underline-offset-2">
+                contact form
+              </Link>{" "}
+              or reach out on{" "}
               <a
                 href="https://x.com/itschrisray"
                 target="_blank"

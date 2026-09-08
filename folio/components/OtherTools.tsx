@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { PieChart, Calculator, Target, ArrowRight } from "lucide-react";
+import { PieChart, Calculator, Target, ArrowRight, TrendingUp, Coins, Activity } from "lucide-react";
 
 const ALL_TOOLS = [
   {
@@ -23,6 +23,27 @@ const ALL_TOOLS = [
     icon: <Target size={13} className="text-accent-gold" />,
     accent: "#FFB830",
   },
+  {
+    href: "/compound-interest-calculator",
+    label: "Compound Interest Calculator",
+    description: "Watch contributions and interest grow over time",
+    icon: <TrendingUp size={13} className="text-accent-purple" />,
+    accent: "#8B5CF6",
+  },
+  {
+    href: "/dividend-calculator",
+    label: "Dividend Calculator",
+    description: "Project dividend income with or without DRIP",
+    icon: <Coins size={13} className="text-accent-green" />,
+    accent: "#00C896",
+  },
+  {
+    href: "/options-profit-calculator",
+    label: "Options Profit Calculator",
+    description: "Breakeven and payoff for any call or put",
+    icon: <Activity size={13} className="text-accent-gold" />,
+    accent: "#FFB830",
+  },
 ];
 
 export default function OtherTools({ current }: { current: string }) {
@@ -32,7 +53,7 @@ export default function OtherTools({ current }: { current: string }) {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 mt-16 pb-16">
       <div className="border-t border-white/[0.06] pt-10">
         <p className="text-xs text-ink-muted uppercase tracking-widest mb-4">Other tools</p>
-        <div className="flex flex-col sm:flex-row gap-3">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {others.map((tool) => (
             <Link
               key={tool.href}

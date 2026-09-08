@@ -1,4 +1,4 @@
-import { PieChart, Calculator, Target, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import WidgetCard from "@/components/WidgetCard";
@@ -6,6 +6,7 @@ import HeroWordmark from "@/components/HeroWordmark";
 import ListingCard from "@/components/directory/ListingCard";
 import FeaturedListingCard from "@/components/directory/FeaturedListingCard";
 import HeroSearch from "@/components/directory/HeroSearch";
+import { OWN_TOOLS } from "@/components/OwnTools";
 import { getPublishedListings, getFeaturedListings } from "@/lib/listings";
 import { safeJsonLd } from "@/lib/json-ld";
 
@@ -20,35 +21,7 @@ const WEBSITE_JSON_LD = {
     "A hand-reviewed directory of stock market, investing, and personal finance tools, built by people who understand the problems they solve. Plus our own calculators, free to use with no account.",
 };
 
-const WIDGETS = [
-  {
-    href: "/portfolio-visualizer",
-    title: "Portfolio Visualizer",
-    description:
-      "Plug in your tickers and allocations, get a clean chart you can actually screenshot and share without it looking terrible.",
-    icon: <PieChart size={20} className="text-accent-purple" />,
-    accent: "#8B5CF6",
-    tag: "Visualize",
-  },
-  {
-    href: "/cost-basis",
-    title: "Cost Basis Calculator",
-    description:
-      "Buying more? Selling some? See exactly what it does to your average cost before you do it.",
-    icon: <Calculator size={20} className="text-accent-green" />,
-    accent: "#00C896",
-    tag: "Calculate",
-  },
-  {
-    href: "/position-sizer",
-    title: "Position Sizer",
-    description:
-      "Tell it how much you're willing to lose, where you're getting in, and where you're bailing. It tells you exactly how many shares to buy.",
-    icon: <Target size={20} className="text-accent-gold" />,
-    accent: "#FFB830",
-    tag: "Risk Manage",
-  },
-];
+
 
 const EXTERNAL_TOOLS = [
   {
@@ -96,7 +69,7 @@ export default async function Home() {
         <p className="text-[11px] sm:text-xs uppercase tracking-[0.28em] text-ink-muted mb-6 sm:mb-7">
           Useful tools for managing your money
         </p>
-        <HeroSearch ownTools={WIDGETS.map((w) => ({ name: w.title, href: w.href }))} tools={searchTools} tags={searchTags} />
+        <HeroSearch ownTools={OWN_TOOLS.map((w) => ({ name: w.title, href: w.href }))} tools={searchTools} tags={searchTags} />
       </section>
 
       {/* Widget cards */}
@@ -108,7 +81,7 @@ export default async function Home() {
             right and a fade over the edge. Wider screens: the usual grid. */}
         <div className="relative -mx-4 sm:mx-0">
           <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-7 overflow-x-auto sm:overflow-visible snap-x snap-mandatory scrollbar-none px-4 sm:px-0 pb-1 sm:pb-0">
-            {WIDGETS.map((w, i) => (
+            {OWN_TOOLS.map((w, i) => (
               <div key={w.href} className="flex snap-start shrink-0 w-[80%] sm:w-auto sm:shrink">
                 <WidgetCard {...w} delay={i * 80} />
               </div>
@@ -119,6 +92,12 @@ export default async function Home() {
             className="sm:hidden pointer-events-none absolute inset-y-0 right-0 w-14 bg-gradient-to-l from-bg-surface via-bg-surface/60 to-transparent"
           />
         </div>
+        <Link
+          href="/tools"
+          className="inline-block mt-6 text-xs font-semibold uppercase tracking-widest text-ink-secondary hover:text-ink-primary transition-colors"
+        >
+          Browse all tools →
+        </Link>
       </section>
 
       {/* Featured listings, chosen in the admin directory */}
