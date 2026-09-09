@@ -78,14 +78,14 @@ export default function AdminDirectoryGrid({ items, publishAction, featureAction
 
   return (
     <div>
-      <ToolSearch names={items.map((i) => i.name)} value={query} onChange={setQuery} placeholder="Search tools by name" />
+      <ToolSearch names={items.map((i) => i.name)} value={query} onChange={setQuery} placeholder="Search sites by name" />
 
       <p className="text-xs text-ink-muted mt-3 mb-6" aria-live="polite">
-        Showing {visible.length} of {items.length} tools.
+        Showing {visible.length} of {items.length} sites.
       </p>
 
       {visible.length === 0 ? (
-        <p className="text-sm text-ink-muted">{items.length === 0 ? "No approved tools yet." : "No tools match that search."}</p>
+        <p className="text-sm text-ink-muted">{items.length === 0 ? "No approved sites yet." : "No sites match that search."}</p>
       ) : (
         <div className="grid sm:grid-cols-2 gap-4">
           {visible.map((item) => (

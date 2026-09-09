@@ -28,13 +28,13 @@ export function extractFields(formData: FormData): { fields: ListingFields } | {
   const name = String(formData.get("name") ?? "").trim();
   // A bare domain is fine; the https prefix is added here.
   const link = normalizeLink(String(formData.get("url") ?? ""), "Tool", 300);
-  if (link.error || !link.url) return { error: link.error ?? "Enter your tool's web address." };
+  if (link.error || !link.url) return { error: link.error ?? "Enter your site's web address." };
   const url = link.url;
   const tagline = String(formData.get("tagline") ?? "").replace(/\s+/g, " ").trim();
   const description = String(formData.get("description") ?? "").trim();
   const tags = normalizeTags(formData.getAll("tags").map((t) => String(t)));
 
-  if (name.length < 2 || name.length > 60) return { error: "Tool name must be 2 to 60 characters." };
+  if (name.length < 2 || name.length > 60) return { error: "Site name must be 2 to 60 characters." };
   if (tagline.length < TAGLINE_MIN || tagline.length > TAGLINE_MAX) {
     return { error: `Tagline must be ${TAGLINE_MIN} to ${TAGLINE_MAX} characters.` };
   }

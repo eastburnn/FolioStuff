@@ -76,14 +76,14 @@ export default async function MakerDashboardPage({
         <div className="rounded-2xl border border-white/[0.06] bg-bg-card p-8 text-center">
           <p className="text-sm text-ink-secondary mb-2">You have no submissions yet.</p>
           <p className="text-xs text-ink-muted mb-5">
-            Built a finance or investing tool? List it in the directory with a page of its own and
+            Built a finance or investing site? List it in the directory with a page of its own and
             a link back to your site.
           </p>
           <Link
             href="/submit"
             className="inline-block rounded-xl bg-accent-purple/[0.12] border border-accent-purple/40 hover:bg-accent-purple/[0.22] transition-colors px-5 py-2.5 text-sm font-semibold text-accent-purple"
           >
-            Submit your tool
+            Submit your site
           </Link>
         </div>
       ) : (
@@ -126,7 +126,7 @@ export default async function MakerDashboardPage({
             );
           })}
           <Link href="/submit" className="inline-block text-xs font-semibold uppercase tracking-widest text-ink-secondary hover:text-ink-primary transition-colors pt-2">
-            Submit another tool →
+            Submit another site →
           </Link>
         </div>
       )}

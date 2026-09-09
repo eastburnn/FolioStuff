@@ -4,11 +4,11 @@ import ContactForm from "@/components/directory/ContactForm";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Send FolioStuff a feature idea, a bug report, feedback, or a question about listing your tool.",
+  description: "Send FolioStuff a feature idea, a bug report, feedback, or a question about listing your site.",
   alternates: { canonical: "/contact" },
   openGraph: {
     title: "Contact | FolioStuff",
-    description: "Send FolioStuff a feature idea, a bug report, feedback, or a question about listing your tool.",
+    description: "Send FolioStuff a feature idea, a bug report, feedback, or a question about listing your site.",
     url: "/contact",
     siteName: "FolioStuff",
     type: "website",

@@ -192,17 +192,17 @@ export default function ListingForm({ action, submitLabel, initial }: ListingFor
       </div>
 
       <div>
-        <label htmlFor="name" className={labelClass}>Tool name</label>
+        <label htmlFor="name" className={labelClass}>Site name</label>
         <input id="name" name="name" type="text" required minLength={2} maxLength={60}
           value={name} onChange={(e) => setName(e.target.value)}
           className={inputClass} placeholder="e.g. DivTracker" />
       </div>
 
       <div>
-        <label htmlFor="url" className={labelClass}>Tool URL</label>
+        <label htmlFor="url" className={labelClass}>Site URL</label>
         <input id="url" name="url" type="text" inputMode="url" required maxLength={300}
           value={url} onChange={(e) => setUrl(e.target.value)}
-          className={inputClass} placeholder="yourtool.com" />
+          className={inputClass} placeholder="yoursite.com" />
       </div>
 
       <div>
@@ -289,7 +289,7 @@ export default function ListingForm({ action, submitLabel, initial }: ListingFor
       <fieldset>
         <legend className={labelClass}>Social links (optional)</legend>
         <p className="text-xs text-ink-muted mb-3">
-          Accounts for the tool itself. Your own links live on your maker profile.
+          Accounts for the site itself. Your own links live on your maker profile.
         </p>
         <div className="grid sm:grid-cols-2 gap-4">
           {SOCIAL_PLATFORMS.map((platform) => (
@@ -319,7 +319,7 @@ export default function ListingForm({ action, submitLabel, initial }: ListingFor
       {state.error && <p className="text-sm text-red-400" role="alert">{state.error}</p>}
 
       <p className="text-[11px] text-ink-muted leading-relaxed">
-        By submitting you confirm you have the rights to everything included, that the tool is
+        By submitting you confirm you have the rights to everything included, that the site is
         yours to list, and that you agree to the{" "}
         <Link href="/terms" className="underline underline-offset-2 hover:text-ink-secondary">Terms of Service</Link>{" "}
         and{" "}

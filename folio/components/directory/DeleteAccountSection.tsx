@@ -19,7 +19,7 @@ export default function DeleteAccountSection({ action }: DeleteAccountSectionPro
       {!open ? (
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <p className="text-sm text-ink-secondary">
-            Permanently delete your account, your profile, and all of your tool listings.
+            Permanently delete your account, your profile, and all of your directory listings.
           </p>
           <button
             type="button"
@@ -32,7 +32,7 @@ export default function DeleteAccountSection({ action }: DeleteAccountSectionPro
       ) : (
         <form action={formAction} className="space-y-4">
           <p className="text-sm text-ink-secondary leading-relaxed">
-            Are you sure? Deleting your account also permanently removes your tool listings
+            Are you sure? Deleting your account also permanently removes your directory listings
             from the website, including any that are live in the directory, along with your
             profile and every image you have uploaded. This cannot be undone.
           </p>

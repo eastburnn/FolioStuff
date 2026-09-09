@@ -162,7 +162,7 @@ export default function ListingDetail({ listing, makerPageUrl = null, preview = 
       <p className="text-xs text-ink-muted mt-10">
         Listed in the{" "}
         <Link href="/directory" className="underline underline-offset-2 hover:text-ink-secondary">
-          FolioStuff tool directory
+          FolioStuff Community Directory
         </Link>
         . Built something yourself?{" "}
         <Link href="/submit" className="underline underline-offset-2 hover:text-ink-secondary">

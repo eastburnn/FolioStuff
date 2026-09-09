@@ -13,7 +13,7 @@ export default function SignupPage() {
       <div className="max-w-sm mx-auto px-4 sm:px-6 pt-16 pb-24">
         <h1 className="text-2xl font-bold text-ink-primary tracking-tight mb-2">Create an account</h1>
         <p className="text-sm text-ink-secondary mb-8">
-          An account lets you submit a tool to the directory and manage your listing.
+          An account lets you submit a site to the directory and manage your listing.
         </p>
         <Suspense>
           <AuthForm mode="signup" />

@@ -256,7 +256,7 @@ export default function ProfileForm({ action, profile, userId, requiredFlow }: P
           autoComplete="url" defaultValue={profile?.website_url ?? ""} className={inputClass}
           placeholder="yoursite.com" />
         <p className="text-xs text-ink-muted mt-2">
-          Your personal or portfolio site, not a specific tool's site.
+          Your personal or portfolio site, not the site you are listing.
         </p>
       </div>
 

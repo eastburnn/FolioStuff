@@ -7,7 +7,7 @@ const COLUMNS = [
     links: [
       { href: "/tools", label: "Browse Tools" },
       { href: "/directory", label: "Browse Directory" },
-      { href: "/submit", label: "Submit Your Tool" },
+      { href: "/submit", label: "Submit Your Site" },
       { href: "/dashboard", label: "Dashboard" },
     ],
   },

@@ -39,7 +39,7 @@ export default async function ProfileSettingsPage({
         />
         <h1 className="text-3xl font-bold text-ink-primary tracking-tight mb-3">Your profile</h1>
         <p className="text-sm text-ink-secondary mb-8 max-w-xl">
-          A display name and username are required to submit a tool, and together they create
+          A display name and username are required to submit a site, and together they create
           your public maker page. Everything else here is optional.
           {profile?.username && (
             <>

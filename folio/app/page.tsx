@@ -19,7 +19,7 @@ const WEBSITE_JSON_LD = {
   name: "FolioStuff",
   url: "https://www.foliostuff.com",
   description:
-    "A hand-reviewed directory of stock market, investing, and personal finance tools, built by people who understand the problems they solve. Plus our own calculators, free to use with no account.",
+    "A hand-reviewed directory of stock market, investing, and personal finance sites, built by people who understand the problems they solve. Plus our own calculators, free to use with no account.",
 };
 
 
@@ -139,13 +139,13 @@ export default async function Home() {
               href="/submit"
               className="group inline-flex items-center gap-1.5 rounded-xl bg-accent-purple/[0.12] border border-accent-purple/40 hover:bg-accent-purple/[0.22] hover:border-accent-purple/60 hover:shadow-[0_0_24px_rgba(139,92,246,0.25)] transition-all duration-200 px-4 py-2 text-xs font-semibold text-accent-purple"
             >
-              Submit your tool
+              Submit your site
               <span className="transition-transform duration-200 group-hover:translate-x-0.5">→</span>
             </Link>
           </div>
           {communityListings.length === 0 ? (
             <p className="text-sm text-ink-muted">
-              A hand-reviewed directory of genuinely useful investing and finance tools.
+              A hand-reviewed directory of genuinely useful investing and finance sites.
               Built something?{" "}
               <Link href="/submit" className="text-ink-secondary hover:text-ink-primary underline underline-offset-2">
                 Be the first listing.

@@ -5,12 +5,12 @@ import Breadcrumb from "@/components/Breadcrumb";
 export const metadata: Metadata = {
   title: "Terms of Service",
   description:
-    "The terms for using FolioStuff's tools and submitting to the tool directory.",
+    "The terms for using FolioStuff's tools and submitting to the Community Directory.",
   alternates: { canonical: "/terms" },
   openGraph: {
     title: "Terms of Service | FolioStuff",
     description:
-      "The terms for using FolioStuff's tools and submitting to the tool directory.",
+      "The terms for using FolioStuff's tools and submitting to the Community Directory.",
     url: "/terms",
     siteName: "FolioStuff",
     type: "website",
@@ -34,15 +34,15 @@ const SECTIONS = [
   {
     heading: "Accounts",
     paragraphs: [
-      "You need an account to submit a tool to the directory and manage your listing. You must be at least 18 years old to create one. You are responsible for keeping your login credentials secure and for everything that happens under your account. You must provide accurate information. Sessions end automatically after 24 hours without a visit. We may suspend or delete accounts that violate these terms, abuse the service, or submit spam.",
-      "To submit a tool you must set a display name and a username. Both are public: they appear on your listings and on your maker page at /makers/your-username, along with any bio, picture, website, or social links you choose to add. Your email address is never shown publicly.",
+      "You need an account to submit a site to the directory and manage your listing. You must be at least 18 years old to create one. You are responsible for keeping your login credentials secure and for everything that happens under your account. You must provide accurate information. Sessions end automatically after 24 hours without a visit. We may suspend or delete accounts that violate these terms, abuse the service, or submit spam.",
+      "To submit a site you must set a display name and a username. Both are public: they appear on your listings and on your maker page at /makers/your-username, along with any bio, picture, website, or social links you choose to add. Your email address is never shown publicly.",
     ],
   },
   {
     heading: "Directory submissions",
     paragraphs: [
-      "When you submit a tool to the directory, you confirm that you have the right to share everything you upload, including names, descriptions, logos, and screenshots, and that your submission is accurate and not misleading. You grant FolioStuff a non-exclusive, royalty-free license to display, reproduce, resize, crop, re-encode, and distribute that content on the site and in promotion of the site, for as long as the listing exists. You keep ownership of your content.",
-      "The directory is for stock market, investing, and finance tools built by independent makers. Submit only tools you built or represent, with a working public website. We do not list online gambling or betting sites, paid signal or tip services, get rich quick schemes, or anything that misleads users about risk or returns.",
+      "When you submit a site to the directory, you confirm that you have the right to share everything you upload, including names, descriptions, logos, and screenshots, and that your submission is accurate and not misleading. You grant FolioStuff a non-exclusive, royalty-free license to display, reproduce, resize, crop, re-encode, and distribute that content on the site and in promotion of the site, for as long as the listing exists. You keep ownership of your content.",
+      "The directory is for stock market, investing, and finance sites built by independent makers. Submit only sites you built or represent, with a working public website. We do not list online gambling or betting sites, paid signal or tip services, get rich quick schemes, or anything that misleads users about risk or returns.",
       "Every submission is reviewed by hand. We may approve, reject, edit for clarity, pause, feature, or remove any listing at any time, at our sole discretion, with or without explanation. A paused listing is hidden from the site and from search engines but kept in your dashboard; a featured listing is shown more prominently, for example on the homepage. That includes removing a listing after it has gone live, and deleting an account along with its listings. A listing is free and does not create any partnership, endorsement, or obligation. We make no guarantees about traffic, placement, ranking, or how long a listing stays live.",
       "You can edit or permanently delete your own submissions at any time from your dashboard. Edits to a live listing go back through review: the current version stays live until the new one is approved, and if the changes are not approved the current version stays as it is. Deleting a listing removes it from the live directory and deletes its content and images. Rejected submissions and rejected edits are not stored; feedback is sent to you by email.",
     ],

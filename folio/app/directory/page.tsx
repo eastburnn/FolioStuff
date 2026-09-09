@@ -5,14 +5,14 @@ import DirectoryGrid from "@/components/directory/DirectoryGrid";
 import { getPublishedListings } from "@/lib/listings";
 
 export const metadata: Metadata = {
-  title: "Tool Directory",
+  title: "Community Directory",
   description:
-    "A hand-reviewed directory of stock market, investing, and personal finance tools worth your time, submitted by the people who build them.",
+    "A hand-reviewed directory of stock market, investing, and personal finance sites worth your time, submitted by the people who build them.",
   alternates: { canonical: "/directory" },
   openGraph: {
-    title: "Tool Directory | FolioStuff",
+    title: "Community Directory | FolioStuff",
     description:
-      "A hand-reviewed directory of stock market, investing, and personal finance tools worth your time, submitted by the people who build them.",
+      "A hand-reviewed directory of stock market, investing, and personal finance sites worth your time, submitted by the people who build them.",
     url: "/directory",
     siteName: "FolioStuff",
     type: "website",
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 // Rendered per request so the ?tag= filter is applied server-side: no
 // unfiltered flash or layout jump, and crawlers see the real cards.
-export default async function ToolsPage({
+export default async function DirectoryPage({
   searchParams,
 }: {
   searchParams: Promise<{ tag?: string; q?: string }>;
@@ -36,10 +36,10 @@ export default async function ToolsPage({
         <Breadcrumb items={[{ label: "Directory", href: "/directory" }]} />
 
         <h1 className="text-3xl font-bold text-ink-primary tracking-tight mb-3">
-          Tool directory
+          Community Directory
         </h1>
         <p className="text-ink-secondary leading-relaxed mb-4 max-w-2xl">
-          Stock market, investing, and personal finance tools worth your time, from solo
+          Stock market, investing, and personal finance sites worth your time, from solo
           builders to small teams. Every listing is submitted by the people who made it and
           reviewed by hand before it appears here.
         </p>
@@ -47,7 +47,7 @@ export default async function ToolsPage({
           href="/submit"
           className="inline-block rounded-xl bg-accent-purple/[0.12] border border-accent-purple/40 hover:bg-accent-purple/[0.22] hover:border-accent-purple/60 hover:shadow-[0_0_24px_rgba(139,92,246,0.25)] transition-all duration-200 px-5 py-2.5 text-sm font-semibold text-accent-purple mb-12"
         >
-          Submit your tool
+          Submit your site
         </Link>
 
         {listings.length === 0 ? (

@@ -66,7 +66,7 @@ export default function DashboardShell({ user, profile, isAdmin, hasPublishedLis
           </div>
           {!pageLive && (
             <p className="text-[11px] text-ink-muted mt-3 pt-3 border-t border-white/[0.05]">
-              Your public maker page only appears once a tool you submit is approved for the site.
+              Your public maker page only appears once a site you submit is approved for the directory.
             </p>
           )}
         </div>

@@ -50,7 +50,7 @@ export default function DirectoryGrid({ listings }: { listings: PublishedListing
   return (
     <div>
       <div className="mb-6">
-        <ToolSearch names={listings.map((l) => l.name)} value={query} onChange={setQuery} placeholder="Search tools by name, tag, or maker" />
+        <ToolSearch names={listings.map((l) => l.name)} value={query} onChange={setQuery} placeholder="Search sites by name, tag, or maker" />
       </div>
 
       {tagCounts.length > 0 && (

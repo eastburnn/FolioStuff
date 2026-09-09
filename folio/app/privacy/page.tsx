@@ -22,7 +22,7 @@ const SECTIONS = [
   {
     heading: "The short version",
     paragraphs: [
-      "You can use every tool on FolioStuff without an account, and the numbers you type into them are processed entirely in your browser and never sent to our servers. If you create an account to submit a tool to the directory, we store your email address and the listing content you give us, and nothing more. The only other data we collect is anonymous usage analytics, described below.",
+      "You can use every tool on FolioStuff without an account, and the numbers you type into them are processed entirely in your browser and never sent to our servers. If you create an account to submit a site to the directory, we store your email address and the listing content you give us, and nothing more. The only other data we collect is anonymous usage analytics, described below.",
     ],
   },
   {
@@ -34,7 +34,7 @@ const SECTIONS = [
   {
     heading: "Accounts and directory submissions",
     paragraphs: [
-      "Creating an account requires an email address and a password. Passwords are hashed and never visible to us. If you submit a tool, we store what you provide: the tool's name, URL, description, tags, any social links for the tool, and any images you upload. Your profile's display name, and your X handle if you set one, are attached to each listing and shown publicly with it. This data lives in our database and file storage, hosted by Supabase.",
+      "Creating an account requires an email address and a password. Passwords are hashed and never visible to us. If you submit a site, we store what you provide: its name, URL, description, tags, any social links for it, and any images you upload. Your profile's display name, and your X handle if you set one, are attached to each listing and shown publicly with it. This data lives in our database and file storage, hosted by Supabase.",
       "Images are prepared in your browser before upload: screenshots and icons are resized and compressed, and profile pictures are cropped to the square you choose. Only the prepared version reaches our servers; the original file never leaves your device. Images attached to pending submissions are private. Once a listing is approved, its icon and screenshots become public files, as does your profile picture.",
       "Pending submissions are private and visible only to you and the site admin, and rejected submissions are deleted outright rather than stored. Approved listings are public by design, since that is the point of submitting. Submitting requires a display name and username, which appear publicly on your listings and maker page; your bio, photo, website, and social links are optional additions to that page. Social handles you enter are normalized to a standard form, and links get an https prefix if you leave it off. You can delete your own listings at any time from your dashboard, which removes their content and images. You can also delete your whole account from your profile settings, which permanently removes your profile, your listings, and every image you uploaded. We may also pause a listing (it stays stored but hidden from the site and search engines), feature it on the homepage, or remove listings or accounts ourselves, as described in the Terms of Service.",
     ],

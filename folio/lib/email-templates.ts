@@ -62,7 +62,7 @@ function layout(bodyHtml: string): string {
             <tr>
               <td style="padding:20px 8px 0 8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:12px;line-height:1.6;color:${MUTED};">
                 Useful tools for managing your money, plus a hand-reviewed directory of
-                finance tools built by the people who made them.<br />
+                finance sites built by the people who made them.<br />
                 <a href="${SITE_URL}" style="color:${MUTED};">foliostuff.com</a>
               </td>
             </tr>
@@ -110,7 +110,7 @@ export function adminNewSubmissionEmail(listingName: string, isEdit = false): Em
       ${button("Review it now", `${SITE_URL}/admin`)}
       <p style="${small}">You are getting this because you are the FolioStuff admin.</p>
     `),
-    text: `A new tool was submitted to the FolioStuff directory: ${listingName}\n\nReview it here: ${SITE_URL}/admin`,
+    text: `A new site was submitted to the FolioStuff directory: ${listingName}\n\nReview it here: ${SITE_URL}/admin`,
   };
 }
 
@@ -136,7 +136,7 @@ export function approvedEmail(listingName: string, slug: string, isEdit = false)
       <p style="${p}"><strong>${name}</strong> was approved and is now listed in the FolioStuff directory, with its own page and a link back to your site.</p>
       ${button("View your listing", listingUrl)}
       <p style="${p}">Share the link anywhere you like. The more people see it, the better it does for both of us.</p>
-      <p style="${p}"><strong>Add a badge to your site.</strong> It links straight to your listing, and it tells your visitors the tool was reviewed and listed.</p>
+      <p style="${p}"><strong>Add a badge to your site.</strong> It links straight to your listing, and it tells your visitors the site was reviewed and listed.</p>
       <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 12px 0;">
         <tr>
           <td>

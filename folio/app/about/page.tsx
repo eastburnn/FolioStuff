@@ -6,12 +6,12 @@ import Breadcrumb from "@/components/Breadcrumb";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "A hand-reviewed directory of stock market, investing, and personal finance tools, built by people who understand the problems they solve. Plus our own calculators, free to use with no account.",
+    "A hand-reviewed directory of stock market, investing, and personal finance sites, built by people who understand the problems they solve. Plus our own calculators, free to use with no account.",
   alternates: { canonical: "/about" },
   openGraph: {
     title: "About | FolioStuff",
     description:
-      "A hand-reviewed directory of stock market, investing, and personal finance tools, built by people who understand the problems they solve. Plus our own calculators, free to use with no account.",
+      "A hand-reviewed directory of stock market, investing, and personal finance sites, built by people who understand the problems they solve. Plus our own calculators, free to use with no account.",
     url: "/about",
     siteName: "FolioStuff",
     type: "website",
@@ -79,7 +79,7 @@ export default function AboutPage() {
           <Link href="/directory" className="text-ink-primary underline underline-offset-2 hover:text-white">
             directory
           </Link>{" "}
-          of investing and finance tools made by people who understand the problems they solve.
+          of investing and finance sites made by people who understand the problems they solve.
         </p>
 
         <section className="mb-12">
@@ -126,9 +126,9 @@ export default function AboutPage() {
             <p>
               The{" "}
               <Link href="/directory" className="text-ink-primary font-medium underline underline-offset-2 hover:text-white">
-                tool directory
+                Community Directory
               </Link>{" "}
-              collects stock market, investing, and personal finance tools that are genuinely worth
+              collects stock market, investing, and personal finance sites that are genuinely worth
               your time. Some are free, some are paid, and they come from solo builders and small
               teams alike. What they have in common is that the people who made them understand
               the problem they set out to solve. You will not find the household names here; you
@@ -154,7 +154,7 @@ export default function AboutPage() {
             <p>
               Built something? Create an account, set up your maker profile, and{" "}
               <Link href="/submit" className="text-ink-primary font-medium underline underline-offset-2 hover:text-white">
-                submit your tool
+                submit your site
               </Link>
               . Approved listings link back to your site, and you can edit or remove them
               whenever you like. Alongside the directory, the{" "}

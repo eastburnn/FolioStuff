@@ -6,9 +6,9 @@ import { createClient } from "@/lib/supabase/server";
 import { createListing } from "./actions";
 
 export const metadata: Metadata = {
-  title: "Submit Your Tool",
+  title: "Submit Your Site",
   description:
-    "Submit your stock market, investing, or personal finance tool to the FolioStuff directory. Free listing with a backlink and a dedicated page.",
+    "Submit your stock market, investing, or personal finance site to the FolioStuff directory. Free listing with a backlink and a dedicated page.",
   alternates: { canonical: "/submit" },
 };
 
@@ -40,13 +40,13 @@ export default async function SubmitPage() {
   return (
     <div className="pt-16 grid-bg min-h-screen">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 pt-10 pb-24">
-        <Breadcrumb items={[{ label: "Submit Your Tool", href: "/submit" }]} />
+        <Breadcrumb items={[{ label: "Submit Your Site", href: "/submit" }]} />
 
         <h1 className="text-3xl font-bold text-ink-primary tracking-tight mb-3">
-          Submit your tool
+          Submit your site
         </h1>
         <p className="text-ink-secondary leading-relaxed mb-8 max-w-xl">
-          Get your project in front of traders and investors. Approved tools get their own card
+          Get your project in front of traders and investors. Approved sites get their own card
           in the directory, a dedicated page, and a link back to your site. Every submission is
           reviewed by hand before it goes live.
         </p>
