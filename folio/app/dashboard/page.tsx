@@ -68,7 +68,7 @@ export default async function DashboardPage() {
           {savedTools.length > 0 && (
             <section>
               <h2 className="text-xs text-ink-muted uppercase tracking-widest mb-4">Saved tools</h2>
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div className="grid sm:grid-cols-2 auto-rows-fr gap-4">
                 {savedTools.map((tool) => (
                   <div key={tool.href} className="relative">
                     <WidgetCard {...tool} />
@@ -81,7 +81,7 @@ export default async function DashboardPage() {
           {savedListings.length > 0 && (
             <section>
               <h2 className="text-xs text-ink-muted uppercase tracking-widest mb-4">Saved from the directory</h2>
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div className="grid sm:grid-cols-2 auto-rows-fr gap-4">
                 {savedListings.map((listing) => (
                   <div key={listing.slug} className="relative">
                     <ListingCard listing={listing} />

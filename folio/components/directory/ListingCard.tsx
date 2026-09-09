@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { PublishedListing } from "@/lib/listings";
 import { publicImageUrl } from "@/lib/supabase/config";
+import { clampTagline } from "@/lib/listing-limits";
 
 export default function ListingCard({ listing }: { listing: PublishedListing }) {
   return (
@@ -26,7 +27,7 @@ export default function ListingCard({ listing }: { listing: PublishedListing }) 
           <p className="text-sm font-semibold text-ink-primary group-hover:text-white transition-colors pr-7">
             {listing.name}
           </p>
-          <p className="text-xs text-ink-secondary leading-relaxed mt-1">{listing.tagline}</p>
+          <p className="text-xs text-ink-secondary leading-relaxed mt-1">{clampTagline(listing.tagline)}</p>
         </div>
       </div>
       {/* Tags and maker span the full card width, pinned to the bottom. */}

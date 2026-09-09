@@ -116,7 +116,7 @@ export default async function Home() {
             <h2 className="text-xs text-ink-muted uppercase tracking-widest mb-6">
               Featured stuff
             </h2>
-            <div className="grid sm:grid-cols-2 gap-6">
+            <div className="grid sm:grid-cols-2 auto-rows-fr gap-6">
               {featuredListings.map((listing) => (
                 <div key={listing.slug} className="relative">
                   <FeaturedListingCard listing={listing} />
@@ -153,7 +153,7 @@ export default async function Home() {
             </p>
           ) : (
             <>
-              <div className="grid sm:grid-cols-2 gap-4">
+              <div className="grid sm:grid-cols-2 auto-rows-fr gap-4">
                 {communityListings.map((listing) => (
                   <div key={listing.slug} className="relative">
                     <ListingCard listing={listing} />

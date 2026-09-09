@@ -98,7 +98,7 @@ export default function DirectoryGrid({ listings }: { listings: PublishedListing
           </button>
         </p>
       ) : (
-        <div className="grid sm:grid-cols-2 gap-4">
+        <div className="grid sm:grid-cols-2 auto-rows-fr gap-4">
           {visible.map((listing) => (
             <div key={listing.slug} className="relative">
               <ListingCard listing={listing} />

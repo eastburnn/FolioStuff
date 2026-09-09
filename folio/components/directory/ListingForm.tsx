@@ -13,6 +13,7 @@ import {
   MAX_TOTAL_IMAGE_BYTES,
   formatBytes,
 } from "@/lib/image-limits";
+import { TAGLINE_MAX, TAGLINE_MIN } from "@/lib/listing-limits";
 
 export interface ListingFormState {
   error: string | null;
@@ -206,13 +207,21 @@ export default function ListingForm({ action, submitLabel, initial }: ListingFor
 
       <div>
         <label htmlFor="tagline" className={labelClass}>Tagline</label>
-        <textarea id="tagline" name="tagline" required minLength={10} maxLength={200} rows={2}
+        <textarea id="tagline" name="tagline" required minLength={TAGLINE_MIN} maxLength={TAGLINE_MAX} rows={2}
           value={tagline} onChange={(e) => setTagline(e.target.value)}
           className={inputClass} placeholder="What it does, in one or two sentences" />
         <p className="text-xs text-ink-muted mt-2">
-          10 to 200 characters. Shown under the name on cards and in search results, so
-          keep the first sentence tight. {tagline.length}/200
+          {TAGLINE_MIN} to {TAGLINE_MAX} characters. Shown under the name on cards and in search results, so
+          keep it to one tight sentence.{" "}
+          <span className={tagline.length > TAGLINE_MAX ? "text-red-400 font-medium" : undefined}>
+            {tagline.length}/{TAGLINE_MAX}
+          </span>
         </p>
+        {tagline.length > TAGLINE_MAX && (
+          <p className="text-xs text-accent-gold mt-1.5">
+            Taglines are now limited to {TAGLINE_MAX} characters. Shorten this one before saving.
+          </p>
+        )}
       </div>
 
       <div>

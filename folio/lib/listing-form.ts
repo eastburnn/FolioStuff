@@ -2,6 +2,7 @@ import { normalizeTags, MAX_TAGS } from "./tags";
 import { parseSocials, type Socials } from "./socials";
 import { normalizeLink } from "./profiles";
 import { MAX_IMAGE_BYTES, MAX_SCREENSHOTS, MAX_TOTAL_IMAGE_BYTES, formatBytes } from "./image-limits";
+import { TAGLINE_MAX, TAGLINE_MIN } from "./listing-limits";
 
 export { MAX_IMAGE_BYTES, MAX_SCREENSHOTS };
 
@@ -34,7 +35,9 @@ export function extractFields(formData: FormData): { fields: ListingFields } | {
   const tags = normalizeTags(formData.getAll("tags").map((t) => String(t)));
 
   if (name.length < 2 || name.length > 60) return { error: "Tool name must be 2 to 60 characters." };
-  if (tagline.length < 10 || tagline.length > 200) return { error: "Tagline must be 10 to 200 characters." };
+  if (tagline.length < TAGLINE_MIN || tagline.length > TAGLINE_MAX) {
+    return { error: `Tagline must be ${TAGLINE_MIN} to ${TAGLINE_MAX} characters.` };
+  }
   if (description.length < 40 || description.length > 2000) return { error: "Description must be 40 to 2000 characters." };
   if (tags.length < 1) return { error: `Add at least one tag (up to ${MAX_TAGS}).` };
 

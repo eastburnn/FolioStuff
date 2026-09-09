@@ -104,7 +104,7 @@ export default async function MakerPage({ params }: PageProps) {
           {listings.length === 0 ? (
             <p className="text-sm text-ink-muted">No live listings yet.</p>
           ) : (
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="grid sm:grid-cols-2 gap-4 auto-rows-fr">
               {listings.map((listing) => (
                 <ListingCard key={listing.slug} listing={listing} />
               ))}
