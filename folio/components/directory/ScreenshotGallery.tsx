@@ -93,6 +93,10 @@ export default function ScreenshotGallery({ shots }: { shots: Shot[] }) {
   const current = openIndex === null ? null : shots[openIndex];
   const iconButton =
     "rounded-full bg-white/[0.1] hover:bg-white/[0.2] text-ink-primary p-2.5 transition-colors backdrop-blur";
+  // The arrows that move between screenshots sit on the brand purple so
+  // they read as controls on top of any screenshot.
+  const arrowButton =
+    "rounded-full bg-accent-purple/90 hover:bg-accent-purple text-white p-2.5 transition-colors backdrop-blur";
 
   return (
     <>
@@ -138,7 +142,7 @@ export default function ScreenshotGallery({ shots }: { shots: Shot[] }) {
             type="button"
             onClick={() => scrollRow(-1)}
             aria-label="Scroll screenshots left"
-            className={`${iconButton} hidden sm:flex absolute left-2 top-1/2 -translate-y-1/2 shadow-lg`}
+            className={`${arrowButton} hidden sm:flex absolute left-2 top-1/2 -translate-y-1/2 shadow-lg`}
           >
             <ChevronLeft size={18} aria-hidden="true" />
           </button>
@@ -148,7 +152,7 @@ export default function ScreenshotGallery({ shots }: { shots: Shot[] }) {
             type="button"
             onClick={() => scrollRow(1)}
             aria-label="Scroll screenshots right"
-            className={`${iconButton} hidden sm:flex absolute right-2 top-1/2 -translate-y-1/2 shadow-lg`}
+            className={`${arrowButton} hidden sm:flex absolute right-2 top-1/2 -translate-y-1/2 shadow-lg`}
           >
             <ChevronRight size={18} aria-hidden="true" />
           </button>
@@ -203,11 +207,11 @@ export default function ScreenshotGallery({ shots }: { shots: Shot[] }) {
           {shots.length > 1 && (
             <>
               <button type="button" onClick={() => step(-1)} aria-label="Previous screenshot"
-                className={`${iconButton} absolute left-3 top-1/2 -translate-y-1/2`}>
+                className={`${arrowButton} absolute left-3 top-1/2 -translate-y-1/2`}>
                 <ChevronLeft size={20} aria-hidden="true" />
               </button>
               <button type="button" onClick={() => step(1)} aria-label="Next screenshot"
-                className={`${iconButton} absolute right-3 top-1/2 -translate-y-1/2`}>
+                className={`${arrowButton} absolute right-3 top-1/2 -translate-y-1/2`}>
                 <ChevronRight size={20} aria-hidden="true" />
               </button>
               <p className="absolute bottom-3 left-1/2 -translate-x-1/2 text-xs text-ink-secondary bg-black/50 rounded-full px-3 py-1">
