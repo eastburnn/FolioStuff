@@ -25,26 +25,28 @@ export default function BadgeEmbed({ slug }: { slug: string }) {
 
   return (
     <div className="mt-4 pt-4 border-t border-white/[0.06]">
-      <div className="flex items-center justify-between gap-3 mb-1">
-        <p className="text-xs font-semibold text-ink-primary">Badge for your site</p>
-        <button
-          type="button"
-          onClick={copy}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.12] px-2.5 py-1 text-xs font-medium text-ink-secondary hover:text-ink-primary hover:border-white/[0.2] transition-colors"
-        >
-          {copied ? <Check size={12} aria-hidden="true" /> : <Copy size={12} aria-hidden="true" />}
-          {copied ? "Copied" : "Copy code"}
-        </button>
-      </div>
+      <p className="text-xs font-semibold text-ink-primary mb-1">Badge for your site</p>
       <p className="text-xs text-ink-muted mb-3">
         Paste this anywhere on your site, such as the footer. It links back to your listing.
       </p>
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-        <a href={`/directory/${slug}`} className="shrink-0 self-start">
-          {/* Plain img: the badge is a static SVG and must render exactly as makers will see it. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/badge.svg" alt="Listed on FolioStuff" width={BADGE_WIDTH} height={BADGE_HEIGHT} />
-        </a>
+      {/* Phones: badge and button side by side above the code. Desktop: the
+          badge with the button beneath it on the left, the code on the right. */}
+      <div className="flex flex-col sm:flex-row sm:items-start gap-3">
+        <div className="flex items-center justify-between gap-3 sm:flex-col sm:items-stretch sm:gap-2 shrink-0">
+          <a href={`/directory/${slug}`} className="shrink-0 self-start">
+            {/* Plain img: the badge is a static SVG and must render exactly as makers will see it. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/badge.svg" alt="Listed on FolioStuff" width={BADGE_WIDTH} height={BADGE_HEIGHT} />
+          </a>
+          <button
+            type="button"
+            onClick={copy}
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/[0.12] px-2.5 py-1 text-xs font-medium text-ink-secondary hover:text-ink-primary hover:border-white/[0.2] transition-colors"
+          >
+            {copied ? <Check size={12} aria-hidden="true" /> : <Copy size={12} aria-hidden="true" />}
+            {copied ? "Copied" : "Copy code"}
+          </button>
+        </div>
         <textarea
           ref={boxRef}
           readOnly
