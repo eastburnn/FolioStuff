@@ -60,6 +60,12 @@ const SECTIONS = [
     ],
   },
   {
+    heading: "Ownership",
+    paragraphs: [
+      "FolioStuff, including its name, logo, design, text, and the calculators and visualizers we built, is owned by FolioStuff and protected by copyright. You are welcome to use the site and its tools for your own personal or business purposes, but you may not copy, republish, sell, or redistribute the site's content or tools, or use our name or logo, without permission. Makers keep ownership of what they submit to the directory, as described above, and third party names and logos shown in listings belong to their owners.",
+    ],
+  },
+  {
     heading: "Third party sites and affiliate links",
     paragraphs: [
       "The directory and other parts of the site link to third party websites we do not control and are not responsible for. Directory listings are provided by their makers, and a listing here is not an endorsement or a guarantee of quality, safety, or accuracy. Some outbound links are affiliate links, meaning we may earn a commission if you sign up through them at no extra cost to you.",
