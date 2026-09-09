@@ -32,10 +32,16 @@ function button(label: string, href: string): string {
     </table>`;
 }
 
-function layout(bodyHtml: string): string {
+function layout(bodyHtml: string, preheader = ""): string {
+  // Preview text: hidden in the body, shown by inboxes next to the subject.
+  // The trailing padding keeps clients from pulling body copy in after it.
+  const preview = preheader
+    ? `<div style="display:none;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;">${escapeHtml(preheader)}${"&nbsp;&zwnj;".repeat(40)}</div>`
+    : "";
   return `<!doctype html>
 <html>
   <body style="margin:0;padding:0;background:#F4F5F7;">
+    ${preview}
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F4F5F7;padding:32px 16px;">
       <tr>
         <td align="center">
@@ -176,6 +182,34 @@ export function rejectedEmail(listingName: string, feedback: string, isEdit = fa
       ${button("Submit again", `${SITE_URL}/submit`)}
     `),
     text: `Thanks for submitting ${listingName} to the FolioStuff directory. It was not approved this time.\n\nFeedback:\n${feedback}\n\nIf you would like another shot, address the feedback and submit again: ${SITE_URL}/submit\nRejected submissions are not kept on file, so this email is your copy of the feedback.`,
+  };
+}
+
+export interface DirectMessageFields {
+  subject: string;
+  preheader: string;
+  message: string;
+}
+
+// A one-off message written by the admin in the dashboard. Blank lines
+// separate paragraphs; single line breaks are kept.
+export function directMessageEmail(f: DirectMessageFields): EmailContent {
+  const paragraphs = f.message
+    .split(/\n{2,}/)
+    .map((para) => para.trim())
+    .filter(Boolean)
+    .map((para) => `<p style="${p}">${escapeHtml(para).replace(/\n/g, "<br />")}</p>`)
+    .join("");
+  return {
+    subject: f.subject,
+    html: layout(
+      `
+      ${paragraphs}
+      <p style="${small}">You are receiving this because you have a FolioStuff account. Reply to this email to answer.</p>
+    `,
+      f.preheader
+    ),
+    text: `${f.message}\n\nYou are receiving this because you have a FolioStuff account. Reply to this email to answer.`,
   };
 }
 

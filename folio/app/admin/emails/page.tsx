@@ -6,18 +6,23 @@ import { getAdminContext } from "@/lib/admin-gate";
 import {
   adminNewSubmissionEmail,
   approvedEmail,
+  directMessageEmail,
   rejectedEmail,
 } from "@/lib/email-templates";
+import { SAMPLE_DIRECT_MESSAGE } from "@/lib/email-samples";
+import { senderOptions } from "@/lib/email";
+import AdminComposeForm, { type Recipient } from "@/components/directory/AdminComposeForm";
 import { sendTestEmail } from "../actions";
 
 export const metadata: Metadata = {
-  title: "Email Templates",
+  title: "Emails",
   robots: { index: false, follow: false },
 };
 
 export const dynamic = "force-dynamic";
 
 const TEMPLATES = [
+  { key: "message", label: "Direct message (to a user)" },
   { key: "admin", label: "New submission (to you)" },
   { key: "admin-edit", label: "Edit awaiting re-approval (to you)" },
   { key: "approved", label: "Approved (to maker)" },
@@ -41,6 +46,8 @@ function sampleFor(key: string) {
       return rejectedEmail("DivRadar", SAMPLE_FEEDBACK, true);
     case "admin-edit":
       return adminNewSubmissionEmail("DivRadar", true);
+    case "message":
+      return directMessageEmail(SAMPLE_DIRECT_MESSAGE);
     default:
       return adminNewSubmissionEmail("DivRadar");
   }
@@ -59,6 +66,31 @@ export default async function AdminEmailsPage({
 
   const ctx = await getAdminContext();
   if (!ctx) notFound();
+  const { admin } = ctx;
+
+  // Everyone with an account, makers first, labeled with their listings.
+  const [{ data: usersData }, { data: listingRows }, { data: profileRows }] = await Promise.all([
+    admin.auth.admin.listUsers({ page: 1, perPage: 1000 }),
+    admin.from("listings").select("owner_id, name"),
+    admin.from("profiles").select("id, display_name"),
+  ]);
+  const listingsByOwner = new Map<string, string[]>();
+  for (const row of (listingRows ?? []) as { owner_id: string; name: string }[]) {
+    listingsByOwner.set(row.owner_id, [...(listingsByOwner.get(row.owner_id) ?? []), row.name]);
+  }
+  const displayNames = new Map(
+    ((profileRows ?? []) as { id: string; display_name: string | null }[]).map((r) => [r.id, r.display_name])
+  );
+  const recipients: Recipient[] = (usersData?.users ?? [])
+    .filter((u) => Boolean(u.email))
+    .map((u) => {
+      const listings = listingsByOwner.get(u.id) ?? [];
+      const name = displayNames.get(u.id) ?? null;
+      const who = name ? `${name} (${u.email})` : u.email!;
+      return { email: u.email!, label: listings.length ? `${who} · ${listings.join(", ")}` : who, maker: listings.length > 0 };
+    })
+    .sort((a, b) => Number(b.maker) - Number(a.maker) || a.label.localeCompare(b.label))
+    .map(({ email, label }) => ({ email, label }));
 
   const { template: rawTemplate, sent } = await searchParams;
   const template = TEMPLATES.some((t) => t.key === rawTemplate) ? rawTemplate! : "approved";
@@ -69,9 +101,19 @@ export default async function AdminEmailsPage({
     <div className="max-w-3xl">
 
       <h1 className="text-3xl font-bold text-ink-primary tracking-tight mb-3">
-        Email templates
+        Emails
       </h1>
       <p className="text-sm text-ink-secondary mb-8 max-w-xl">
+        Write to a user directly, with the same branding as every other email the site sends.
+      </p>
+
+      <section className="rounded-2xl border border-white/[0.08] bg-bg-card p-5 sm:p-6 mb-12">
+        <h2 className="text-xs text-ink-muted uppercase tracking-widest mb-5">Send an email</h2>
+        <AdminComposeForm recipients={recipients} senders={senderOptions()} />
+      </section>
+
+      <h2 className="text-xs text-ink-muted uppercase tracking-widest mb-3">Templates</h2>
+      <p className="text-sm text-ink-secondary mb-6 max-w-xl">
         Previews use sample data. Edit the designs in{" "}
         <span className="font-mono text-xs text-ink-primary">lib/email-templates.ts</span>{" "}
         and refresh to see changes.

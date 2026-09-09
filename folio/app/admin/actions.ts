@@ -5,8 +5,9 @@ import { redirect } from "next/navigation";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { notifySubmissionApproved, notifySubmissionRejected, sendEmailContent } from "@/lib/email";
-import { adminNewSubmissionEmail, approvedEmail, rejectedEmail } from "@/lib/email-templates";
+import { notifySubmissionApproved, notifySubmissionRejected, sendDirectMessage, sendEmailContent } from "@/lib/email";
+import { adminNewSubmissionEmail, approvedEmail, directMessageEmail, rejectedEmail } from "@/lib/email-templates";
+import { SAMPLE_DIRECT_MESSAGE } from "@/lib/email-samples";
 import { deleteListingFiles, deleteAvatarFiles, pruneFolder, privateFolder, imageExt } from "@/lib/listing-cleanup";
 import { getAdminContext } from "@/lib/admin-gate";
 import { normalizePublished, type ListingRow, type PublishedListing } from "@/lib/listings";
@@ -283,7 +284,9 @@ export async function sendTestEmail(template: string): Promise<void> {
             ? rejectedEmail("DivRadar", feedback, true)
             : template === "admin-edit"
               ? adminNewSubmissionEmail("DivRadar", true)
-              : adminNewSubmissionEmail("DivRadar");
+              : template === "message"
+                ? directMessageEmail(SAMPLE_DIRECT_MESSAGE)
+                : adminNewSubmissionEmail("DivRadar");
 
   await sendEmailContent(ctx.user.email, content);
   redirect(`/admin/emails?template=${encodeURIComponent(template)}&sent=1`);
@@ -381,4 +384,35 @@ export async function deleteMakerAccountForm(formData: FormData): Promise<void> 
   if (!owner) return;
   await deleteMakerAccount(owner);
   revalidatePath("/admin/directory");
+}
+
+export interface ComposeState {
+  sent?: string;
+  error?: string;
+}
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Sends a one-off branded email written in the Emails tab. Admin only.
+export async function sendComposedEmail(_prev: ComposeState, formData: FormData): Promise<ComposeState> {
+  const ctx = await getAdminContext();
+  if (!ctx) return { error: "Not authorized." };
+
+  const picked = String(formData.get("recipient") ?? "").trim();
+  const other = String(formData.get("recipientOther") ?? "").trim();
+  const to = (picked === "other" ? other : picked).toLowerCase();
+  if (!EMAIL_RE.test(to) || to.length > 254) return { error: "Choose a recipient or enter a valid email address." };
+
+  const sender = String(formData.get("sender") ?? "site");
+  const subject = String(formData.get("subject") ?? "").replace(/\s+/g, " ").trim();
+  const preheader = String(formData.get("preheader") ?? "").replace(/\s+/g, " ").trim();
+  const message = String(formData.get("message") ?? "").replace(/\r\n?/g, "\n").trim();
+  if (subject.length < 2 || subject.length > 150) return { error: "Subject must be 2 to 150 characters." };
+  if (preheader.length > 150) return { error: "Preview text must be 150 characters or fewer." };
+  if (message.length < 2 || message.length > 5000) return { error: "Message must be 2 to 5000 characters." };
+  const copy = formData.get("copy") === "1";
+
+  const ok = await sendDirectMessage(to, sender, { subject, preheader, message }, copy);
+  if (!ok) return { error: "The email could not be sent. Check the email configuration and try again." };
+  return { sent: to };
 }
