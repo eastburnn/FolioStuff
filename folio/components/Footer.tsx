@@ -23,7 +23,7 @@ const COLUMNS = [
 ];
 
 const DESCRIPTION =
-  "Useful tools for managing your money, plus a hand-reviewed directory of investing and finance tools worth knowing about.";
+  "Useful tools for managing your money, plus a hand-reviewed directory of investing and finance sites worth knowing about.";
 
 export default function Footer() {
   return (
