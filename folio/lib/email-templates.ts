@@ -1,3 +1,5 @@
+import { BADGE_HEIGHT, BADGE_WIDTH, badgeEmbedCode } from "./badge";
+
 // Branded HTML email templates. Hand-rolled with tables and inline styles so
 // they render correctly across Gmail, Outlook, and Apple Mail. Light theme on
 // purpose: email clients mangle dark backgrounds unpredictably.
@@ -7,6 +9,8 @@ const PURPLE = "#8B5CF6";
 const INK = "#1F2430";
 const MUTED = "#6B7280";
 const LOGO_URL = "https://www.foliostuff.com/favicon.png";
+// Email clients block SVG images, so the badge preview in mail is the PNG.
+const BADGE_PNG_URL = "https://www.foliostuff.com/badge.png";
 
 export interface EmailContent {
   subject: string;
@@ -57,8 +61,8 @@ function layout(bodyHtml: string): string {
             </tr>
             <tr>
               <td style="padding:20px 8px 0 8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:12px;line-height:1.6;color:${MUTED};">
-                Free tools for traders and investors, plus a hand-reviewed directory of
-                finance tools built by indie makers.<br />
+                Useful tools for managing your money, plus a hand-reviewed directory of
+                finance tools built by the people who made them.<br />
                 <a href="${SITE_URL}" style="color:${MUTED};">foliostuff.com</a>
               </td>
             </tr>
@@ -73,6 +77,7 @@ function layout(bodyHtml: string): string {
 const h1 = `margin:0 0 14px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:22px;font-weight:700;letter-spacing:-0.3px;color:${INK};`;
 const p = `margin:0 0 14px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:15px;line-height:1.65;color:#3D4453;`;
 const small = `margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:13px;color:${MUTED};`;
+const code = `margin:0 0 12px 0;padding:12px 14px;background:#F4F5F7;border:1px solid #E7E8EC;border-radius:10px;font-family:Menlo,Consolas,'Liberation Mono',monospace;font-size:12px;line-height:1.55;color:#3D4453;white-space:pre-wrap;overflow-wrap:anywhere;`;
 const quote = `margin:18px 0;padding:14px 18px;background:#F7F5FF;border-left:3px solid ${PURPLE};border-radius:0 10px 10px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;font-size:14px;line-height:1.6;color:#3D4453;`;
 
 function escapeHtml(s: string): string {
@@ -131,9 +136,18 @@ export function approvedEmail(listingName: string, slug: string, isEdit = false)
       <p style="${p}"><strong>${name}</strong> was approved and is now listed in the FolioStuff directory, with its own page and a link back to your site.</p>
       ${button("View your listing", listingUrl)}
       <p style="${p}">Share the link anywhere you like. The more people see it, the better it does for both of us.</p>
-      <p style="${small}">Thanks for submitting, and congrats on shipping.</p>
+      <p style="${p}"><strong>Add a badge to your site.</strong> It links straight to your listing, and it tells your visitors the tool was reviewed and listed.</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 12px 0;">
+        <tr>
+          <td>
+            <a href="${listingUrl}" target="_blank"><img src="${BADGE_PNG_URL}" width="${BADGE_WIDTH}" height="${BADGE_HEIGHT}" alt="Listed on FolioStuff" style="display:block;border:0;" /></a>
+          </td>
+        </tr>
+      </table>
+      <div style="${code}">${escapeHtml(badgeEmbedCode(slug))}</div>
+      <p style="${small}">The same code is on your dashboard with a copy button. Thanks for submitting, and congrats on shipping.</p>
     `),
-    text: `Good news: ${listingName} was approved and is now live in the FolioStuff directory.\n\nYour listing: ${listingUrl}\n\nFeel free to share it. Thanks for submitting!`,
+    text: `Good news: ${listingName} was approved and is now live in the FolioStuff directory.\n\nYour listing: ${listingUrl}\n\nFeel free to share it.\n\nAdd a "Listed on FolioStuff" badge to your site with this code (it links to your listing):\n${badgeEmbedCode(slug)}\n\nThe same code is on your dashboard with a copy button. Thanks for submitting!`,
   };
 }
 

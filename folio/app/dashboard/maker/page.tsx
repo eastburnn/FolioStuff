@@ -7,6 +7,7 @@ import type { ListingRow } from "@/lib/listings";
 import type { Profile } from "@/lib/profiles";
 import ConfirmButton from "@/components/directory/ConfirmButton";
 import DashboardShell from "@/components/directory/DashboardShell";
+import BadgeEmbed from "@/components/directory/BadgeEmbed";
 import { deleteOwnListing } from "../actions";
 
 export const metadata: Metadata = {
@@ -120,6 +121,7 @@ export default async function MakerDashboardPage({
                     </ConfirmButton>
                   </form>
                 </div>
+                {l.is_published && <BadgeEmbed slug={l.slug} />}
               </div>
             );
           })}

@@ -14,7 +14,9 @@ interface Shot {
 // tap, double click, or the zoom buttons switch between fit and 2x; when
 // zoomed, the image scrolls in both directions. Arrow keys and the side
 // buttons move between screenshots, Escape closes.
-export default function ScreenshotGallery({ shots }: { shots: Shot[] }) {
+// `unoptimized` is for signed, short-lived URLs (the admin preview), which
+// the image optimizer would refuse.
+export default function ScreenshotGallery({ shots, unoptimized = false }: { shots: Shot[]; unoptimized?: boolean }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [zoomed, setZoomed] = useState(false);
   const scrollerRef = useRef<HTMLDivElement>(null);
@@ -73,9 +75,12 @@ export default function ScreenshotGallery({ shots }: { shots: Shot[] }) {
     window.addEventListener("keydown", onKey);
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    // Lets an enclosing dialog leave Escape to the lightbox while it is open.
+    document.documentElement.dataset.lightbox = "open";
     closeRef.current?.focus();
     return () => {
       window.removeEventListener("keydown", onKey);
+      delete document.documentElement.dataset.lightbox;
       document.body.style.overflow = previous;
     };
   }, [openIndex, close, step]);
@@ -118,6 +123,7 @@ export default function ScreenshotGallery({ shots }: { shots: Shot[] }) {
                 width={800}
                 height={500}
                 sizes="(max-width: 640px) 84vw, 400px"
+                unoptimized={unoptimized}
                 className="w-full h-full object-cover object-top group-hover:opacity-90 transition-opacity"
               />
             </button>

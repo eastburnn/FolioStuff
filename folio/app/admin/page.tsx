@@ -3,8 +3,9 @@ import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getAdminContext } from "@/lib/admin-gate";
 import type { ListingRow } from "@/lib/listings";
-import { SOCIAL_PLATFORMS, normalizeSocials } from "@/lib/socials";
+import { normalizeSocials } from "@/lib/socials";
 import ConfirmButton from "@/components/directory/ConfirmButton";
+import PendingCard from "@/components/directory/PendingCard";
 import { approveListing, rejectListing, deleteListing, deleteMakerAccount } from "./actions";
 
 export const metadata: Metadata = {
@@ -99,85 +100,29 @@ export default async function AdminPage() {
         {pendingViews.length === 0 ? (
           <p className="text-sm text-ink-muted">Nothing waiting. Nice.</p>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-4">
             {pendingViews.map(({ listing, iconUrl, screenshotUrls }) => {
-              const socials = normalizeSocials(listing.socials);
-              const socialEntries = SOCIAL_PLATFORMS.filter((p) => socials[p.key]);
               const isEdit = Boolean(listing.published);
               return (
-                <div key={listing.id} className="rounded-2xl border border-white/[0.08] bg-bg-card p-4 sm:p-6">
-                  {isEdit && (
-                    <div className="flex items-center justify-between gap-3 flex-wrap mb-4 rounded-lg border border-accent-gold/30 bg-accent-gold/[0.08] px-3 py-2">
-                      <span className="text-[10px] font-semibold uppercase tracking-wider text-accent-gold">
-                        {listing.is_published ? "Edit of a live listing" : "Edit of an unpublished listing"}
-                      </span>
-                      {listing.is_published && (
-                        <a href={`/directory/${listing.slug}`} target="_blank" rel="noopener noreferrer"
-                          className="text-xs text-accent-gold hover:underline">
-                          Compare with the live version
-                        </a>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Icon beside the name and link; details stack beneath in
-                      short lines so nothing wraps mid-word on a phone. */}
-                  <div className="flex items-center gap-3 mb-3">
-                    {iconUrl ? (
-                      // Signed URL from the private bucket; plain img avoids
-                      // exposing the signed link through the optimizer.
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={iconUrl} alt="" className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl object-cover shrink-0" />
-                    ) : (
-                      <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white/[0.06] shrink-0" />
-                    )}
-                    <div className="min-w-0">
-                      <p className="text-base font-semibold text-ink-primary leading-tight truncate">{listing.name}</p>
-                      <a href={listing.url} target="_blank" rel="noopener noreferrer nofollow"
-                        className="block text-xs text-accent-purple hover:underline truncate">
-                        {listing.url.replace(/^https?:\/\//, "")}
-                      </a>
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
-                    {(listing.tags ?? []).map((tag) => (
-                      <span key={tag} className="text-[10px] font-medium px-2 py-0.5 rounded-full border border-white/[0.1] text-ink-muted">
-                        {tag}
-                      </span>
-                    ))}
-                    {(listing.tags ?? []).length === 0 && <span className="text-xs text-ink-muted">no tags</span>}
-                  </div>
-                  <p className="text-xs text-ink-muted">
-                    by {listing.maker_name}
-                    {listing.maker_x_handle ? ` (@${listing.maker_x_handle})` : ""}
-                  </p>
-                  <p className="text-xs text-ink-muted break-all">{ownerEmails.get(listing.owner_id) ?? "unknown email"}</p>
-                  {socialEntries.length > 0 && (
-                    <p className="text-xs text-ink-muted mt-1 flex flex-wrap gap-x-3 gap-y-1">
-                      {socialEntries.map((p) => (
-                        <a key={p.key} href={socials[p.key]} target="_blank" rel="noopener noreferrer nofollow"
-                          className="hover:text-ink-secondary underline underline-offset-2">
-                          {p.label}
-                        </a>
-                      ))}
-                    </p>
-                  )}
-                  <div className="mb-4" />
-
-                  <p className="text-sm text-ink-secondary mb-1 font-medium">{listing.tagline}</p>
-                  <p className="text-sm text-ink-secondary leading-relaxed whitespace-pre-line mb-4">
-                    {listing.description}
-                  </p>
-
-                  {screenshotUrls.length > 0 && (
-                    <div className="flex gap-3 mb-5 overflow-x-auto">
-                      {screenshotUrls.map((url) => (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img key={url} src={url} alt="" className="h-28 rounded-lg border border-white/[0.08] object-cover" />
-                      ))}
-                    </div>
-                  )}
-
+                <PendingCard
+                  key={listing.id}
+                  listing={{
+                    slug: listing.slug,
+                    name: listing.name,
+                    url: listing.url,
+                    tagline: listing.tagline,
+                    description: listing.description,
+                    tags: listing.tags ?? [],
+                    socials: normalizeSocials(listing.socials),
+                    maker_name: listing.maker_name,
+                    maker_x_handle: listing.maker_x_handle,
+                    iconSrc: iconUrl,
+                    screenshots: screenshotUrls,
+                  }}
+                  ownerEmail={ownerEmails.get(listing.owner_id) ?? "unknown email"}
+                  isEdit={isEdit}
+                  isLive={listing.is_published}
+                >
                   <div className="flex flex-col sm:flex-row gap-3">
                     <form action={approveListing.bind(null, listing.id)} className="sm:shrink-0">
                       <button type="submit"
@@ -199,7 +144,7 @@ export default async function AdminPage() {
                   <div className="flex items-center flex-wrap gap-x-4 gap-y-2 mt-4 pt-3 border-t border-white/[0.05]">
                     {dangerLinks(listing)}
                   </div>
-                </div>
+                </PendingCard>
               );
             })}
           </div>
