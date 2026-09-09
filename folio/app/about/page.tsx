@@ -35,18 +35,11 @@ const TOOLS = [
     accent: "#00C896",
   },
   {
-    href: "/position-sizer",
-    title: "Position Sizer",
-    description: "Enter your risk tolerance, entry, and stop loss to get the exact share count to buy.",
-    icon: <Target size={15} className="text-accent-gold" />,
-    accent: "#FFB830",
-  },
-  {
     href: "/compound-interest-calculator",
     title: "Compound Interest Calculator",
     description: "See what a starting amount plus monthly contributions grows into over the years.",
-    icon: <TrendingUp size={15} className="text-accent-purple" />,
-    accent: "#8B5CF6",
+    icon: <TrendingUp size={15} className="text-accent-green" />,
+    accent: "#00C896",
   },
   {
     href: "/dividend-calculator",
@@ -54,6 +47,13 @@ const TOOLS = [
     description: "Project dividend income year by year, reinvested through a DRIP or taken as cash.",
     icon: <Coins size={15} className="text-accent-green" />,
     accent: "#00C896",
+  },
+  {
+    href: "/position-sizer",
+    title: "Position Sizer",
+    description: "Enter your risk tolerance, entry, and stop loss to get the exact share count to buy.",
+    icon: <Target size={15} className="text-accent-gold" />,
+    accent: "#FFB830",
   },
   {
     href: "/options-profit-calculator",

@@ -73,7 +73,7 @@ export default function PositionSizerPage() {
             <Target size={16} className="text-accent-gold" />
           </div>
           <span className="text-xs text-accent-gold uppercase tracking-widest font-semibold">
-            Risk Manage
+            Trading
           </span>
         </div>
         <div className="flex items-start justify-between gap-4">

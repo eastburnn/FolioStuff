@@ -70,7 +70,7 @@ export default function Page() {
             <Activity size={16} className="text-accent-gold" />
           </div>
           <span className="text-xs text-accent-gold uppercase tracking-widest font-semibold">
-            Trade
+            Trading
           </span>
         </div>
         <div className="flex items-start justify-between gap-4">

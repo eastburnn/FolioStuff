@@ -17,18 +17,11 @@ const ALL_TOOLS = [
     accent: "#00C896",
   },
   {
-    href: "/position-sizer",
-    label: "Position Sizer",
-    description: "Get the exact share count based on your risk tolerance",
-    icon: <Target size={13} className="text-accent-gold" />,
-    accent: "#FFB830",
-  },
-  {
     href: "/compound-interest-calculator",
     label: "Compound Interest Calculator",
     description: "Watch contributions and interest grow over time",
-    icon: <TrendingUp size={13} className="text-accent-purple" />,
-    accent: "#8B5CF6",
+    icon: <TrendingUp size={13} className="text-accent-green" />,
+    accent: "#00C896",
   },
   {
     href: "/dividend-calculator",
@@ -36,6 +29,13 @@ const ALL_TOOLS = [
     description: "Project dividend income with or without DRIP",
     icon: <Coins size={13} className="text-accent-green" />,
     accent: "#00C896",
+  },
+  {
+    href: "/position-sizer",
+    label: "Position Sizer",
+    description: "Get the exact share count based on your risk tolerance",
+    icon: <Target size={13} className="text-accent-gold" />,
+    accent: "#FFB830",
   },
   {
     href: "/options-profit-calculator",

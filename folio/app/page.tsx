@@ -46,6 +46,13 @@ const EXTERNAL_TOOLS = [
     accent: "#FF6B6B",
     logo: "/fearandgreed.png",
   },
+  {
+    href: "https://finviz.com/map",
+    name: "S&P 500 Heat Map",
+    description: "Finviz's map of the market, sized by market cap and colored by the day's move",
+    accent: "#55AEF9",
+    logo: "/finviz.jpg",
+  },
 ];
 
 export default async function Home() {
@@ -172,7 +179,7 @@ export default async function Home() {
             Good stuff around the web
           </h2>
           {/* Phones: two square tiles per row; wider screens keep the row layout. */}
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             {EXTERNAL_TOOLS.map((tool) => (
               <a
                 key={tool.href}

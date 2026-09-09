@@ -73,7 +73,7 @@ export default function CostBasisPage() {
             <Calculator size={16} className="text-accent-green" />
           </div>
           <span className="text-xs text-accent-green uppercase tracking-widest font-semibold">
-            Calculate
+            Investing
           </span>
         </div>
         <div className="flex items-start justify-between gap-4">

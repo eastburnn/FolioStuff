@@ -54,13 +54,13 @@ export default function WidgetCard({
 
         <div className="relative z-10 flex flex-col h-full">
           {/* Icon + Tag row */}
-          <div className="flex items-center gap-2.5 sm:gap-3 mb-3 pr-8">
+          <div className="flex items-center gap-2 mb-2.5 pr-8">
             <div
               style={{
                 background: `${accent}18`,
                 borderColor: `${accent}30`,
               }}
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl border flex items-center justify-center shrink-0 transition-colors duration-300"
+              className="w-[26px] h-[26px] rounded-lg border flex items-center justify-center shrink-0 transition-colors duration-300"
             >
               {icon}
             </div>
@@ -82,25 +82,22 @@ export default function WidgetCard({
           </h3>
 
           {/* Description */}
-          <p className="text-[13px] sm:text-sm text-ink-secondary leading-relaxed">
+          <p className="text-[13px] sm:text-sm text-ink-secondary leading-relaxed pr-5">
             {description}
           </p>
-
-          {/* CTA */}
-          <div
-            style={{ color: accent }}
-            className="flex items-center gap-1.5 mt-auto pt-3 sm:pt-4 text-xs font-semibold uppercase tracking-widest"
-          >
-            <span>Open tool</span>
-            <ArrowRight
-              size={12}
-              style={{
-                transform: hovered ? "translateX(4px)" : "translateX(0)",
-                transition: "transform 0.2s ease",
-              }}
-            />
-          </div>
         </div>
+
+        {/* Corner arrow: the only hint the card opens something, in the tool's color. */}
+        <ArrowRight
+          size={14}
+          aria-hidden="true"
+          style={{
+            color: accent,
+            transform: hovered ? "translateX(3px)" : "translateX(0)",
+            transition: "transform 0.2s ease",
+          }}
+          className="absolute bottom-4 right-4 z-10"
+        />
       </div>
     </Link>
   );

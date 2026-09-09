@@ -70,7 +70,7 @@ export default function Page() {
             <Coins size={16} className="text-accent-green" />
           </div>
           <span className="text-xs text-accent-green uppercase tracking-widest font-semibold">
-            Income
+            Investing
           </span>
         </div>
         <div className="flex items-start justify-between gap-4">

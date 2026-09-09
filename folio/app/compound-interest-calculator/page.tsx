@@ -66,11 +66,11 @@ export default function Page() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-10 pb-2">
         <Breadcrumb items={[{ label: "Compound Interest Calculator", href: "/compound-interest-calculator" }]} />
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-9 h-9 rounded-xl bg-accent-purple/[0.15] border border-accent-purple/30 flex items-center justify-center">
-            <TrendingUp size={16} className="text-accent-purple" />
+          <div className="w-9 h-9 rounded-xl bg-accent-green/[0.15] border border-accent-green/30 flex items-center justify-center">
+            <TrendingUp size={16} className="text-accent-green" />
           </div>
-          <span className="text-xs text-accent-purple uppercase tracking-widest font-semibold">
-            Grow
+          <span className="text-xs text-accent-green uppercase tracking-widest font-semibold">
+            Investing
           </span>
         </div>
         <div className="flex items-start justify-between gap-4">

@@ -104,14 +104,14 @@ export default function BookmarkButton({
       aria-label={saved ? "Remove from saved" : "Save for later"}
       title={title}
       className={`inline-flex items-center gap-1.5 rounded-full border backdrop-blur transition-colors disabled:opacity-40 ${
-        withLabel ? "px-3 py-1.5 text-xs font-semibold" : "p-2"
+        withLabel ? "px-3 py-1.5 text-xs font-semibold" : "p-1.5"
       } ${
         saved
           ? "bg-accent-purple/[0.15] border-accent-purple/40 text-accent-purple"
           : "bg-bg-card/80 border-white/[0.1] text-ink-muted hover:text-accent-purple hover:border-accent-purple/40"
       } ${className}`}
     >
-      <Bookmark size={withLabel ? 14 : 16} fill={saved ? "currentColor" : "none"} aria-hidden="true" />
+      <Bookmark size={14} fill={saved ? "currentColor" : "none"} aria-hidden="true" />
       {withLabel && (saved ? "Saved" : "Save")}
     </button>
   );
