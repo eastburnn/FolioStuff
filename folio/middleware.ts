@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { SESSION_COOKIE_MAX_AGE } from "@/lib/supabase/config";
+import { safeNext } from "@/lib/safe-next";
 
 const PROTECTED_PREFIXES = ["/submit", "/dashboard", "/admin", "/reset-password"];
 
@@ -65,6 +66,17 @@ export async function middleware(request: NextRequest) {
       secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60 * 24 * 400,
     });
+  }
+
+  // Already signed in: the login and signup pages have nothing to offer, so
+  // go straight to the destination (or the dashboard).
+  if (user && (pathname === "/login" || pathname === "/signup")) {
+    const dest = request.nextUrl.clone();
+    dest.pathname = safeNext(request.nextUrl.searchParams.get("next"));
+    dest.search = "";
+    const redirect = NextResponse.redirect(dest);
+    response.cookies.getAll().forEach((c) => redirect.cookies.set(c));
+    return redirect;
   }
 
   if (needsAuth && !user) {

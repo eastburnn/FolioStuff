@@ -43,10 +43,25 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
+  // Logging in runs through a server action, which writes the auth cookie
+  // without telling the browser client, and the page that follows is a soft
+  // navigation. So the session is re-read from the cookie on every route
+  // change, not just on mount, or the header would keep saying "Login".
+  useEffect(() => {
+    if (!hasSupabaseEnv()) return;
+    let cancelled = false;
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data }) => {
+      if (!cancelled) setUser(data.session?.user ?? null);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [pathname]);
+
   useEffect(() => {
     if (!hasSupabaseEnv()) return;
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => setUser(data.user));
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
