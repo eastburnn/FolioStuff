@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { hasSupabaseEnv } from "@/lib/supabase/config";
-import { MAX_TAGS, STARTER_TAGS, TAG_MAX_LENGTH, normalizeTag } from "@/lib/tags";
+import { MAX_TAGS, STARTER_TAGS, TAG_MAX_LENGTH, normalizeTag, tagLabel } from "@/lib/tags";
 
 interface Suggestion {
   tag: string;
@@ -98,7 +98,7 @@ export default function TagsInput({ initialTags = [] }: TagsInputProps) {
         continue;
       }
       if (next.includes(tag)) {
-        rejected = `"${tag}" is already added.`;
+        rejected = `"${tagLabel(tag)}" is already added.`;
         continue;
       }
       next.push(tag);
@@ -134,7 +134,7 @@ export default function TagsInput({ initialTags = [] }: TagsInputProps) {
             key={tag}
             className="inline-flex items-center gap-1 rounded-full border border-accent-purple/40 bg-accent-purple/[0.12] px-2.5 py-1 text-xs font-medium text-accent-purple"
           >
-            {tag}
+            {tagLabel(tag)}
             <button
               type="button"
               onClick={() => removeTag(tag)}
@@ -217,12 +217,8 @@ export default function TagsInput({ initialTags = [] }: TagsInputProps) {
                 i === highlight ? "bg-white/[0.06] text-ink-primary" : "text-ink-secondary hover:bg-white/[0.06] hover:text-ink-primary"
               }`}
             >
-              <span>{s.tag}</span>
-              {s.uses > 0 && (
-                <span className="text-xs text-ink-muted">
-                  {s.uses} {s.uses === 1 ? "listing" : "listings"}
-                </span>
-              )}
+              <span>{tagLabel(s.tag)}</span>
+              {s.uses > 0 && <span className="text-xs text-ink-muted">({s.uses})</span>}
             </li>
           ))}
         </ul>
@@ -232,7 +228,7 @@ export default function TagsInput({ initialTags = [] }: TagsInputProps) {
         {notice ??
           (full
             ? `${MAX_TAGS} of ${MAX_TAGS} tags added. Remove one to change it.`
-            : `Up to ${MAX_TAGS} tags, 2 to 24 letters, numbers, or hyphens each. Press Enter or comma after each one. Popular tags from other listings show up as you type.`)}
+            : `Up to ${MAX_TAGS} tags, 2 to 24 letters, numbers, or hyphens each. Press Enter or comma after each one. Tags already used on the site show up as you type, with how many listings use them.`)}
       </p>
     </div>
   );

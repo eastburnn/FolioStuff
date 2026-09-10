@@ -3,6 +3,7 @@ import Image from "next/image";
 import type { PublishedListing } from "@/lib/listings";
 import { publicImageUrl } from "@/lib/supabase/config";
 import { clampTagline } from "@/lib/listing-limits";
+import { tagLabel } from "@/lib/tags";
 
 export default function ListingCard({ listing }: { listing: PublishedListing }) {
   return (
@@ -37,7 +38,7 @@ export default function ListingCard({ listing }: { listing: PublishedListing }) 
             key={tag}
             className="text-[10px] font-medium px-2 py-0.5 rounded-full border border-white/[0.1] text-ink-muted"
           >
-            {tag}
+            {tagLabel(tag)}
           </span>
         ))}
         <span className="text-[11px] text-ink-muted ml-auto">by {listing.maker_name}</span>

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Globe, Search, Tag, Wrench } from "lucide-react";
+import { tagLabel } from "@/lib/tags";
 
 interface HeroSearchProps {
   // The site's own calculators, with the extra terms each one answers to.
@@ -47,7 +48,7 @@ export default function HeroSearch({ ownTools, tools, tags }: HeroSearchProps) {
           .filter((t) => t.includes(q))
           .sort(byPrefix)
           .slice(0, 4)
-          .map((t) => ({ kind: "tag" as const, label: t, href: `/directory?tag=${encodeURIComponent(t)}` })),
+          .map((t) => ({ kind: "tag" as const, label: tagLabel(t), href: `/directory?tag=${encodeURIComponent(t)}` })),
       ]
     : [];
   const showList = open && suggestions.length > 0;

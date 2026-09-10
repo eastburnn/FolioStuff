@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ToolSearch from "./ToolSearch";
 import ConfirmButton from "./ConfirmButton";
+import { tagLabel } from "@/lib/tags";
 
 export interface AdminDirectoryItem {
   id: string;
@@ -117,7 +118,7 @@ export default function AdminDirectoryGrid({ items, publishAction, featureAction
                   </div>
                   <p className="text-xs text-ink-secondary leading-relaxed mt-1">{item.tagline}</p>
                   <p className="text-[11px] text-ink-muted mt-1.5">
-                    {item.tags.join(", ")} · by {item.makerName}
+                    {item.tags.map(tagLabel).join(", ")} · by {item.makerName}
                   </p>
                   <p className="text-[11px] text-ink-muted mt-0.5 break-all">
                     <Link href={`/directory/${item.slug}`} className="underline underline-offset-2 hover:text-ink-secondary">

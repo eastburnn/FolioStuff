@@ -6,7 +6,7 @@ import ListingCard from "./ListingCard";
 import ToolSearch from "./ToolSearch";
 import BookmarkButton from "./BookmarkButton";
 import type { PublishedListing } from "@/lib/listings";
-import { normalizeTag } from "@/lib/tags";
+import { normalizeTag, tagLabel } from "@/lib/tags";
 
 // Searchable, tag-filterable grid of published listings. The active tag lives
 // in the URL (?tag=) so filtered views can be shared; search is client-side
@@ -66,12 +66,12 @@ export default function DirectoryGrid({ listings }: { listings: PublishedListing
               aria-pressed={activeTag === tag}
               className={chipClass(activeTag === tag)}
             >
-              {tag} ({count})
+              {tagLabel(tag)} ({count})
             </button>
           ))}
           {activeTag && !knownTag && (
             <button type="button" onClick={() => select(null)} aria-pressed className={chipClass(true)}>
-              {activeTag} (0)
+              {tagLabel(activeTag)} (0)
             </button>
           )}
         </div>
@@ -79,7 +79,7 @@ export default function DirectoryGrid({ listings }: { listings: PublishedListing
 
       <p className="text-xs text-ink-muted mb-6" aria-live="polite">
         {q || activeTag
-          ? `Showing ${visible.length} of ${listings.length} listings${activeTag ? ` tagged "${activeTag}"` : ""}${q ? ` matching "${query.trim()}"` : ""}.`
+          ? `Showing ${visible.length} of ${listings.length} listings${activeTag ? ` tagged "${tagLabel(activeTag)}"` : ""}${q ? ` matching "${query.trim()}"` : ""}.`
           : `Showing all ${listings.length} listings.`}
       </p>
 

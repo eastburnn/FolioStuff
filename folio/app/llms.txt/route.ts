@@ -1,5 +1,6 @@
 import { OWN_TOOLS } from "@/components/OwnTools";
 import { getPublishedListings } from "@/lib/listings";
+import { tagLabel } from "@/lib/tags";
 
 const BASE_URL = "https://www.foliostuff.com";
 
@@ -17,7 +18,7 @@ export async function GET() {
   );
 
   const directory = listings.map((l) => {
-    const tags = l.tags.length ? ` Tags: ${l.tags.join(", ")}.` : "";
+    const tags = l.tags.length ? ` Tags: ${l.tags.map(tagLabel).join(", ")}.` : "";
     return `- [${l.name}](${BASE_URL}/directory/${l.slug}): ${l.tagline} By ${l.maker_name}.${tags}`;
   });
 

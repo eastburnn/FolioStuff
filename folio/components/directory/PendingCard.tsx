@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Eye, X } from "lucide-react";
 import ListingDetail, { type ListingDetailData } from "./ListingDetail";
+import { tagLabel } from "@/lib/tags";
 
 interface PendingCardProps {
   listing: ListingDetailData;
@@ -98,7 +99,7 @@ export default function PendingCard({ listing, ownerEmail, isEdit, isLive, child
         <div className="flex flex-wrap items-center gap-1.5 mt-2.5">
           {listing.tags.map((tag) => (
             <span key={tag} className="text-[10px] font-medium px-2 py-0.5 rounded-full border border-white/[0.1] text-ink-muted">
-              {tag}
+              {tagLabel(tag)}
             </span>
           ))}
           {listing.tags.length === 0 && <span className="text-xs text-ink-muted">no tags</span>}

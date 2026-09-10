@@ -10,8 +10,10 @@ import { deleteListingFiles, deleteAvatarFiles, pruneFolder } from "@/lib/listin
 import { normalizePublished } from "@/lib/listings";
 import { notifyAdminNewSubmission } from "@/lib/email";
 import { verifyTurnstile } from "@/lib/turnstile";
+import { applyScreenshotOrder } from "@/lib/screenshot-order";
+import { MAX_SCREENSHOTS } from "@/lib/image-limits";
 import { USERNAME_PATTERN, RESERVED_USERNAMES, normalizeLink } from "@/lib/profiles";
-import { parseSocial, type SocialKey } from "@/lib/socials";
+import { normalizeSocials, parseSocial, type SocialKey } from "@/lib/socials";
 import type { ListingFormState } from "@/components/directory/ListingForm";
 import type { ProfileFormState } from "@/components/directory/ProfileForm";
 
@@ -32,7 +34,7 @@ export async function updateListing(
   // RLS restricts this to the owner's own rows.
   const { data: existing } = await supabase
     .from("listings")
-    .select("id, owner_id, name, is_published, icon_path, screenshot_paths, published")
+    .select("id, owner_id, slug, name, url, tagline, description, tags, socials, is_published, icon_path, screenshot_paths, published")
     .eq("id", listingId)
     .maybeSingle();
   if (!existing || existing.owner_id !== user.id) return { error: "Listing not found." };
@@ -42,8 +44,51 @@ export async function updateListing(
   const { fields } = parsed;
 
   const { icon, screenshots } = getUploadedFiles(formData);
-  const removeScreenshots = formData.get("remove_screenshots") === "1";
 
+  // What the maker kept of the screenshots on file, in display order. Only
+  // paths already on the row count, so nothing else can be smuggled in.
+  // Reordering alone is the one edit that skips review, because the images
+  // are the same; removing or adding images does not.
+  const currentShots = existing.screenshot_paths as string[];
+  const kept = [...new Set(formData.getAll("keep_screenshots").map(String).filter((p) => currentShots.includes(p)))];
+  const removedSome = kept.length < currentShots.length;
+  const reordered = !removedSome && kept.some((p, i) => p !== currentShots[i]);
+  if (kept.length + screenshots.length > MAX_SCREENSHOTS) {
+    return { error: `Up to ${MAX_SCREENSHOTS} screenshots in total. Remove one to add another.` };
+  }
+  const sameSocials = JSON.stringify(fields.socials) === JSON.stringify(normalizeSocials(existing.socials));
+  const textChanged =
+    fields.name !== existing.name ||
+    fields.url !== existing.url ||
+    fields.tagline !== existing.tagline ||
+    fields.description !== existing.description ||
+    JSON.stringify(fields.tags) !== JSON.stringify(existing.tags ?? []) ||
+    !sameSocials;
+  const imagesChanged = Boolean(icon) || screenshots.length > 0 || removedSome;
+
+  if (!textChanged && !imagesChanged) {
+    if (!reordered) return { error: "Nothing has changed, so there is nothing to save." };
+    const order = kept.map((p) => currentShots.indexOf(p));
+    // Ownership is verified above; the service role does the write because
+    // the write guard would otherwise send the row back into review and
+    // refuse to touch the live copy.
+    const result = applyScreenshotOrder(existing, order);
+    if ("error" in result) return { error: result.error };
+    const update: Record<string, unknown> = { screenshot_paths: result.screenshot_paths };
+    if (result.published) update.published = result.published;
+    const { error } = await createAdminClient().from("listings").update(update).eq("id", existing.id).eq("owner_id", user.id);
+    if (error) {
+      console.error("Screenshot reorder failed:", error);
+      return { error: "Could not save the new order. Please try again." };
+    }
+    if (result.live) {
+      revalidatePath(`/directory/${existing.slug}`);
+      revalidatePath("/directory");
+    }
+    redirect(`/dashboard/maker?reordered=${result.live ? "live" : existing.is_published ? "draft" : "pending"}`);
+  }
+
+  // Everything else is new content for review, so the captcha applies.
   const captchaOk = await verifyTurnstile(
     String(formData.get("cf-turnstile-response") ?? "") || null
   );
@@ -57,10 +102,9 @@ export async function updateListing(
 
   const update: Record<string, unknown> = { ...fields };
   if (uploaded.iconPath) update.icon_path = uploaded.iconPath;
-  if (uploaded.screenshotPaths && uploaded.screenshotPaths.length > 0) {
-    update.screenshot_paths = uploaded.screenshotPaths;
-  } else if (removeScreenshots) {
-    update.screenshot_paths = [];
+  if ((uploaded.screenshotPaths && uploaded.screenshotPaths.length > 0) || removedSome || reordered) {
+    // Kept images first in the chosen order, then the new ones.
+    update.screenshot_paths = [...kept, ...(uploaded.screenshotPaths ?? [])];
   }
 
   const { error } = await supabase.from("listings").update(update).eq("id", listingId);
@@ -81,7 +125,7 @@ export async function updateListing(
   const ownPrefix = `${user.id}/${listingId}/`;
   const orphaned: string[] = [];
   const replacedIcon = uploaded.iconPath ? existing.icon_path : null;
-  const replacedShots = uploaded.screenshotPaths?.length || removeScreenshots ? (existing.screenshot_paths as string[]) : [];
+  const replacedShots = currentShots.filter((p) => !kept.includes(p));
   for (const p of [replacedIcon, ...replacedShots]) {
     if (p && p.startsWith(ownPrefix) && !keep.has(p) && !freshUploads.includes(p)) orphaned.push(p);
   }

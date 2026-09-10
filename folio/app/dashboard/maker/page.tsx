@@ -35,7 +35,7 @@ function statusFor(l: ListingRow): { label: string; className: string } {
 export default async function MakerDashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ submitted?: string; edited?: string; deleted?: string }>;
+  searchParams: Promise<{ submitted?: string; edited?: string; deleted?: string; reordered?: string }>;
 }) {
   const supabase = await createClient();
   const {
@@ -43,7 +43,7 @@ export default async function MakerDashboardPage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login?next=/dashboard/maker");
 
-  const { submitted, edited, deleted } = await searchParams;
+  const { submitted, edited, deleted, reordered } = await searchParams;
   const [{ data }, { data: profileData }] = await Promise.all([
     supabase.from("listings").select("*").eq("owner_id", user.id).order("created_at", { ascending: false }),
     supabase.from("profiles").select("*").eq("id", user.id).maybeSingle(),
@@ -64,6 +64,15 @@ export default async function MakerDashboardPage({
         <div className="rounded-xl border border-accent-green/30 bg-accent-green/[0.08] p-4 mb-6 text-sm text-accent-green">
           Changes received. Your current version stays live while the new one is reviewed, and you
           will hear back by email.
+        </div>
+      )}
+      {reordered && (
+        <div className="rounded-xl border border-accent-green/30 bg-accent-green/[0.08] p-4 mb-6 text-sm text-accent-green">
+          {reordered === "live"
+            ? "Screenshot order saved. Your live page shows the new order now."
+            : reordered === "draft"
+              ? "Screenshot order saved. It applies once your pending changes are approved."
+              : "Screenshot order saved. It will show once your listing is approved."}
         </div>
       )}
       {deleted && (

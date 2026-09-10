@@ -30,6 +30,16 @@ export default async function EditListingPage({
 
   const action = updateListing.bind(null, listing.id);
 
+  // Previews of the images on file, signed for the owner, so the edit form
+  // shows exactly what the submission looks like today.
+  const paths = [listing.icon_path, ...listing.screenshot_paths].filter((p): p is string => Boolean(p));
+  const { data: signed } = paths.length
+    ? await supabase.storage.from("listing-uploads").createSignedUrls(paths, 3600)
+    : { data: [] };
+  const urlFor = (path: string) => signed?.find((s) => s.path === path)?.signedUrl ?? "";
+  const iconUrl = listing.icon_path ? urlFor(listing.icon_path) : null;
+  const screenshots = listing.screenshot_paths.map((path) => ({ path, url: urlFor(path) }));
+
   return (
     <div className="pt-16 grid-bg min-h-screen">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 pt-10 pb-24">
@@ -46,7 +56,8 @@ export default async function EditListingPage({
           <div className="rounded-xl border border-accent-gold/30 bg-accent-gold/[0.08] p-4 mb-8 text-sm text-accent-gold">
             This listing is live. Saving changes sends the new version to review, and the
             current version stays live until it is approved. If the changes are not approved,
-            the current version stays exactly as it is.
+            the current version stays exactly as it is. The one exception is the order of your
+            screenshots: reorder them and save, and your page updates right away.
           </div>
         ) : (
           <p className="text-sm text-ink-secondary mb-8 max-w-xl">
@@ -64,7 +75,8 @@ export default async function EditListingPage({
             tags: listing.tags ?? [],
             socials: normalizeSocials(listing.socials),
             hasIcon: Boolean(listing.icon_path),
-            screenshotCount: listing.screenshot_paths.length,
+            iconUrl,
+            screenshots,
           }}
         />
       </div>

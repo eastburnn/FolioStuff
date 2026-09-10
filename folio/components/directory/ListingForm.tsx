@@ -4,6 +4,7 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import TurnstileWidget from "./TurnstileWidget";
 import TagsInput from "./TagsInput";
+import ShotOrderGrid from "./ShotOrderGrid";
 import { SOCIAL_PLATFORMS, type Socials } from "@/lib/socials";
 import { prepareImage, ImagePrepError } from "@/lib/image-client";
 import {
@@ -27,7 +28,9 @@ export interface ListingFormInitial {
   tags: string[];
   socials: Socials;
   hasIcon: boolean;
-  screenshotCount: number;
+  // Signed previews of what is on file, for the edit page.
+  iconUrl: string | null;
+  screenshots: { path: string; url: string }[];
 }
 
 interface ListingFormProps {
@@ -84,6 +87,9 @@ export default function ListingForm({ action, submitLabel, initial }: ListingFor
   // never travel to the server.
   const [icon, setIcon] = useState<File | null>(null);
   const [shots, setShots] = useState<File[]>([]);
+  // Screenshots already on file that the maker is keeping, in display order.
+  const existing = initial?.screenshots ?? [];
+  const [kept, setKept] = useState<string[]>(existing.map((s) => s.path));
   const [offRatio, setOffRatio] = useState(0);
   const [preparing, setPreparing] = useState(0);
   const [fileError, setFileError] = useState<string | null>(null);
@@ -126,10 +132,14 @@ export default function ListingForm({ action, submitLabel, initial }: ListingFor
       setShots([]);
       return;
     }
-    if (picked.length > MAX_SCREENSHOTS) {
+    if (picked.length > MAX_SCREENSHOTS - kept.length) {
       setShots([]);
       input.value = "";
-      setFileError(`Choose up to ${MAX_SCREENSHOTS} screenshots.`);
+      setFileError(
+        kept.length > 0
+          ? `You can have up to ${MAX_SCREENSHOTS} screenshots in total. Remove one above to add another.`
+          : `Choose up to ${MAX_SCREENSHOTS} screenshots.`
+      );
       return;
     }
     setPreparing((n) => n + 1);
@@ -154,6 +164,28 @@ export default function ListingForm({ action, submitLabel, initial }: ListingFor
   };
 
   const shotsTotal = shots.reduce((sum, f) => sum + f.size, 0);
+
+  // Previews of the prepared screenshots, in the order they will be saved.
+  const [shotUrls, setShotUrls] = useState<string[]>([]);
+  useEffect(() => {
+    const urls = shots.map((f) => URL.createObjectURL(f));
+    setShotUrls(urls);
+    return () => urls.forEach((u) => URL.revokeObjectURL(u));
+  }, [shots]);
+  // Kept screenshots are submitted as paths in display order; the server
+  // applies an order-only change straight to the live page, while removing
+  // or adding images goes through review.
+  const reorder = <T,>(list: T[], from: number, to: number): T[] => {
+    if (to < 0 || to >= list.length) return list;
+    const next = [...list];
+    const [item] = next.splice(from, 1);
+    next.splice(to, 0, item);
+    return next;
+  };
+  const moveKept = (from: number, to: number) => setKept((c) => reorder(c, from, to));
+  const removeKept = (index: number) => setKept((c) => c.filter((_, i) => i !== index));
+  const moveShot = (from: number, to: number) => setShots((c) => reorder(c, from, to));
+  const removeShot = (index: number) => setShots((c) => c.filter((_, i) => i !== index));
 
   // Client-side checks run in onSubmit: a prevented submit never reaches the
   // action, so React does not reset the form and the inputs keep their state.
@@ -246,43 +278,84 @@ export default function ListingForm({ action, submitLabel, initial }: ListingFor
         <p className="text-xs text-ink-muted mt-2">
           Square works best. Any image up to 10MB; we resize it to {ICON_MAX_SIDE} pixels.
         </p>
-        {icon && (
+        {icon ? (
           <p className="text-xs text-accent-green mt-2">Ready to upload, {formatBytes(icon.size)}.</p>
+        ) : (
+          initial?.iconUrl && (
+            <div className="flex items-center gap-3 mt-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={initial.iconUrl} alt="" className="w-12 h-12 rounded-xl object-cover border border-white/[0.1]" />
+              <p className="text-xs text-ink-muted">Current icon. Choose a file above to replace it.</p>
+            </div>
+          )
         )}
       </div>
 
       <div>
         <label htmlFor="screenshots" className={labelClass}>
-          Screenshots (optional
-          {initial && initial.screenshotCount > 0
-            ? `, ${initial.screenshotCount} on file; choosing new ones replaces them`
-            : ""}
-          )
+          Screenshots (optional, up to {MAX_SCREENSHOTS})
         </label>
-        <input id="screenshots" type="file" multiple accept="image/*"
-          onChange={onShotsChange} className={fileClass} />
-        <p className="text-xs text-ink-muted mt-2">
-          Up to {MAX_SCREENSHOTS} images, 10MB each. Preview cards use a 16:10 frame, so a
-          1600 by 1000 pixel screenshot (or any 16:10 size) shows best. Other shapes are
-          cropped in the card; the full image opens on click. We shrink and lightly compress
-          uploads so pages load fast.
-        </p>
-        {shots.length > 0 && (
-          <p className="text-xs text-accent-green mt-2">
-            Ready to upload, {shots.length} {shots.length === 1 ? "image" : "images"}, {formatBytes(shotsTotal)} together.
-          </p>
+        {kept.length > 0 && (
+          <div className="mb-3">
+            {kept.map((path) => (
+              <input key={path} type="hidden" name="keep_screenshots" value={path} />
+            ))}
+            <ShotOrderGrid
+              items={kept.map((path) => ({ key: path, url: existing.find((s) => s.path === path)?.url ?? "" }))}
+              onMove={moveKept}
+              onRemove={removeKept}
+            />
+            <p className="text-xs text-ink-muted mt-2">
+              Your screenshots on file. The first one leads your page. Drag one onto another to swap
+              them, or use the arrows.{" "}
+              <span className="text-ink-secondary">
+                Changing only the order does not need a review: reorder, save, and your page updates
+                right away.
+              </span>{" "}
+              Removing one with the X, or adding new ones, goes through review. Removed one by mistake?
+              Leave this page without saving and it stays.
+            </p>
+          </div>
+        )}
+        {kept.length < MAX_SCREENSHOTS && (
+          <>
+            <input id="screenshots" type="file" multiple accept="image/*"
+              onChange={onShotsChange} className={fileClass} />
+            <p className="text-xs text-ink-muted mt-2">
+              {kept.length > 0
+                ? `Add up to ${MAX_SCREENSHOTS - kept.length} more, 10MB each.`
+                : `Up to ${MAX_SCREENSHOTS} images, 10MB each.`}{" "}
+              Preview cards use a 16:10 frame, so a 1600 by 1000 pixel screenshot (or any 16:10 size)
+              shows best. Other shapes are cropped in the card; the full image opens on click. We
+              shrink and lightly compress uploads so pages load fast.
+            </p>
+          </>
+        )}
+        {shots.length > 0 && shotUrls.length === shots.length && (
+          <div className="mt-3">
+            <ShotOrderGrid
+              items={shots.map((f, i) => ({ key: `${f.name}-${f.size}-${i}`, url: shotUrls[i] }))}
+              onMove={moveShot}
+              onRemove={removeShot}
+              offset={kept.length}
+            />
+            <p className="text-xs text-ink-muted mt-2">
+              {kept.length > 0
+                ? "New screenshots go after the ones you kept. "
+                : "The first screenshot leads your page. "}
+              Drag one onto another to swap them, or use the arrows, and the X drops one.
+              {initial ? " New images go through review." : " You can change the order any time later without a review."}
+            </p>
+            <p className="text-xs text-accent-green mt-2">
+              Ready to upload, {shots.length} {shots.length === 1 ? "image" : "images"}, {formatBytes(shotsTotal)} together.
+            </p>
+          </div>
         )}
         {offRatio > 0 && (
           <p className="text-xs text-accent-gold mt-1">
             {offRatio === 1 ? "One screenshot is" : `${offRatio} screenshots are`} not 16:10, so the preview
             card will crop {offRatio === 1 ? "it" : "them"}. The full image still opens on click.
           </p>
-        )}
-        {initial && initial.screenshotCount > 0 && (
-          <label className="flex items-center gap-2 mt-3 text-xs text-ink-secondary">
-            <input type="checkbox" name="remove_screenshots" value="1" className="accent-[#8B5CF6]" />
-            Remove the current screenshots (ignored if you choose new ones above)
-          </label>
         )}
       </div>
 

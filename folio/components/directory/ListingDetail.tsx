@@ -4,6 +4,7 @@ import { ExternalLink } from "lucide-react";
 import { SOCIAL_PLATFORMS, type Socials } from "@/lib/socials";
 import ScreenshotGallery from "./ScreenshotGallery";
 import BookmarkButton from "./BookmarkButton";
+import { tagLabel } from "@/lib/tags";
 
 // Everything a listing page shows, resolved to plain values so the same
 // layout can render the live page and the admin's preview of a submission.
@@ -70,11 +71,11 @@ export default function ListingDetail({ listing, makerPageUrl = null, preview = 
               {listing.tags.map((tag) =>
                 preview ? (
                   <span key={tag} className={tagClass}>
-                    {tag}
+                    {tagLabel(tag)}
                   </span>
                 ) : (
                   <Link key={tag} href={`/directory?tag=${encodeURIComponent(tag)}`} className={tagClass}>
-                    {tag}
+                    {tagLabel(tag)}
                   </Link>
                 )
               )}

@@ -4,6 +4,7 @@ import { Star } from "lucide-react";
 import type { PublishedListing } from "@/lib/listings";
 import { publicImageUrl } from "@/lib/supabase/config";
 import { clampTagline } from "@/lib/listing-limits";
+import { tagLabel } from "@/lib/tags";
 
 // Larger, glowing variant of the directory card for tools the admin features
 // on the homepage. The tool keeps its normal card in the directory too.
@@ -52,7 +53,7 @@ export default function FeaturedListingCard({ listing }: { listing: PublishedLis
         <div className="flex items-center gap-1.5 flex-wrap mt-auto pt-2.5 sm:pt-3">
           {listing.tags.map((tag) => (
             <span key={tag} className="text-[10px] font-medium px-2 py-0.5 rounded-full border border-white/[0.1] text-ink-muted">
-              {tag}
+              {tagLabel(tag)}
             </span>
           ))}
           <span className="text-[11px] text-ink-muted ml-auto">by {listing.maker_name}</span>

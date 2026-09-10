@@ -6,6 +6,7 @@ import { getProfileById } from "@/lib/profiles";
 import { publicImageUrl } from "@/lib/supabase/config";
 import { safeJsonLd } from "@/lib/json-ld";
 import ListingDetail from "@/components/directory/ListingDetail";
+import { tagLabel } from "@/lib/tags";
 
 export const revalidate = 300;
 
@@ -52,7 +53,7 @@ export default async function ListingPage({ params }: PageProps) {
     description: listing.tagline,
     url: listing.url,
     applicationCategory: "FinanceApplication",
-    keywords: listing.tags.join(", "),
+    keywords: listing.tags.map(tagLabel).join(", "),
     author: { "@type": "Person", name: listing.maker_name },
   };
 

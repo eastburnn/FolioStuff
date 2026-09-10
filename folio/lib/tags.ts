@@ -51,3 +51,10 @@ export function normalizeTags(raw: string[]): string[] {
   }
   return [...seen];
 }
+
+// Display form of a tag: hyphens read as spaces, so "portfolio-tracker" shows
+// as "portfolio tracker". The stored tag is unchanged, so filters and links
+// keep working.
+export function tagLabel(tag: string): string {
+  return tag.replace(/-/g, " ");
+}
