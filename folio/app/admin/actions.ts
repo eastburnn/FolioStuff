@@ -36,6 +36,7 @@ function revalidateDirectory(slug?: string) {
   revalidatePath("/directory");
   if (slug) revalidatePath(`/directory/${slug}`);
   revalidatePath("/sitemap.xml");
+  revalidatePath("/llms.txt");
   revalidatePath("/admin");
 }
 
