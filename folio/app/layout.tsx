@@ -56,7 +56,7 @@ export default async function RootLayout({
   const nonce = (await headers()).get("x-nonce") ?? undefined;
   // Temporary diagnostic: which request headers survive the edge on Vercel.
   const h = await headers();
-  const seen = ["x-nonce", "content-security-policy", "content-security-policy-report-only"].map((n) => `${n}=${h.has(n) ? 1 : 0}`).join(",");
+  const seen = ["x-nonce", "content-security-policy", "content-security-policy-report-only"].map((n) => `${n}=[${(h.get(n) ?? "").slice(0, 70)}]`).join(" | ");
   return (
     <html lang="en" className={inter.variable}>
       <body className="min-h-screen flex flex-col" data-hdr={seen}>
