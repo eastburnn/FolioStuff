@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { SESSION_COOKIE_MAX_AGE } from "@/lib/supabase/config";
 import { LAST_SEEN_COOKIE, clearedLastSeenCookie, lastSeenCookie } from "@/lib/session-stamp";
+import { CSP_HEADER, buildCsp } from "@/lib/csp";
 import { safeNext } from "@/lib/safe-next";
 
 const PROTECTED_PREFIXES = ["/submit", "/dashboard", "/admin", "/reset-password"];
@@ -13,11 +14,24 @@ const PROTECTED_PREFIXES = ["/submit", "/dashboard", "/admin", "/reset-password"
 const INACTIVITY_LIMIT_MS = SESSION_COOKIE_MAX_AGE * 1000;
 
 export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({ request });
+  // A fresh nonce per request. Next.js reads it from the policy on the
+  // request headers to mark its own scripts; the layout reads x-nonce for
+  // ours. The browser gets the policy on the response.
+  const nonce = btoa(crypto.randomUUID());
+  const csp = buildCsp(nonce);
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-nonce", nonce);
+  requestHeaders.set(CSP_HEADER, csp);
+  const withCsp = <T extends NextResponse>(res: T): T => {
+    res.headers.set(CSP_HEADER, csp);
+    return res;
+  };
+
+  let response = NextResponse.next({ request: { headers: requestHeaders } });
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !anonKey) return response;
+  if (!url || !anonKey) return withCsp(response);
 
   const supabase = createServerClient(url, anonKey, {
     cookieOptions: { secure: process.env.NODE_ENV === "production" },
@@ -27,7 +41,9 @@ export async function middleware(request: NextRequest) {
       },
       setAll(cookiesToSet) {
         cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-        response = NextResponse.next({ request });
+        // Refreshed cookies must reach the page render along with the nonce.
+        requestHeaders.set("cookie", request.headers.get("cookie") ?? "");
+        response = NextResponse.next({ request: { headers: requestHeaders } });
         cookiesToSet.forEach(({ name, value, options }) =>
           response.cookies.set(name, value, options)
         );
@@ -59,7 +75,7 @@ export async function middleware(request: NextRequest) {
       // Carry the cookie deletions from signOut onto the redirect response.
       response.cookies.getAll().forEach((c) => redirect.cookies.set(c));
       redirect.cookies.set(LAST_SEEN_COOKIE, "", clearedLastSeenCookie());
-      return redirect;
+      return withCsp(redirect);
     }
     response.cookies.set(LAST_SEEN_COOKIE, String(Date.now()), lastSeenCookie());
   }
@@ -72,7 +88,7 @@ export async function middleware(request: NextRequest) {
     dest.search = "";
     const redirect = NextResponse.redirect(dest);
     response.cookies.getAll().forEach((c) => redirect.cookies.set(c));
-    return redirect;
+    return withCsp(redirect);
   }
 
   // A stamp with no session is a leftover; drop it so the next login starts
@@ -85,15 +101,15 @@ export async function middleware(request: NextRequest) {
     loginUrl.search = `?next=${encodeURIComponent(pathname)}`;
     const redirect = NextResponse.redirect(loginUrl);
     if (dropStamp) redirect.cookies.set(LAST_SEEN_COOKIE, "", clearedLastSeenCookie());
-    return redirect;
+    return withCsp(redirect);
   }
 
   if (dropStamp) response.cookies.set(LAST_SEEN_COOKIE, "", clearedLastSeenCookie());
-  return response;
+  return withCsp(response);
 }
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|favicon.png|apple-icon.png|sitemap.xml|robots.txt|llms.txt|.*\\.(?:png|jpg|jpeg|webp|svg|ico)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|favicon.png|apple-icon.png|sitemap.xml|robots.txt|llms.txt|api/csp-report|.*\\.(?:png|jpg|jpeg|webp|svg|ico)$).*)",
   ],
 };

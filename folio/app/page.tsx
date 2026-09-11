@@ -11,8 +11,6 @@ import { OWN_TOOLS } from "@/components/OwnTools";
 import { getPublishedListings, getFeaturedListings } from "@/lib/listings";
 import { safeJsonLd } from "@/lib/json-ld";
 
-export const revalidate = 300;
-
 const WEBSITE_JSON_LD = {
   "@context": "https://schema.org",
   "@type": "WebSite",

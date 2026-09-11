@@ -1,7 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { PUBLIC_DATA_TAG } from "@/lib/public-cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { validImage, imageSignatureOk, imageExtension, extractFields, getUploadedFiles } from "@/lib/listing-form";
@@ -84,6 +85,7 @@ export async function updateListing(
     if (result.live) {
       revalidatePath(`/directory/${existing.slug}`);
       revalidatePath("/directory");
+      revalidateTag(PUBLIC_DATA_TAG);
     }
     redirect(`/dashboard/maker?reordered=${result.live ? "live" : existing.is_published ? "draft" : "pending"}`);
   }
@@ -176,6 +178,7 @@ export async function deleteOwnListing(listingId: string): Promise<void> {
     revalidatePath("/directory");
     revalidatePath(`/directory/${listing.slug}`);
     revalidatePath("/sitemap.xml");
+  revalidateTag(PUBLIC_DATA_TAG);
   revalidatePath("/llms.txt");
     const { data: profile } = await supabase.from("profiles").select("username").eq("id", user.id).maybeSingle();
     if (profile?.username) revalidatePath(`/makers/${profile.username}`);
@@ -312,6 +315,7 @@ export async function updateProfile(
   if (username) {
     revalidatePath(`/makers/${username}`);
     revalidatePath("/sitemap.xml");
+  revalidateTag(PUBLIC_DATA_TAG);
   revalidatePath("/llms.txt");
   }
   if (prevProfile?.username && prevProfile.username !== username) {
@@ -382,6 +386,7 @@ export async function deleteOwnAccount(
   revalidatePath("/");
   revalidatePath("/directory");
   revalidatePath("/sitemap.xml");
+  revalidateTag(PUBLIC_DATA_TAG);
   revalidatePath("/llms.txt");
   for (const listing of listings ?? []) {
     if (listing.is_published) revalidatePath(`/directory/${listing.slug}`);

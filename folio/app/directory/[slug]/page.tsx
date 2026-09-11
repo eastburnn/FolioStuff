@@ -8,8 +8,6 @@ import { safeJsonLd } from "@/lib/json-ld";
 import ListingDetail from "@/components/directory/ListingDetail";
 import { tagLabel } from "@/lib/tags";
 
-export const revalidate = 300;
-
 interface PageProps {
   params: Promise<{ slug: string }>;
 }

@@ -1,6 +1,7 @@
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { SUPABASE_URL, SUPABASE_ANON_KEY, hasSupabaseEnv } from "./supabase/config";
 import { normalizeSocials, type Socials } from "./socials";
+import { cachedPublic } from "./public-cache";
 
 // The content snapshot that the public site renders. Written by the approve
 // action; maker edits do not touch it until re-approved. The source_* paths
@@ -80,7 +81,7 @@ function publicClient() {
   return createSupabaseClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
-export async function getPublishedListings(limit?: number): Promise<PublishedListing[]> {
+async function getPublishedListingsUncached(limit?: number): Promise<PublishedListing[]> {
   if (!hasSupabaseEnv()) return [];
   try {
     let query = publicClient()
@@ -97,8 +98,9 @@ export async function getPublishedListings(limit?: number): Promise<PublishedLis
     return [];
   }
 }
+export const getPublishedListings = cachedPublic(getPublishedListingsUncached, "getPublishedListings");
 
-export async function getPublishedListing(slug: string): Promise<PublishedListing | null> {
+async function getPublishedListingUncached(slug: string): Promise<PublishedListing | null> {
   if (!hasSupabaseEnv()) return null;
   try {
     const { data, error } = await publicClient()
@@ -112,8 +114,9 @@ export async function getPublishedListing(slug: string): Promise<PublishedListin
     return null;
   }
 }
+export const getPublishedListing = cachedPublic(getPublishedListingUncached, "getPublishedListing");
 
-export async function getPublishedListingsByOwner(ownerId: string): Promise<PublishedListing[]> {
+async function getPublishedListingsByOwnerUncached(ownerId: string): Promise<PublishedListing[]> {
   if (!hasSupabaseEnv()) return [];
   try {
     const { data, error } = await publicClient()
@@ -129,8 +132,9 @@ export async function getPublishedListingsByOwner(ownerId: string): Promise<Publ
     return [];
   }
 }
+export const getPublishedListingsByOwner = cachedPublic(getPublishedListingsByOwnerUncached, "getPublishedListingsByOwner");
 
-export async function getPublishedListingsBySlugs(slugs: string[]): Promise<PublishedListing[]> {
+async function getPublishedListingsBySlugsUncached(slugs: string[]): Promise<PublishedListing[]> {
   if (!hasSupabaseEnv() || slugs.length === 0) return [];
   try {
     const { data, error } = await publicClient()
@@ -145,8 +149,9 @@ export async function getPublishedListingsBySlugs(slugs: string[]): Promise<Publ
     return [];
   }
 }
+export const getPublishedListingsBySlugs = cachedPublic(getPublishedListingsBySlugsUncached, "getPublishedListingsBySlugs");
 
-export async function getListingOwnerId(slug: string): Promise<string | null> {
+async function getListingOwnerIdUncached(slug: string): Promise<string | null> {
   if (!hasSupabaseEnv()) return null;
   try {
     const { data, error } = await publicClient()
@@ -160,6 +165,7 @@ export async function getListingOwnerId(slug: string): Promise<string | null> {
     return null;
   }
 }
+export const getListingOwnerId = cachedPublic(getListingOwnerIdUncached, "getListingOwnerId");
 
 // Produces a slug that satisfies the database's listings_slug_check pattern
 // (starts and ends alphanumeric, max length). The default cap leaves room
@@ -176,7 +182,7 @@ export function slugify(name: string, maxLength = 52): string {
 
 // Listings the admin flagged as featured; shown in the homepage Featured
 // section in addition to their normal place in the directory.
-export async function getFeaturedListings(): Promise<PublishedListing[]> {
+async function getFeaturedListingsUncached(): Promise<PublishedListing[]> {
   if (!hasSupabaseEnv()) return [];
   try {
     const { data, error } = await publicClient()
@@ -192,3 +198,4 @@ export async function getFeaturedListings(): Promise<PublishedListing[]> {
     return [];
   }
 }
+export const getFeaturedListings = cachedPublic(getFeaturedListingsUncached, "getFeaturedListings");

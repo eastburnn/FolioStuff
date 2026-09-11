@@ -1,6 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { PUBLIC_DATA_TAG } from "@/lib/public-cache";
 import { redirect } from "next/navigation";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
@@ -36,6 +37,7 @@ function revalidateDirectory(slug?: string) {
   revalidatePath("/directory");
   if (slug) revalidatePath(`/directory/${slug}`);
   revalidatePath("/sitemap.xml");
+  revalidateTag(PUBLIC_DATA_TAG);
   revalidatePath("/llms.txt");
   revalidatePath("/admin");
 }
@@ -266,6 +268,7 @@ export async function deleteMakerAccount(ownerId: string): Promise<void> {
     if (listing.is_published) revalidatePath(`/directory/${listing.slug}`);
   }
   if (profile?.username) revalidatePath(`/makers/${profile.username}`);
+  revalidateTag(PUBLIC_DATA_TAG);
 }
 
 // Sends a sample of one of the notification templates to the admin's own inbox.
@@ -353,6 +356,7 @@ export async function setListingPublished(formData: FormData): Promise<void> {
   }
   revalidateDirectory(data.slug);
   revalidatePath("/admin/directory");
+  revalidateTag(PUBLIC_DATA_TAG);
   await revalidateMakerPage(admin, data.owner_id);
 }
 
@@ -370,6 +374,7 @@ export async function setListingFeatured(formData: FormData): Promise<void> {
   }
   revalidatePath("/");
   revalidatePath("/admin/directory");
+  revalidateTag(PUBLIC_DATA_TAG);
 }
 
 // Form versions of the destructive actions for the Manage Directory grid,
@@ -379,6 +384,7 @@ export async function deleteListingForm(formData: FormData): Promise<void> {
   if (!id) return;
   await deleteListing(id);
   revalidatePath("/admin/directory");
+  revalidateTag(PUBLIC_DATA_TAG);
 }
 
 export async function deleteMakerAccountForm(formData: FormData): Promise<void> {
@@ -386,6 +392,7 @@ export async function deleteMakerAccountForm(formData: FormData): Promise<void> 
   if (!owner) return;
   await deleteMakerAccount(owner);
   revalidatePath("/admin/directory");
+  revalidateTag(PUBLIC_DATA_TAG);
 }
 
 export interface ComposeState {

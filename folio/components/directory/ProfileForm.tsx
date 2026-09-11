@@ -3,7 +3,8 @@
 import { useActionState, useCallback, useEffect, useState } from "react";
 import { Check, X, Pencil } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { USERNAME_PATTERN, RESERVED_USERNAMES, type Profile } from "@/lib/profiles";
+import { USERNAME_PATTERN, RESERVED_USERNAMES } from "@/lib/profile-rules";
+import type { Profile } from "@/lib/profiles";
 import Avatar from "./Avatar";
 import AvatarCropper from "./AvatarCropper";
 import { MAX_SOURCE_BYTES } from "@/lib/image-limits";

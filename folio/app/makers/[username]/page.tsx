@@ -7,8 +7,6 @@ import Avatar from "@/components/directory/Avatar";
 import { getProfileByUsername, avatarUrl } from "@/lib/profiles";
 import { getPublishedListingsByOwner } from "@/lib/listings";
 
-export const revalidate = 300;
-
 interface PageProps {
   params: Promise<{ username: string }>;
 }

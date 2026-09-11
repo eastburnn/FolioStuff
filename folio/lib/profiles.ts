@@ -17,14 +17,9 @@ export interface Profile {
   updated_at: string;
 }
 
-export const USERNAME_PATTERN = /^[a-z0-9][a-z0-9-]{7,15}$/;
-
-// Route names and brand terms a maker cannot claim as a username.
-export const RESERVED_USERNAMES = new Set([
-  "admin", "api", "about", "auth", "dashboard", "login", "logout", "signup",
-  "submit", "tools", "directory", "makers", "privacy", "terms", "settings", "profile",
-  "folio", "foliostuff", "www", "mail", "support", "help",
-]);
+import { USERNAME_PATTERN, RESERVED_USERNAMES } from "./profile-rules";
+import { cachedPublic } from "./public-cache";
+export { USERNAME_PATTERN, RESERVED_USERNAMES };
 
 // Makers can type a bare domain such as "itschrisray.com"; the https prefix
 // is added on save. Returns the normalized link, or an error to show.
@@ -59,7 +54,7 @@ function publicClient() {
   return createSupabaseClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
-export async function getProfileByUsername(username: string): Promise<Profile | null> {
+async function getProfileByUsernameUncached(username: string): Promise<Profile | null> {
   if (!hasSupabaseEnv()) return null;
   try {
     const { data, error } = await publicClient()
@@ -73,9 +68,10 @@ export async function getProfileByUsername(username: string): Promise<Profile | 
     return null;
   }
 }
+export const getProfileByUsername = cachedPublic(getProfileByUsernameUncached, "getProfileByUsername");
 
 // Every maker with a public page, for the sitemap.
-export async function getMakerUsernames(): Promise<{ id: string; username: string; updated_at: string }[]> {
+async function getMakerUsernamesUncached(): Promise<{ id: string; username: string; updated_at: string }[]> {
   if (!hasSupabaseEnv()) return [];
   try {
     const { data, error } = await publicClient()
@@ -88,8 +84,9 @@ export async function getMakerUsernames(): Promise<{ id: string; username: strin
     return [];
   }
 }
+export const getMakerUsernames = cachedPublic(getMakerUsernamesUncached, "getMakerUsernames");
 
-export async function getProfileById(id: string): Promise<Profile | null> {
+async function getProfileByIdUncached(id: string): Promise<Profile | null> {
   if (!hasSupabaseEnv()) return null;
   try {
     const { data, error } = await publicClient()
@@ -103,3 +100,4 @@ export async function getProfileById(id: string): Promise<Profile | null> {
     return null;
   }
 }
+export const getProfileById = cachedPublic(getProfileByIdUncached, "getProfileById");
