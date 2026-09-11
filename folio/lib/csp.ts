@@ -83,7 +83,9 @@ export function buildCsp(nonce: string): string {
     "base-uri 'self'",
     "form-action 'self'",
     "frame-ancestors 'none'",
-    ...(isProd ? ["upgrade-insecure-requests"] : []),
+    // Only meaningful when enforced; browsers log a notice if it appears in
+    // a report-only policy. HSTS covers the upgrade in the meantime.
+    ...(isProd && CSP_ENFORCE ? ["upgrade-insecure-requests"] : []),
     "report-uri /api/csp-report",
   ];
   return directives.join("; ");
