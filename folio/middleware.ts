@@ -21,7 +21,10 @@ export async function middleware(request: NextRequest) {
   const csp = buildCsp(nonce);
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-nonce", nonce);
-  requestHeaders.set(CSP_HEADER, csp);
+  // Next.js reads the nonce for its own scripts from a policy on the request
+  // headers. This one is never sent to the browser, so it stays minimal and
+  // uses the enforcing name whatever mode the real policy is in.
+  requestHeaders.set("content-security-policy", `script-src 'nonce-${nonce}'`);
   const withCsp = <T extends NextResponse>(res: T): T => {
     res.headers.set(CSP_HEADER, csp);
     return res;
