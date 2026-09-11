@@ -20,8 +20,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Baseline hardening on every response. No Content Security Policy yet:
-  // the analytics and JSON-LD scripts are inline, so a CSP needs its own pass.
+  // Baseline hardening on every response. The Content Security Policy is set
+  // per request in middleware.ts (it carries a nonce); it must not be set
+  // here, because on Vercel a header configured here also reaches the render
+  // as a request header and would shadow the one Next.js reads the nonce from.
   async headers() {
     return [
       {
@@ -30,7 +32,6 @@ const nextConfig: NextConfig = {
           { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "X-Frame-Options", value: "DENY" },
-          { key: "Content-Security-Policy", value: "frame-ancestors 'none'; base-uri 'self'; object-src 'none'" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=()" },
         ],

@@ -54,12 +54,9 @@ export default async function RootLayout({
 }) {
   // Content Security Policy nonce for this request, from the middleware.
   const nonce = (await headers()).get("x-nonce") ?? undefined;
-  // Temporary diagnostic: which request headers survive the edge on Vercel.
-  const h = await headers();
-  const seen = ["x-nonce", "content-security-policy", "content-security-policy-report-only"].map((n) => `${n}=[${(h.get(n) ?? "").slice(0, 70)}]`).join(" | ");
   return (
     <html lang="en" className={inter.variable}>
-      <body className="min-h-screen flex flex-col" data-hdr={seen}>
+      <body className="min-h-screen flex flex-col">
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-5466YPT0MV" strategy="afterInteractive" nonce={nonce} />
         <Script id="google-analytics" strategy="afterInteractive" nonce={nonce}>
           {`
