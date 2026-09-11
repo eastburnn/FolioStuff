@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { safeNext } from "@/lib/safe-next";
+import { LAST_SEEN_COOKIE, lastSeenCookie } from "@/lib/session-stamp";
 
 export interface LoginState {
   emailError?: string | null;
@@ -33,18 +34,16 @@ export async function login(_prev: LoginState, formData: FormData): Promise<Logi
   if (!error) {
     // Fresh last-visit stamp so an old one cannot end this new session.
     const jar = await cookies();
-    jar.set("fs-last-seen", String(Date.now()), {
-      path: "/",
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 24 * 400,
-    });
+    // A fresh session starts a fresh clock on this device.
+    jar.set(LAST_SEEN_COOKIE, String(Date.now()), lastSeenCookie());
     redirect(next);
   }
 
   const message = error.message.toLowerCase();
   if (message.includes("invalid login credentials")) {
-    const exists = await emailExists(email);
+    // Supabase reaches a credentials check only after its captcha passes, so
+    // this lookup is captcha-gated. Without a token, stay generic.
+    const exists = captchaToken ? await emailExists(email) : null;
     if (exists === false) return { emailError: "No account found with that email." };
     if (exists === true) return { passwordError: "Password incorrect." };
     return { formError: "Email or password is incorrect." };

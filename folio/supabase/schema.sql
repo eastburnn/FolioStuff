@@ -26,6 +26,9 @@ security definer
 set search_path = public
 as $$
   select coalesce(auth.role(), '') = 'service_role'
+    -- Direct database sessions (psql, the SQL editor) count as admin, so
+    -- maintenance never trips the non-admin write guard.
+    or session_user = 'postgres'
     or exists (
       select 1 from public.app_admins
       where email = (auth.jwt() ->> 'email')
@@ -138,6 +141,8 @@ begin
       new.is_published := false;
       new.published := null;
       new.reviewed_at := null;
+      new.is_featured := false;
+      new.created_at := now();
 
       select * into maker_profile from public.profiles where id = new.owner_id;
       if maker_profile.id is null
@@ -156,6 +161,8 @@ begin
       new.is_published := old.is_published;
       new.published := old.published;
       new.reviewed_at := old.reviewed_at;
+      new.is_featured := old.is_featured;
+      new.created_at := old.created_at;
       new.status := 'pending';
       new.review_feedback := null;
       new.maker_name := old.maker_name;

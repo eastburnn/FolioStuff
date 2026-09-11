@@ -4,9 +4,9 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { validImage, imageExtension, extractFields, getUploadedFiles } from "@/lib/listing-form";
+import { validImage, imageSignatureOk, imageExtension, extractFields, getUploadedFiles } from "@/lib/listing-form";
 import { uploadListingImages } from "@/lib/listing-uploads";
-import { deleteListingFiles, deleteAvatarFiles, pruneFolder } from "@/lib/listing-cleanup";
+import { deleteListingFiles, deleteAvatarFiles, deleteUserUploads, pruneFolder } from "@/lib/listing-cleanup";
 import { normalizePublished } from "@/lib/listings";
 import { notifyAdminNewSubmission } from "@/lib/email";
 import { verifyTurnstile } from "@/lib/turnstile";
@@ -199,7 +199,7 @@ export async function updateProfile(
   };
 
   const requiredFlow = formData.get("required_flow") === "1";
-  const display_name = clean("display_name", 80);
+  const display_name = clean("display_name", 80)?.replace(/\s+/g, " ").trim() || null;
   const bio = clean("bio", 500);
   let username = clean("username", 30);
   // Social fields accept a profile link, "@handle", or a bare handle.
@@ -243,6 +243,7 @@ export async function updateProfile(
   if (avatarEntry instanceof File && avatarEntry.size > 0) {
     const err = validImage(avatarEntry);
     if (err) return { error: err };
+    if (!(await imageSignatureOk(avatarEntry))) return { error: "That file is not a PNG, JPEG, or WebP image." };
     const path = `${user.id}/avatar-${Date.now()}.${imageExtension(avatarEntry)}`;
     const { error } = await supabase.storage
       .from("avatars")
@@ -361,6 +362,7 @@ export async function deleteOwnAccount(
     await deleteListingFiles(admin, listing);
   }
 
+  await deleteUserUploads(admin, user.id);
   await deleteAvatarFiles(admin, user.id);
   const { data: profile } = await admin
     .from("profiles")

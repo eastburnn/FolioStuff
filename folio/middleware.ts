@@ -1,15 +1,15 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { SESSION_COOKIE_MAX_AGE } from "@/lib/supabase/config";
+import { LAST_SEEN_COOKIE, clearedLastSeenCookie, lastSeenCookie } from "@/lib/session-stamp";
 import { safeNext } from "@/lib/safe-next";
 
 const PROTECTED_PREFIXES = ["/submit", "/dashboard", "/admin", "/reset-password"];
 
-// Rolling inactivity logout: every request from a signed-in user stamps this
-// cookie; a request arriving more than 24h after the last stamp ends the
-// session. Independent of Supabase's own session settings, so it holds on
-// any plan.
-const LAST_SEEN_COOKIE = "fs-last-seen";
+// Rolling inactivity logout, per device: every request from a signed-in user
+// stamps this browser's cookie; a request arriving more than 24h after the
+// last stamp ends the session on this device only. Other devices keep their
+// own clocks. Independent of Supabase's own session settings.
 const INACTIVITY_LIMIT_MS = SESSION_COOKIE_MAX_AGE * 1000;
 
 export async function middleware(request: NextRequest) {
@@ -20,6 +20,7 @@ export async function middleware(request: NextRequest) {
   if (!url || !anonKey) return response;
 
   const supabase = createServerClient(url, anonKey, {
+    cookieOptions: { secure: process.env.NODE_ENV === "production" },
     cookies: {
       getAll() {
         return request.cookies.getAll();
@@ -44,28 +45,23 @@ export async function middleware(request: NextRequest) {
 
   if (user) {
     const lastSeen = Number(request.cookies.get(LAST_SEEN_COOKIE)?.value ?? 0);
-    // A stamp left behind by an older session must not end a brand new one:
-    // a sign-in newer than the stamp means the user just came back.
-    const signedInAt = Date.parse(user.last_sign_in_at ?? "") || 0;
-    const stale = lastSeen > 0 && Date.now() - lastSeen > INACTIVITY_LIMIT_MS && signedInAt <= lastSeen;
+    // Every path that creates a session writes a fresh stamp in the same
+    // response, so a stamp this old means this browser has been idle that
+    // long, whatever happened on the account from other devices.
+    const stale = lastSeen > 0 && Date.now() - lastSeen > INACTIVITY_LIMIT_MS;
     if (stale) {
-      // Away too long: end the session and send them to log in again.
-      await supabase.auth.signOut();
+      // Away too long: end the session on this device only, then log in again.
+      await supabase.auth.signOut({ scope: "local" });
       const loginUrl = request.nextUrl.clone();
       loginUrl.pathname = "/login";
       loginUrl.search = `?expired=1${needsAuth ? `&next=${encodeURIComponent(pathname)}` : ""}`;
       const redirect = NextResponse.redirect(loginUrl);
       // Carry the cookie deletions from signOut onto the redirect response.
       response.cookies.getAll().forEach((c) => redirect.cookies.set(c));
-      redirect.cookies.set(LAST_SEEN_COOKIE, "", { path: "/", maxAge: 0 });
+      redirect.cookies.set(LAST_SEEN_COOKIE, "", clearedLastSeenCookie());
       return redirect;
     }
-    response.cookies.set(LAST_SEEN_COOKIE, String(Date.now()), {
-      path: "/",
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 60 * 60 * 24 * 400,
-    });
+    response.cookies.set(LAST_SEEN_COOKIE, String(Date.now()), lastSeenCookie());
   }
 
   // Already signed in: the login and signup pages have nothing to offer, so
@@ -79,18 +75,25 @@ export async function middleware(request: NextRequest) {
     return redirect;
   }
 
+  // A stamp with no session is a leftover; drop it so the next login starts
+  // a clean clock even if it arrives through a path that writes no stamp.
+  const dropStamp = !user && request.cookies.has(LAST_SEEN_COOKIE);
+
   if (needsAuth && !user) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/login";
     loginUrl.search = `?next=${encodeURIComponent(pathname)}`;
-    return NextResponse.redirect(loginUrl);
+    const redirect = NextResponse.redirect(loginUrl);
+    if (dropStamp) redirect.cookies.set(LAST_SEEN_COOKIE, "", clearedLastSeenCookie());
+    return redirect;
   }
 
+  if (dropStamp) response.cookies.set(LAST_SEEN_COOKIE, "", clearedLastSeenCookie());
   return response;
 }
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|favicon.png|apple-icon.png|.*\\.(?:png|jpg|jpeg|webp|svg|ico)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|favicon.png|apple-icon.png|sitemap.xml|robots.txt|llms.txt|.*\\.(?:png|jpg|jpeg|webp|svg|ico)$).*)",
   ],
 };

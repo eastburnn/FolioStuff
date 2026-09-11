@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { validImage, validImageSet, imageExtension } from "./listing-form";
+import { validImage, imageSignatureOk, validImageSet, imageExtension } from "./listing-form";
 
 // Uploads submitted images into the private listing-uploads bucket under the
 // maker's own folder (enforced by storage RLS). Server-side use only.
@@ -13,13 +13,16 @@ export async function uploadListingImages(
   let iconPath: string | undefined;
   const screenshotPaths: string[] = [];
 
+  const notAnImage = "One of the files is not a PNG, JPEG, or WebP image.";
   if (icon) {
     const err = validImage(icon);
     if (err) return { error: err };
+    if (!(await imageSignatureOk(icon))) return { error: notAnImage };
   }
   for (const shot of screenshots) {
     const err = validImage(shot);
     if (err) return { error: err };
+    if (!(await imageSignatureOk(shot))) return { error: notAnImage };
   }
   const setError = validImageSet([icon, ...screenshots].filter((f): f is File => Boolean(f)));
   if (setError) return { error: setError };

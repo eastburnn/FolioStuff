@@ -17,9 +17,12 @@ export async function GET() {
     (t) => `- [${t.title}](${BASE_URL}${t.href}): ${t.description} Category: ${t.tag}.`
   );
 
+  // Names are user text inside Markdown link labels; brackets cannot be
+  // allowed to close the label early.
+  const label = (text: string) => text.replace(/[\[\]]/g, "\\$&");
   const directory = listings.map((l) => {
     const tags = l.tags.length ? ` Tags: ${l.tags.map(tagLabel).join(", ")}.` : "";
-    return `- [${l.name}](${BASE_URL}/directory/${l.slug}): ${l.tagline} By ${l.maker_name}.${tags}`;
+    return `- [${label(l.name)}](${BASE_URL}/directory/${l.slug}): ${l.tagline} By ${l.maker_name}.${tags}`;
   });
 
   const body = `# FolioStuff

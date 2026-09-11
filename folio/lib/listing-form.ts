@@ -25,7 +25,7 @@ export function extractFields(formData: FormData): { fields: ListingFields } | {
     return { error: "Submission could not be processed." };
   }
 
-  const name = String(formData.get("name") ?? "").trim();
+  const name = String(formData.get("name") ?? "").replace(/\s+/g, " ").trim();
   // A bare domain is fine; the https prefix is added here.
   const link = normalizeLink(String(formData.get("url") ?? ""), "Tool", 300);
   if (link.error || !link.url) return { error: link.error ?? "Enter your site's web address." };
@@ -45,6 +45,23 @@ export function extractFields(formData: FormData): { fields: ListingFields } | {
   if ("error" in parsedSocials) return { error: parsedSocials.error };
 
   return { fields: { name, url, tagline, description, tags, socials: parsedSocials.socials } };
+}
+
+// Confirms a file really is the image type it claims, by its signature, so
+// a renamed file cannot land in storage under an image content type.
+export async function imageSignatureOk(file: File): Promise<boolean> {
+  const head = new Uint8Array(await file.slice(0, 12).arrayBuffer());
+  const at = (offset: number, bytes: number[]) => bytes.every((b, i) => head[offset + i] === b);
+  switch (file.type) {
+    case "image/png":
+      return at(0, [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+    case "image/jpeg":
+      return at(0, [0xff, 0xd8, 0xff]);
+    case "image/webp":
+      return at(0, [0x52, 0x49, 0x46, 0x46]) && at(8, [0x57, 0x45, 0x42, 0x50]);
+    default:
+      return false;
+  }
 }
 
 export function validImage(file: File): string | null {

@@ -46,6 +46,17 @@ export async function deleteListingFiles(
   await pruneFolder(admin, "listing-public", listing.id, new Set());
 }
 
+// Removes everything under a user's private upload prefix, including folders
+// for listings that no longer exist: uploads can be made directly to any
+// folder under the user's own id, so listing folders alone are not enough.
+export async function deleteUserUploads(admin: SupabaseClient, userId: string): Promise<void> {
+  const { data } = await admin.storage.from("listing-uploads").list(userId, { limit: 1000 });
+  for (const entry of data ?? []) {
+    if (entry.id === null) await pruneFolder(admin, "listing-uploads", `${userId}/${entry.name}`, new Set());
+  }
+  await pruneFolder(admin, "listing-uploads", userId, new Set());
+}
+
 // Removes every avatar file a user has uploaded (their folder is their id).
 export async function deleteAvatarFiles(admin: SupabaseClient, userId: string): Promise<void> {
   await pruneFolder(admin, "avatars", userId, new Set());

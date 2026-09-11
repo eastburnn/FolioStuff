@@ -8,7 +8,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { notifySubmissionApproved, notifySubmissionRejected, sendDirectMessage, sendEmailContent } from "@/lib/email";
 import { adminNewSubmissionEmail, approvedEmail, directMessageEmail, rejectedEmail } from "@/lib/email-templates";
 import { SAMPLE_DIRECT_MESSAGE } from "@/lib/email-samples";
-import { deleteListingFiles, deleteAvatarFiles, pruneFolder, privateFolder, imageExt } from "@/lib/listing-cleanup";
+import { deleteListingFiles, deleteAvatarFiles, deleteUserUploads, pruneFolder, privateFolder, imageExt } from "@/lib/listing-cleanup";
 import { getAdminContext } from "@/lib/admin-gate";
 import { normalizePublished, type ListingRow, type PublishedListing } from "@/lib/listings";
 import { normalizeSocials } from "@/lib/socials";
@@ -252,6 +252,7 @@ export async function deleteMakerAccount(ownerId: string): Promise<void> {
     await deleteListingFiles(admin, listing);
   }
 
+  await deleteUserUploads(admin, ownerId);
   await deleteAvatarFiles(admin, ownerId);
   const { data: profile } = await admin.from("profiles").select("username").eq("id", ownerId).maybeSingle();
 
